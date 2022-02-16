@@ -24,6 +24,7 @@ class AuthController extends Controller
             ]);
         }
     }
+    
     public function logout()
     {
         return response()->json([
