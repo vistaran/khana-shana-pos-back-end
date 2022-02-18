@@ -9,10 +9,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use App\Http\Controllers\JWTException;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Controllers\Response;
-use App\Http\Controllers\TokenInvalidException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use PHPUnit\Util\Json;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Facades\JWTFactory;
 
 
 class AuthController extends Controller
@@ -39,22 +42,34 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 20
+            'expires_in' => auth('api')->factory()->getTTL() * 1
         ], 200);
         return $this->respondWithToken($token);
     }
-    public function me()
+    public function me(Request $request)
     {
+        $this->validate($request, [
+            'token' => 'required'
+        ]);
+
+        $user = JWTAuth::authenticate($request->token);
+
         try {
-            if (Auth::check()) {
-                $user = auth('api')->user();
-                return response()->json(['user' => $user], 201);
+            if (!$user = JWTAuth::parseToken()->authenticate()) {
+                return response()->json(['user_not_found'], 404);
             }
+        } catch (TokenExpiredException $e) {
+
+            return response()->json(['error' => 'token_expired'], 401);
+        } catch (TokenInvalidException $e) {
+
+            return response()->json(['error' => 'token_invalid'], 401);
         } catch (JWTException $e) {
-            return response()->json([
-                'Error' => 'You are not Loggend in !'
-            ], 500);
+
+            return response()->json(['error' => 'token_absent'], 403);
         }
+
+        return response()->json(['user' => $user], 201);
     }
 
     public function logout()
@@ -74,7 +89,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60
+            'expires_in' => auth('api')->factory()->getTTL() * 1
         ]);
     }
 }

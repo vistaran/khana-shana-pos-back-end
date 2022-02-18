@@ -14,7 +14,7 @@ use  App\Http\Controllers\AuthController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+//User Token Api
 Route::group([
 
     'middleware' => 'api',
@@ -26,5 +26,36 @@ Route::group([
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
-    Route::post('register', 'AuthController@register');
 });
+
+
+
+//User APi
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'user'
+    ],
+    function ($router) {
+        Route::get('add', 'UserController@add');
+        Route::get('edit/{id}', 'UserController@edit');
+        Route::get('delete/{id}', 'UserController@delete');
+    }
+);
+
+
+
+
+// Outlets Api
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'outlet'
+    ],
+    function ($router) {
+        Route::get('show', 'OutletController@show');
+        Route::get('edit/{id}', 'OutletController@edit');
+        Route::get('delete/{id}', 'OutletController@delete');
+        Route::get('insert', 'OutletController@insert');
+    }
+);
