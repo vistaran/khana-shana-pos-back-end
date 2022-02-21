@@ -21,7 +21,6 @@ class AddColumnsToUserTable extends Migration
             $table->string('password');
             $table->string('confirm_password');
             $table->string('user_avatar');
-            $table->string('outlet_name');
             $table->string('status');
             $table->timestamps();
         });

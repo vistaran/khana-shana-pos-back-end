@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnsToUserOutletTable extends Migration
+class AddColumnToUserOutletTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,10 @@ class AddColumnsToUserOutletTable extends Migration
     public function up()
     {
         Schema::table('user_outlet', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('user');
-            $table->foreign('outlet_id')->references('id')->on('outlet');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('user')->nullOnDelete();
+            $table->unsignedBigInteger('outlet_id')->nullable();
+            $table->foreign('outlet_id')->references('id')->on('outlets')->nullOnDelete();
             $table->timestamps();
         });
     }
