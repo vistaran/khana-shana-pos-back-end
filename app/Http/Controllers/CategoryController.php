@@ -79,6 +79,7 @@ class CategoryController extends Controller
     }
     public function add(Request $request)
     {
+        
         try {
             $credential = $request->only([
                 'name', 'visible_in_menu', 'position', 'display_mode', 'description', 'image', 'category_logo', 'parent_category', 'attri', 'meta_title', 'slug', 'meta_description', 'meta_keyword', 'status'
