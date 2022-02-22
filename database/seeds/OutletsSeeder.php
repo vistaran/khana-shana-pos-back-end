@@ -23,7 +23,8 @@ class OutletsSeeder extends Seeder
                 'State' => $faker->state,
                 'City' => $faker->city,
                 'Postcode' => str_pad(rand(0, pow(10, 4) - 1), 4, '0', STR_PAD_LEFT),
-                'Status' =>$faker->randomElement(['active', 'inactive']),
+                'Status' => $faker->randomElement(['active', 'inactive']),
+                'inventory_source' => $faker->randomElement(['default']),
             ]);
         }
     }
