@@ -59,6 +59,21 @@ Route::group(
         Route::put('edit/{id}', 'OutletController@edit');
         Route::get('delete/{id}', 'OutletController@delete');
         Route::post('insert', 'OutletController@insert');
-        Route::get('search', 'OutletController@Search');
+        Route::get('search', 'OutletController@search');
+    }
+);
+
+//Category API
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'category'
+    ],
+    function ($router) {
+        Route::get('show', 'CategoryController@show');
+        Route::put('edit/{id}', 'CategoryController@edit');
+        Route::get('delete/{id}', 'CategoryController@delete');
+        Route::post('insert', 'CategoryController@add');
+        Route::get('search', 'CategoryController@search');
     }
 );

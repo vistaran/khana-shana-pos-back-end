@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserOutletTable extends Migration
+class AddColumnsToOutletsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class CreateUserOutletTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_outlet', function (Blueprint $table) {
-            $table->id();
-           
+        Schema::table('outlets', function (Blueprint $table) {
+            $table->string('inventory_source');
         });
     }
 
@@ -26,6 +25,8 @@ class CreateUserOutletTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_outlet');
+        Schema::table('outlets', function (Blueprint $table) {
+            //
+        });
     }
 }

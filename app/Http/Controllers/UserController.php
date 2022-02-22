@@ -18,23 +18,13 @@ class UserController extends Controller
                 ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
                 ->select(
                     'user_outlet.user_id',
-                    'user.first_name',
-                    'user.lastname',
+                    'user.user_avatar',
                     'user.username',
                     'user.email',
-                    'user.password',
-                    'user.confirm_password',
-                    'user.user_avatar',
+                    'outlets.Outlet_name',
                     'user.status',
+                    'user.created_at',
 
-                    'user_outlet.outlet_id',
-                    'outlets.Outlet_name',
-                    'outlets.Outlet_name',
-                    'outlets.Country',
-                    'outlets.State',
-                    'outlets.City',
-                    'outlets.Status',
-                    'outlets.Postcode',
                 )->orderBy('user_outlet.user_id')
                 ->paginate(10);
             return response()->json([
@@ -106,19 +96,18 @@ class UserController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    public function Search(Request $request)
+    public function search(Request $request)
     {
-        $query = $request->input('outlet');
-        $data = User::where('first_name', $query)
+        $query = $request->input('query');
+        $data = Users::where('username', 'like', '%' . $query . '%')
+            ->orWhere('id', $query)
+            ->orWhere('first_name', 'like', '%' . $query . '%')
             ->orWhere('lastname', 'like', '%' . $query . '%')
-            ->orWhere('username', 'like', '%' . $query . '%')
             ->orWhere('email', 'like', '%' . $query . '%')
-            ->orWhere('password', 'like', '%' . $query . '%')
-            ->orWhere('confirm_password', 'like', '%' . $query . '%')
-            ->orWhere('user_avatar', 'like', '%' . $query . '%')
-            ->orWhere('status', 'like', '%' . $query . '%')
             ->paginate(10);
 
-        return Response()->json(['user' => $data]);
+        return response()->json([
+            'Users' => $data,
+        ]);
     }
 }

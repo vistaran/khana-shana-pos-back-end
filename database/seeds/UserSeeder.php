@@ -26,6 +26,7 @@ class UserSeeder extends Seeder
                 'confirm_password' => bcrypt('secret'),
                 'user_avatar' => 'user - lg . jpg',
                 'status' => $faker->randomElement(['active', 'inactive']),
+                
 
             ]);
         }

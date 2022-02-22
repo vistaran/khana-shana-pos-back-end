@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Outlet;
-use App\User;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -16,12 +15,9 @@ class OutletController extends Controller
             $outlet = Outlet::select(
                 'id',
                 'Outlet_name',
-                'Outlet_name',
-                'Country',
-                'State',
-                'City',
-                'Postcode',
-                'Status'
+                'inventory_source',
+                'created_at',
+                'Status',
             )->orderBy('id')
                 ->paginate(10);
             return response()->json([
@@ -90,18 +86,19 @@ class OutletController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    public function Search(Request $request)
+    public function search(Request $request)
     {
-        $query = $request->input('user');
-        $data = Outlet::where('Outlet_name', 'like' . $query . '%')
-            ->orWhere('Outlet_Address', 'like', '%' . $query . '%')
+        $query = $request->input('query');
+        $data = Outlet::where('id', $query)
+            ->orWhere('Outlet_name', 'like', '%' . $query . '%')
             ->orWhere('Country', 'like', '%' . $query . '%')
             ->orWhere('State', 'like', '%' . $query . '%')
-            ->orWhere('City', 'like', '%' . $query . '%')
-            ->orWhere('Postcode', 'like', '%' . $query . '%')
-            ->orWhere('Status', 'like', '%' . $query . '%')
+            ->orWhere('City', 'like', $query . '%')
+            ->orWhere('Postcode', $query)
             ->paginate(10);
 
-        return Response()->json(['outlet' => $data]);
+        return response()->json([
+            'Outlets' => $data,
+        ]);
     }
 }
