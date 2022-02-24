@@ -9,14 +9,19 @@
 
 # Project Setup
 
-composer install
+## for dependency install
+- composer install
 
-copy .env.example .env
-php artisan key:generate
+## for environment setup
+- copy .env.example .env
+- php artisan key:generate
 
-php artisan migrate
-composer dump-autoload
-php artisan db:seed
+## for database setup
+- create database name as "laravel".
+
+- php artisan migrate
+- composer dump-autoload
+- php artisan db:seed
 
 ## About Laravel
 
