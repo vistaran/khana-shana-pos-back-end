@@ -9,12 +9,12 @@
 
 # Project Setup
 
-## for dependency install
+## Dependency install
 - composer install
 
-## for environment setup
+## Environment setup
 
-### for windows
+### for windows user
 - copy .env.example .env
 - php artisan key:generate
 
@@ -22,7 +22,7 @@
 - cp .env.example .env
 - php artisan key:generate
 
-## for database setup
+## Database setup
 - create database name as "laravel".
 
 - php artisan migrate
