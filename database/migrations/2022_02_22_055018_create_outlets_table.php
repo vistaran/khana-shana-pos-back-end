@@ -15,14 +15,14 @@ class CreateOutletsTable extends Migration
     {
         Schema::create('outlets', function (Blueprint $table) {
             $table->id();
-             $table->string('Outlet_name');
+            $table->string('Outlet_name');
             $table->string('Outlet_Address');
             $table->string('Country');
             $table->string('State');
             $table->string('City');
             $table->integer('Postcode');
             $table->string('Status');
-            
+            $table->timestamps();
         });
     }
 
