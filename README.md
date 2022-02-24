@@ -13,7 +13,13 @@
 - composer install
 
 ## for environment setup
+
+### for windows
 - copy .env.example .env
+
+### for linux user
+- cp .env.example .env
+
 - php artisan key:generate
 
 ## for database setup
