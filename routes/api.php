@@ -37,9 +37,11 @@ Route::group(
         'prefix' => 'user'
     ],
     function ($router) {
-        Route::get('add', 'UserController@add');
-        Route::get('edit/{id}', 'UserController@edit');
+        Route::get('show', 'UserController@show');
+        Route::post('insert', 'UserController@add');
+        Route::put('edit/{id}', 'UserController@edit');
         Route::get('delete/{id}', 'UserController@delete');
+        Route::get('search', 'UserController@Search');
     }
 );
 
@@ -54,8 +56,24 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'OutletController@show');
-        Route::get('edit/{id}', 'OutletController@edit');
+        Route::put('edit/{id}', 'OutletController@edit');
         Route::get('delete/{id}', 'OutletController@delete');
-        Route::get('insert', 'OutletController@insert');
+        Route::post('insert', 'OutletController@insert');
+        Route::get('search', 'OutletController@search');
+    }
+);
+
+//Category API
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'category'
+    ],
+    function ($router) {
+        Route::get('show', 'CategoryController@show');
+        Route::put('edit/{id}', 'CategoryController@edit');
+        Route::get('delete/{id}', 'CategoryController@delete');
+        Route::post('insert', 'CategoryController@add');
+        Route::get('search', 'CategoryController@search');
     }
 );

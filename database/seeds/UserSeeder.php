@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
@@ -24,9 +25,9 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('secret'),
                 'confirm_password' => bcrypt('secret'),
                 'user_avatar' => 'user - lg . jpg',
-                'outlet_name' => $faker->name,
                 'status' => $faker->randomElement(['active', 'inactive']),
-              
+                
+
             ]);
         }
     }

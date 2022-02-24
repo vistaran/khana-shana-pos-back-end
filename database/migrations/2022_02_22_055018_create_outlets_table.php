@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnsToOutletsTable extends Migration
+class CreateOutletsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,16 @@ class AddColumnsToOutletsTable extends Migration
      */
     public function up()
     {
-        Schema::table('outlets', function (Blueprint $table) {
-            $table->string('Outlet_name');
+        Schema::create('outlets', function (Blueprint $table) {
+            $table->id();
+             $table->string('Outlet_name');
             $table->string('Outlet_Address');
             $table->string('Country');
             $table->string('State');
             $table->string('City');
             $table->integer('Postcode');
             $table->string('Status');
-            $table->timestamps();
+            
         });
     }
 
@@ -32,8 +33,6 @@ class AddColumnsToOutletsTable extends Migration
      */
     public function down()
     {
-        Schema::table('outlets', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('outlets');
     }
 }

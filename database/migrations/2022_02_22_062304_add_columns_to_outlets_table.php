@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnsToUserOutletTable extends Migration
+class AddColumnsToOutletsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class AddColumnsToUserOutletTable extends Migration
      */
     public function up()
     {
-        Schema::table('user_outlet', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('user');
-            $table->foreign('outlet_id')->references('id')->on('outlet');
-            $table->timestamps();
+        Schema::table('outlets', function (Blueprint $table) {
+            $table->string('inventory_source');
         });
     }
 
@@ -27,7 +25,7 @@ class AddColumnsToUserOutletTable extends Migration
      */
     public function down()
     {
-        Schema::table('user_outlet', function (Blueprint $table) {
+        Schema::table('outlets', function (Blueprint $table) {
             //
         });
     }

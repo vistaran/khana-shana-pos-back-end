@@ -15,7 +15,11 @@ class CreateUserOutletTable extends Migration
     {
         Schema::create('user_outlet', function (Blueprint $table) {
             $table->id();
-            
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('user')->nullOnDelete();
+            $table->unsignedBigInteger('outlet_id')->nullable();
+            $table->foreign('outlet_id')->references('id')->on('outlets')->nullOnDelete();
+            $table->timestamps();
         });
     }
 
