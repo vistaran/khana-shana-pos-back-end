@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Outlet;
-use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class OutletController extends Controller
@@ -42,7 +42,7 @@ class OutletController extends Controller
                     'State' => $request->state,
                     'City' => $request->city,
                     'Postcode' => $request->postcode,
-                    'Status' => $request->status
+                    'Status' => $request->status,
                 ]);
             return response()->json([
                 'Update Message' => 'Successfully Updated !',
@@ -71,12 +71,13 @@ class OutletController extends Controller
             $credentials = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status']);
             $out = new Outlet();
             $out->Outlet_name = $request->name;
-            $out->Outlet_Address =  $request->address;
+            $out->Outlet_Address = $request->address;
             $out->Country = $request->country;
             $out->State = $request->state;
             $out->City = $request->city;
             $out->Postcode = $request->postcode;
             $out->Status = $request->status;
+            $out->inventory_source = $request->inventory_source;
             $out->save();
             return response()->json([
                 'Insert Data' => 'Successfully Inserted !',
