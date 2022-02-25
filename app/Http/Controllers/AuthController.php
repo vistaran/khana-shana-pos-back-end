@@ -2,21 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use __PHP_Incomplete_Class;
-use Illuminate\Http\Client\Request as ClientRequest;
+use App\Http\Controllers\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use App\Http\Controllers\Response;
-use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use PHPUnit\Util\Json;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use Tymon\JWTAuth\Facades\JWTFactory;
-
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -31,25 +24,25 @@ class AuthController extends Controller
         try {
             if (!$token = auth('api')->attempt($credentials)) {
                 return response()->json([
-                    'error' => 'Invalid Credentials'
+                    'error' => 'Invalid Credentials',
                 ], 401);
             }
         } catch (JWTException $e) {
             return response()->json([
-                'error' => 'Could not create token'
+                'error' => 'Could not create token',
             ], 500);
         }
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 1
+            'expires_in' => auth('api')->factory()->getTTL() * 1,
         ], 200);
         return $this->respondWithToken($token);
     }
     public function me(Request $request)
     {
         $this->validate($request, [
-            'token' => 'required'
+            'token' => 'required',
         ]);
 
         $user = JWTAuth::authenticate($request->token);
@@ -89,7 +82,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 1
+            'expires_in' => auth('api')->factory()->getTTL() * 1,
         ]);
     }
 }
