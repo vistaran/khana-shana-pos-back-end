@@ -68,7 +68,7 @@ class OutletController extends Controller
     public function insert(Request $request)
     {
         try {
-            $credentials = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status']);
+            $credentials = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status', 'inventory_source']);
             $out = new Outlet();
             $out->Outlet_name = $request->name;
             $out->Outlet_Address = $request->address;
