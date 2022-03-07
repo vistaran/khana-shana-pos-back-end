@@ -30,7 +30,8 @@ class CreateUserTable extends Migration
             $table->rememberToken();
             $table->string('user_avatar');
             $table->string('status');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

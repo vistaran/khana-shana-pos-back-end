@@ -70,3 +70,18 @@ Route::group(
         Route::get('search', 'CategoryController@search');
     }
 );
+
+//Attribute API
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'attribute',
+    ],
+    function ($router) {
+        Route::get('show', 'AttributeController@show');
+        Route::put('edit/{id}', 'AttributeController@edit');
+        Route::get('delete/{id}', 'AttributeController@delete');
+        Route::post('insert', 'AttributeController@insert');
+        Route::get('search', 'AttributeController@search');
+    }
+);

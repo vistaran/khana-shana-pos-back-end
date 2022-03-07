@@ -19,7 +19,8 @@ class CreateCategoryProductTable extends Migration
             $table->foreign('category_id')->references('id')->on('category')->nullOnDelete();
             $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('product')->nullOnDelete();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

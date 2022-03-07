@@ -29,7 +29,8 @@ class CreateCategoryTable extends Migration
             $table->string('meta_description');
             $table->string('meta_keyword');
             $table->string('status');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 
