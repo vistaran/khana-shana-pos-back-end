@@ -99,11 +99,23 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $data = Users::where('username', 'like', '%' . $query . '%')
-            ->orWhere('id', $query)
-            ->orWhere('first_name', 'like', '%' . $query . '%')
-            ->orWhere('lastname', 'like', '%' . $query . '%')
-            ->orWhere('email', 'like', '%' . $query . '%')
+        $data = Users::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
+            ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
+            ->where('user_outlet.user_id', $query)
+            ->orWhere('user.username', 'like', '%' . $query . '%')
+            ->orWhere('user.email', 'like', '%' . $query . '%')
+            ->orWhere('outlets.Outlet_name', 'like', '%' . $query . '%')
+            ->orWhere('user.email', 'like', '%' . $query . '%')
+            ->select(
+                'user_outlet.user_id',
+                'user.user_avatar',
+                'user.username',
+                'user.email',
+                'user.status',
+                'outlets.Outlet_name',
+                'user.created_at'
+
+            )
             ->paginate(10);
 
         return response()->json([
