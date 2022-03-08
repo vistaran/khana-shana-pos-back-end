@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductToTable extends Migration
+class CreateAttributeFamilyTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,10 @@ class CreateProductToTable extends Migration
      */
     public function up()
     {
-        Schema::create('product', function (Blueprint $table) {
+        Schema::create('attribute_family', function (Blueprint $table) {
             $table->id();
-            $table->string('sku');
-            $table->string('name');
-            $table->string('product_type');
-            $table->string('status');
-            $table->float('price');
-            $table->integer('quantity');
+            $table->string('attribute_family_code');
+            $table->string('attribute_family_name');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
@@ -33,6 +29,6 @@ class CreateProductToTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product');
+        Schema::dropIfExists('attribute_family');
     }
 }

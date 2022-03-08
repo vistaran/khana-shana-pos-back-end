@@ -6,6 +6,7 @@ use App\Category;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class CategoryController extends Controller
@@ -13,6 +14,12 @@ class CategoryController extends Controller
     public function show()
     {
         try {
+            $product_count = DB::table('category_product')
+                ->where('category_id', $query)
+                ->where('product_id', '=', 'category_id')
+                // ->count()
+                ->get();
+
             $category = Category::join('category_product', 'category.id', '=', 'category_product.category_id')
                 ->join('product', 'category_product.product_id', '=', 'product.id')
                 ->select(
@@ -33,10 +40,8 @@ class CategoryController extends Controller
                     'category.status',
                     'category.created_at',
                     'category.updated_at',
-                    'category_product.product_id',
-                    'product.quantity',
-                    'product.created_at',
-                    'product.updated_at',
+                    'product.product_type',
+
 
                 )->orderBy('category_product.category_id')
                 ->paginate(10);
@@ -79,7 +84,7 @@ class CategoryController extends Controller
     }
     public function add(Request $request)
     {
-        
+
         try {
             $credential = $request->only([
                 'name', 'visible_in_menu', 'position', 'display_mode', 'description', 'image', 'category_logo', 'parent_category', 'attri', 'meta_title', 'slug', 'meta_description', 'meta_keyword', 'status'
@@ -125,9 +130,34 @@ class CategoryController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $data = Category::where('name', 'like', '%' . $query . '%')
-            ->orWhere('id', $query)
-            ->orWhere('position', $query)
+        $data = Category::join('category_product', 'category.id', '=', 'category_product.category_id')
+            ->join('product', 'category_product.product_id', '=', 'product.id')
+            ->where('category_product.category_id', $query)
+            ->orWhere('category.name', 'like', '%' . $query . '%')
+            ->orWhere('category.position', $query)
+            ->select(
+                'category_product.category_id',
+                'category.name',
+                'category.visible_in_menu',
+                'category.position',
+                'category.display_mode',
+                'category.decription',
+                'category.image',
+                'category.category_logo',
+                'category.parent_category',
+                'category.attributes',
+                'category.meta_title',
+                'category.slug',
+                'category.meta_description',
+                'category.meta_keyword',
+                'category.status',
+                'category.created_at',
+                'category.updated_at',
+                'category_product.product_id',
+                'product.quantity',
+                'product.created_at',
+                'product.updated_at',
+            )
             ->paginate(10);
 
         return response()->json([

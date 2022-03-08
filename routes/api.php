@@ -85,3 +85,32 @@ Route::group(
         Route::get('search', 'AttributeController@search');
     }
 );
+
+//Attribute_family API
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'attribute_family',
+    ],
+    function ($router) {
+        Route::get('show', 'AttributeFamilyController@show');
+        Route::put('edit/{id}', 'AttributeFamilyController@edit');
+        Route::get('delete/{id}', 'AttributeFamilyController@delete');
+        Route::post('insert', 'AttributeFamilyController@insert');
+        Route::get('search', 'AttributeFamilyController@search');
+    }
+);
+//Product API
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'product',
+    ],
+    function ($router) {
+        Route::get('show', 'ProductController@show');
+        Route::put('edit/{id}', 'ProductController@edit');
+        Route::get('delete/{id}', 'ProductController@delete');
+        Route::post('insert', 'ProductController@insert');
+        Route::get('search', 'ProductController@search');
+    }
+);
