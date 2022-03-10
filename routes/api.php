@@ -34,6 +34,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'UserController@show');
+        Route::get('show/{id}', 'UserController@show_data');
         Route::post('insert', 'UserController@add');
         Route::put('edit/{id}', 'UserController@edit');
         Route::get('delete/{id}', 'UserController@delete');
@@ -49,6 +50,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'OutletController@show');
+        Route::get('show/{id}', 'OutletController@show_data');
         Route::put('edit/{id}', 'OutletController@edit');
         Route::get('delete/{id}', 'OutletController@delete');
         Route::post('insert', 'OutletController@insert');
@@ -64,6 +66,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'CategoryController@show');
+        Route::get('show/{id}', 'CategoryController@show_data');
         Route::put('edit/{id}', 'CategoryController@edit');
         Route::get('delete/{id}', 'CategoryController@delete');
         Route::post('insert', 'CategoryController@add');
@@ -79,6 +82,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'AttributeController@show');
+        Route::get('show/{id}', 'AttributeController@show_data');
         Route::put('edit/{id}', 'AttributeController@edit');
         Route::get('delete/{id}', 'AttributeController@delete');
         Route::post('insert', 'AttributeController@insert');
@@ -94,6 +98,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'AttributeFamilyController@show');
+        Route::get('show/{id}', 'AttributeFamilyController@show_data');
         Route::put('edit/{id}', 'AttributeFamilyController@edit');
         Route::get('delete/{id}', 'AttributeFamilyController@delete');
         Route::post('insert', 'AttributeFamilyController@insert');
@@ -108,6 +113,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'ProductController@show');
+        Route::get('show/{id}', 'ProductController@show_data');
         Route::put('edit/{id}', 'ProductController@edit');
         Route::get('delete/{id}', 'ProductController@delete');
         Route::post('insert', 'ProductController@insert');

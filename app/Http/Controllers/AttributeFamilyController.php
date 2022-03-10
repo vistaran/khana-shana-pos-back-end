@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AttributeFamily;
+use Attribute;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
@@ -94,6 +95,14 @@ class AttributeFamilyController extends Controller
 
         return response()->json([
             'Attributes_Family' => $data,
+        ]);
+    }
+    public function show_data($id)
+    {
+        $att = AttributeFamily::where('id', $id)->first();
+
+        return response()->json([
+            'Show_Data' => $att,
         ]);
     }
 }

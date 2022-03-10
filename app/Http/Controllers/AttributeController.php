@@ -164,4 +164,12 @@ class AttributeController extends Controller
             'Attributes' => $data,
         ]);
     }
+    public function show_data($id)
+    {
+        $attr = AppAttribute::where('id', $id)->first();
+
+        return response()->json([
+            'Show_Data' => $attr,
+        ]);
+    }
 }
