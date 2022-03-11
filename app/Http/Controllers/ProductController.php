@@ -30,7 +30,7 @@ class ProductController extends Controller {
                 'product.created_at',
                 'product.updated_at',
                 'attribute_family.attribute_family_name',
-            )->orderBy( 'id' )
+            )->orderBy( 'id',"DESC" )
             ->paginate( 10 );
             return response()->json( [
                 'Products' => $product,
@@ -155,7 +155,7 @@ class ProductController extends Controller {
         ->orWhere( 'product.name', 'like', '%' . $query . '%' )
         ->orWhere( 'product.product_type', 'like', '%' . $query . '%' )
         ->select(
-            'product_attribute_family.id',
+            'product.id',
             'product.sku',
             'product.name',
             'product.product_type',
