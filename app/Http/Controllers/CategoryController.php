@@ -13,18 +13,19 @@ class CategoryController extends Controller {
 
     public function show() {
         try {
-            $category = Category::select( 'category.*', DB::raw( 'COUNT(category_product.category_id) as number_of_products' ) )
-            ->join( 'category_product', 'category_product.category_id', '=', 'category.id' )
-            ->groupBy( 'category.id' )
-            ->orderBy( 'id' )
-            ->paginate( 10 );
-            return response()->json( [
-                'Category' => $category,
+            $category = Category::select('category.*', DB::raw('COUNT(category_product.category_id) as number_of_products'))
+                ->join('category_product', 'category_product.category_id', '=', 'category.id')
+                ->groupBy('category.id')
+                ->orderBy('id')
+                ->paginate(10);
+            return response()->json([
+                "Category" => $category,
 
-            ] );
-        } catch ( Exception $e ) {
-            Log::error( $e->getMessage() );
-            return response()->json( [ 'error' => $e->getMessage() . ' ' . $e->getLine() ] );
+
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
 
@@ -111,40 +112,40 @@ class CategoryController extends Controller {
             return response()->json( [ 'error' => $e->getMessage() . ' ' . $e->getLine() ] );
         }
     }
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $data = Category::join('category_product', 'category.id', '=', 'category_product.category_id')
+            ->join('product', 'category_product.product_id', '=', 'product.id')
+            ->where('category_product.category_id', $query)
+            ->orWhere('category.name', 'like', '%' . $query . '%')
+            ->orWhere('category.position', $query)
+            ->select(
+                'category.id',
+                'category.name',
+                'category.visible_in_menu',
+                'category.position',
+                'category.display_mode',
+                'category.decription',
+                'category.image',
+                'category.category_logo',
+                'category.parent_category',
+                'category.attributes',
+                'category.meta_title',
+                'category.slug',
+                'category.meta_description',
+                'category.meta_keyword',
+                'category.status',
+                'category.created_at',
+                'category.updated_at',
+                'category_product.product_id',
+                'product.quantity',
+                'product.created_at',
+                'product.updated_at',
+            )
+            ->paginate(10);
 
-    public function search( Request $request ) {
-        $query = $request->input( 'query' );
-        $data = Category::join( 'category_product', 'category.id', '=', 'category_product.category_id' )
-        ->join( 'product', 'category_product.product_id', '=', 'product.id' )
-        ->where( 'category_product.category_id', $query )
-        ->orWhere( 'category.name', 'like', '%' . $query . '%' )
-        ->orWhere( 'category.position', $query )
-        ->select(
-            'category.id',
-            'category.name',
-            'category.visible_in_menu',
-            'category.position',
-            'category.display_mode',
-            'category.decription',
-            'category.image',
-            'category.category_logo',
-            'category.parent_category',
-            'category.attributes',
-            'category.meta_title',
-            'category.slug',
-            'category.meta_description',
-            'category.meta_keyword',
-            'category.status',
-            'category.created_at',
-            'category.updated_at',
-            'category_product.product_id',
-            'product.quantity',
-            'product.created_at',
-            'product.updated_at',
-        )
-        ->paginate( 10 );
-
-        return response()->json( [
+        return response()->json([
             'Category' => $data,
         ] );
     }

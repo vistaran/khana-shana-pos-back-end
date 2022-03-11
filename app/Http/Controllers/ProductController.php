@@ -146,31 +146,39 @@ class ProductController extends Controller {
     public function search( Request $request ) {
         $query = $request->input( 'query' );
         $data =
-        $product = Product::join( 'product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id' )
-        ->join( 'attribute_family', 'product_attribute_family.attribute_family_id', '=', 'attribute_family.id' )
-        ->where( 'product_attribute_family.id', $query )
-        ->orWhere( 'product.price', $query )
-        ->orWhere( 'product.quantity', $query )
-        ->orWhere( 'product.sku', 'like', '%' . $query . '%' )
-        ->orWhere( 'product.name', 'like', '%' . $query . '%' )
-        ->orWhere( 'product.product_type', 'like', '%' . $query . '%' )
-        ->select(
-            'product.id',
-            'product.sku',
-            'product.name',
-            'product.product_type',
-            'product.status',
-            'product.price',
-            'product.quantity',
-            'product.created_at',
-            'product.updated_at',
-            'attribute_family.attribute_family_name',
-        )
-        ->orderBy( 'id' )
-        ->paginate( 10 );
+            $product = Product::join('product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id')
+            ->join('attribute_family', 'product_attribute_family.attribute_family_id', '=', 'attribute_family.id')
+            ->where('product_attribute_family.product_id', $query)
+            ->orWhere('product.price', $query)
+            ->orWhere('product.quantity', $query)
+            ->orWhere('product.sku', 'like', '%' . $query . '%')
+            ->orWhere('product.name', 'like', '%' . $query . '%')
+            ->orWhere('product.product_type', 'like', '%' . $query . '%')
+            ->select(
+                'product.id',
+                'product.sku',
+                'product.name',
+                'product.product_type',
+                'product.status',
+                'product.price',
+                'product.quantity',
+                'product.created_at',
+                'product.updated_at',
+                'attribute_family.attribute_family_name',
+            )
+            ->orderBy('id')
+            ->paginate(10);
 
-        return response()->json( [
-            'Products_Search' => $data,
-        ] );
+        return response()->json([
+            'Products' => $data,
+        ]);
+    }
+    public function show_data($id)
+    {
+        $product = Product::where('id', $id)->first();
+
+        return response()->json([
+            'Show_Data' => $product,
+        ]);
     }
 }

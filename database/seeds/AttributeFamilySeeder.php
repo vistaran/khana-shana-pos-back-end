@@ -16,10 +16,10 @@ class AttributeFamilySeeder extends Seeder
     {
         $faker = Faker::create();
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             DB::table('attribute_family')->insert([
-                'attribute_family_code' => $faker->randomElement(['default']),
-                'attribute_family_name' => $faker->randomElement(['default'])
+                'attribute_family_code' => $faker->randomElement(['default','test']),
+                'attribute_family_name' => $faker->randomElement(['default','test'])
             ]);
         }
     }
