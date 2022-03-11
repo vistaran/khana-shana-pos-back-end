@@ -16,7 +16,7 @@ class UserController extends Controller
     public function show()
     {
         try {
-            $user = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
+            $user = Users::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
                 ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
                 ->select(
                     'user.id',
@@ -42,7 +42,7 @@ class UserController extends Controller
     {
         try {
             $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'outlet_name', 'outlet_status', 'phone_no', 'user_avatar', 'status']);
-            $user = new User();
+            $user = new Users();
             $user_outlet = new UserOutlet();
             $outlet = new Outlet();
 
@@ -82,7 +82,7 @@ class UserController extends Controller
     public function delete($id)
     {
         try {
-            User::find($id)
+            Users::find($id)
                 ->delete();
             return response()->json([
                 'Delete Message' => 'Successfully Deleted !',
@@ -96,7 +96,7 @@ class UserController extends Controller
     {
         try {
             $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status']);
-            $user = User::where('id', $id)
+            $user = Users::where('id', $id)
                 ->update([
                     'first_name' => $request->first_name,
                     'lastname' => $request->lastname,
@@ -122,7 +122,7 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $data = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
+        $data = Users::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
             ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
             ->where('user_outlet.user_id', $query)
             ->orWhere('user.username', 'like', '%' . $query . '%')
@@ -147,7 +147,7 @@ class UserController extends Controller
     }
     public function show_data($id)
     {
-        $user = User::where('id', $id)->first();
+        $user = Users::where('id', $id)->first();
 
         return response()->json([
             'Show_Data' => $user,
