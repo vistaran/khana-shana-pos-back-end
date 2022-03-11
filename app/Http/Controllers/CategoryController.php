@@ -19,7 +19,7 @@ class CategoryController extends Controller
             $category = Category::select('category.*', DB::raw('COUNT(category_product.category_id) as number_of_products'))
                 ->join('category_product', 'category_product.category_id', '=', 'category.id')
                 ->groupBy('category.id')
-                ->orderBy('id', 'DESC')
+                ->orderBy('id')
                 ->paginate(10);
             return response()->json([
                 "Category" => $category,
@@ -124,7 +124,7 @@ class CategoryController extends Controller
             ->orWhere('category.name', 'like', '%' . $query . '%')
             ->orWhere('category.position', $query)
             ->select(
-                'category_product.category_id',
+                'category.id',
                 'category.name',
                 'category.visible_in_menu',
                 'category.position',

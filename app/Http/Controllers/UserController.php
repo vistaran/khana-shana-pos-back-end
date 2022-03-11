@@ -27,7 +27,7 @@ class UserController extends Controller
                     'user.status',
                     'user.created_at',
 
-                )->orderBy('user.id', 'DESC')
+                )->orderBy('user.id')
                 ->paginate(10);
             return response()->json([
                 'user' => $user,
@@ -61,6 +61,7 @@ class UserController extends Controller
 
             $user_id = $user->where('email', $request->email)->first()->id;
             $outlet_id = $outlet->where('Outlet_name', $request->outlet_name)->first()->id;
+
 
             $user_outlet->user_id = $user_id;
             $user_outlet->outlet_id = $outlet_id;
@@ -129,7 +130,7 @@ class UserController extends Controller
             ->orWhere('outlets.Outlet_name', 'like', '%' . $query . '%')
             ->orWhere('user.email', 'like', '%' . $query . '%')
             ->select(
-                'user_outlet.user_id',
+                'user.id',
                 'user.user_avatar',
                 'user.username',
                 'user.email',

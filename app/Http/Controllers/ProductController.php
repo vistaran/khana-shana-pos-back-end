@@ -154,14 +154,14 @@ class ProductController extends Controller
         $data =
             $product = Product::join('product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id')
             ->join('attribute_family', 'product_attribute_family.attribute_family_id', '=', 'attribute_family.id')
-            ->where('product_attribute_family.id', $query)
+            ->where('product_attribute_family.product_id', $query)
             ->orWhere('product.price', $query)
             ->orWhere('product.quantity', $query)
             ->orWhere('product.sku', 'like', '%' . $query . '%')
             ->orWhere('product.name', 'like', '%' . $query . '%')
             ->orWhere('product.product_type', 'like', '%' . $query . '%')
             ->select(
-                'product_attribute_family.id',
+                'product.id',
                 'product.sku',
                 'product.name',
                 'product.product_type',
@@ -176,7 +176,15 @@ class ProductController extends Controller
             ->paginate(10);
 
         return response()->json([
-            'Products_Search' => $data,
+            'Products' => $data,
+        ]);
+    }
+    public function show_data($id)
+    {
+        $product = Product::where('id', $id)->first();
+
+        return response()->json([
+            'Show_Data' => $product,
         ]);
     }
 }
