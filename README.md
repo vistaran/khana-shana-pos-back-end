@@ -25,6 +25,10 @@
 ## Database setup
 - create database name as "laravel".
 
+### Git Bash
+- php artisan migrate:fresh && php artisan db:seed
+
+### for Terminal
 - php artisan migrate
 - composer dump-autoload
 - php artisan db:seed
