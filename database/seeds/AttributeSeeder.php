@@ -14,14 +14,15 @@ class AttributeSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-
-        for ($i = 0; $i < 50; $i++) {
+        $group_id = DB::table('group')->pluck('id');
+        for ($i = 0; $i < 41; $i++) {
             DB::table('attribute')->insert([
+                'group_id' =>
+                $faker->randomElement($group_id),
+                'attribute_based' => $faker->randomElement(['System', 'User']),
                 'attribute_code' => $faker->randomElement(['brand,', 'size', 'color', 'weight', 'depth', 'height', 'width', 'meta_description']),
                 'type' => $faker->randomElement(['text', 'textarea', 'price', 'boolean', 'select', 'multiselect', 'datetime', 'date', 'image', 'file']),
-                'admin' => $faker->name,
-                'english' => $faker->name,
-                'portuguse' => $faker->name,
+                'name' => $faker->name,
                 'validation_required' => $faker->randomElement(['yes', 'no']),
                 'validation_unique' => $faker->randomElement(['yes', 'no']),
                 'input_validation' => $faker->randomElement(['number', 'email', 'decimal', 'url']),
