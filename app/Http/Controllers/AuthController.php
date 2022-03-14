@@ -39,7 +39,7 @@ class AuthController extends Controller
         ], 200);
         return $this->respondWithToken($token);
     }
-    public function userData(Request $request)
+    public function me(Request $request)
     {
         $this->validate($request, [
             'token' => 'required',

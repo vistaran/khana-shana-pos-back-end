@@ -23,7 +23,7 @@ Route::group([
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
-    Route::get('userdata', 'AuthController@userData');
+    Route::get('me', 'AuthController@me');
 });
 
 //User APi
