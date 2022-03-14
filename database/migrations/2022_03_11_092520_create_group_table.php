@@ -19,8 +19,6 @@ class CreateGroupTable extends Migration
             $table->string('name');
             $table->string('type');
             $table->string('group_name');
-            $table->unsignedBigInteger('family_id')->nullable();
-            $table->foreign('family_id')->references('id')->on('attribute_family')->onDelete('cascade');
             $table->string('group_based');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

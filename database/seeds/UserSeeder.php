@@ -28,8 +28,6 @@ class UserSeeder extends Seeder
                 'phone_no' => $faker->phoneNumber,
                 'user_avatar' => 'user - lg . jpg',
                 'status' => $faker->randomElement(['active', 'inactive']),
-
-
             ]);
         }
     }

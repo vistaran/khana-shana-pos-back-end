@@ -14,11 +14,11 @@ class AttributeController extends Controller
         try {
             $attribute = AppAttribute::select(
                 'id',
+                'group_id',
+                'attribute_based',
                 'attribute_code',
+                'name',
                 'type',
-                'admin',
-                'english',
-                'portuguse',
                 'validation_required',
                 'validation_unique',
                 'input_validation',
@@ -48,10 +48,8 @@ class AttributeController extends Controller
         try {
             $credential = $request->only([
                 'attribute_code',
+                'name',
                 'type',
-                'admin',
-                'english',
-                'portuguse',
                 'validation_required',
                 'validation_unique',
                 'input_validation',
@@ -67,9 +65,7 @@ class AttributeController extends Controller
                 ->update([
                     'attribute_code' => $request->attribute_code,
                     'type' => $request->type,
-                    'admin' => $request->admin,
-                    'english' => $request->english,
-                    'portuguse' => $request->portuguse,
+                    'name' => $request->name,
                     'validation_required' => $request->validation_required,
                     'validation_unique' => $request->validation_unique,
                     'input_validation' => $request->input_validation,
@@ -107,10 +103,8 @@ class AttributeController extends Controller
         try {
             $credentials = $request->only([
                 'attribute_code',
+                'name',
                 'type',
-                'admin',
-                'english',
-                'portuguse',
                 'validation_required',
                 'validation_unique',
                 'input_validation',
@@ -125,9 +119,7 @@ class AttributeController extends Controller
             $att = new AppAttribute();
             $att->attribute_code = $request->attribute_code;
             $att->type = $request->type;
-            $att->admin = $request->admin;
-            $att->english = $request->english;
-            $att->portuguse = $request->portuguse;
+            $att->name = $request->name;
             $att->validation_required = $request->validation_required;
             $att->validation_unique = $request->validation_unique;
             $att->input_validation = $request->input_validation;
