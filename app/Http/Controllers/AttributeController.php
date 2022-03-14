@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Attribute as AppAttribute;
+use App\Attribute;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
@@ -12,7 +12,7 @@ class AttributeController extends Controller
     public function show()
     {
         try {
-            $attribute = AppAttribute::select(
+            $attribute = Attribute::select(
                 'id',
                 'group_id',
                 'attribute_based',
@@ -61,7 +61,7 @@ class AttributeController extends Controller
                 'create_in_product_flat_table',
                 'attribute_comparable',
             ]);
-            $att = new AppAttribute();
+            $att = new Attribute();
             $att->attribute_code = $request->attribute_code;
             $att->type = $request->type;
             $att->name = $request->name;
@@ -105,7 +105,7 @@ class AttributeController extends Controller
                 'create_in_product_flat_table',
                 'attribute_comparable',
             ]);
-            $outlet = AppAttribute::where('id', $id)
+            $outlet = Attribute::where('id', $id)
                 ->update([
                     'attribute_code' => $request->attribute_code,
                     'type' => $request->type,
@@ -132,7 +132,7 @@ class AttributeController extends Controller
     public function delete($id)
     {
         try {
-            AppAttribute::find($id)
+            Attribute::find($id)
                 ->delete();
             return response()->json([
                 'Delete Message' => 'Successfully Deleted !',
@@ -146,7 +146,7 @@ class AttributeController extends Controller
     {
         $query = $request->input('query');
         $data =
-            AppAttribute::where('id', $query)
+            Attribute::where('id', $query)
             ->orWhere('attribute_code', 'like', '%' . $query . '%')
             ->orWhere('type', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
@@ -158,7 +158,7 @@ class AttributeController extends Controller
     }
     public function show_data($id)
     {
-        $attr = AppAttribute::where('id', $id)->first();
+        $attr = Attribute::where('id', $id)->first();
 
         return response()->json([
             'Show_Data' => $attr,
