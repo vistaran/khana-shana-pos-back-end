@@ -2,39 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Attribute as AppAttribute;
-use Exception;
+use App\Group;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
-class AttributeController extends Controller
+class GroupController extends Controller
 {
     public function show()
     {
         try {
-            $attribute = AppAttribute::select(
+            $group = Group::select(
                 'id',
-                'group_id',
-                'attribute_based',
-                'attribute_code',
-                'name',
-                'type',
-                'validation_required',
-                'validation_unique',
-                'input_validation',
-                'value_per_local',
-                'value_per_channel',
-                'use_in_layered',
-                'use_to_create_configuration_product',
-                'visible_on_productview_page_front_end',
-                'create_in_product_flat_table',
-                'attribute_comparable',
+                'group_name',
+                'group_based',
                 'created_at',
                 'updated_at'
             )->orderBy('id')
                 ->paginate(10);
             return response()->json([
-                'Attributes' => $attribute,
+                'Groups' => $group,
 
             ]);
         } catch (Exception $e) {
@@ -61,7 +46,7 @@ class AttributeController extends Controller
                 'create_in_product_flat_table',
                 'attribute_comparable',
             ]);
-            $outlet = AppAttribute::where('id', $id)
+            $outlet = Group::where('id', $id)
                 ->update([
                     'attribute_code' => $request->attribute_code,
                     'type' => $request->type,
@@ -88,7 +73,7 @@ class AttributeController extends Controller
     public function delete($id)
     {
         try {
-            AppAttribute::find($id)
+            Group::find($id)
                 ->delete();
             return response()->json([
                 'Delete Message' => 'Successfully Deleted !',
@@ -116,7 +101,7 @@ class AttributeController extends Controller
                 'create_in_product_flat_table',
                 'attribute_comparable',
             ]);
-            $att = new AppAttribute();
+            $att = new Group();
             $att->attribute_code = $request->attribute_code;
             $att->type = $request->type;
             $att->name = $request->name;
@@ -144,19 +129,19 @@ class AttributeController extends Controller
     {
         $query = $request->input('query');
         $data =
-        AppAttribute::where('id', $query)
+        Group::where('id', $query)
             ->orWhere('attribute_code', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
             ->orWhere('type', 'like', '%' . $query . '%')
             ->paginate(10);
 
         return response()->json([
-            'Attributes' => $data,
+            'Groups' => $data,
         ]);
     }
     public function show_data($id)
     {
-        $attr = AppAttribute::where('id', $id)->first();
+        $attr = Group::where('id', $id)->first();
 
         return response()->json([
             'Show_Data' => $attr,
