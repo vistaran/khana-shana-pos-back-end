@@ -61,6 +61,7 @@ class UserController extends Controller
 
             $user_id = $user->where('email', $request->email)->first()->id;
             $outlet_id = $outlet->where('Outlet_name', $request->outlet_name)->first()->id;
+            // dd($outlet_id);
 
 
             $user_outlet->user_id = $user_id;

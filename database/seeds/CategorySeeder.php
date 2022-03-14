@@ -24,7 +24,7 @@ class CategorySeeder extends Seeder
                 'decription' => $faker->text(100),
                 'image' => $faker->imageUrl($width = 400, $height = 400),
                 'category_logo' => $faker->imageUrl($width = 400, $height = 400),
-                'parent_category' => $faker->randomElement(['yoga', 'Wheeled Backpack', 'Fitness world']),
+                'parent_category_id' => $faker->randomElement([$i + 2]),
                 'attributes' => $faker->randomElement(['price',  'brand']),
                 'meta_title' => $faker->title,
                 'slug' => $faker->name,

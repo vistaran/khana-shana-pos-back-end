@@ -22,7 +22,7 @@ class CreateCategoryTable extends Migration
             $table->string('decription');
             $table->string('image');
             $table->string('category_logo');
-            $table->string('parent_category');
+            $table->integer('parent_category_id');
             $table->string('attributes');
             $table->string('meta_title');
             $table->string('slug');

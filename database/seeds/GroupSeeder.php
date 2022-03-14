@@ -17,9 +17,6 @@ class GroupSeeder extends Seeder
 
         for ($i = 0; $i < 6; $i++) {
             DB::table('group')->insert([
-                'code' => $faker->randomElement(['brand', 'size', 'color', 'weight', 'depth', 'height', 'width', 'meta_description']),
-                'name' => $faker->name,
-                'type' => $faker->randomElement(['text', 'textarea', 'price', 'boolean', 'select', 'multiselect', 'datetime', 'date', 'image', 'file']),
                 'group_name' => $faker->randomElement(['General', 'Price', 'Description', 'Shipping', 'Meta_description']),
                 'group_based' =>  $faker->randomElement(['System', 'User']),
             ]);

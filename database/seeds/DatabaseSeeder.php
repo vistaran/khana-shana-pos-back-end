@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             CategoryProductSeeder::class,
             AttributeFamilySeeder::class,
             GroupSeeder::class,
-            AttributeFamilyGroupSeeder::class,
+            // AttributeFamilyGroupSeeder::class,
             AttributeSeeder::class,
             ProductAttributeFamilySeeder::class,
 
