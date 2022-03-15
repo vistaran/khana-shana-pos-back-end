@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Attribute as AppAttribute;
+use App\AttributeFamilyGroup;
 use App\Group;
+use Attribute;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -27,96 +30,51 @@ class GroupController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    public function edit($id, Request $request)
-    {
 
-        try {
-            $credential = $request->only([
-                'attribute_code',
-                'name',
-                'type',
-                'validation_required',
-                'validation_unique',
-                'input_validation',
-                'value_per_local',
-                'value_per_channel',
-                'use_in_layered',
-                'use_to_create_configuration_product',
-                'visible_on_productview_page_front_end',
-                'create_in_product_flat_table',
-                'attribute_comparable',
-            ]);
-            $outlet = Group::where('id', $id)
-                ->update([
-                    'attribute_code' => $request->attribute_code,
-                    'type' => $request->type,
-                    'name' => $request->name,
-                    'validation_required' => $request->validation_required,
-                    'validation_unique' => $request->validation_unique,
-                    'input_validation' => $request->input_validation,
-                    'value_per_local' => $request->value_per_local,
-                    'value_per_channel' => $request->value_per_channel,
-                    'use_in_layered' => $request->use_in_layered,
-                    'use_to_create_configuration_product' => $request->use_to_create_configuration_product,
-                    'visible_on_productview_page_front_end' => $request->visible_on_productview_page_front_end,
-                    'create_in_product_flat_table' => $request->create_in_product_flat_table,
-                    'attribute_comparable' => $request->attribute_comparable,
-                ]);
-            return response()->json([
-                'Update Message' => 'Successfully Updated !',
-            ]);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
-        }
-    }
     public function delete($id)
     {
         try {
-            Group::find($id)
-                ->delete();
-            return response()->json([
-                'Delete Message' => 'Successfully Deleted !',
-            ]);
+            $flag = Group::where('id', $id)->value('group_based');
+            Group::when(($flag == 'User'), function ($q) use ($id) {
+                // dd();
+                Attribute::where('group_id', $id)
+                    ->update(['group_id' => null]);
+                $q->find($id)->delete();
+                return $q;
+            });
+            if ($flag == 'User') {
+                return response()->json([
+                    'Delete Message' => 'Successfully Deleted !',
+                ]);
+            } else {
+                return response()->json([
+                    'Delete Message' => 'System cannot be delete !',
+                ]);
+            }
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    public function insert(Request $request)
+    public function insert(Request $request, $id)
     {
         try {
             $credentials = $request->only([
-                'attribute_code',
-                'name',
-                'type',
-                'validation_required',
-                'validation_unique',
-                'input_validation',
-                'value_per_local',
-                'value_per_channel',
-                'use_in_layered',
-                'use_to_create_configuration_product',
-                'visible_on_productview_page_front_end',
-                'create_in_product_flat_table',
-                'attribute_comparable',
+                'group_name',
             ]);
-            $att = new Group();
-            $att->attribute_code = $request->attribute_code;
-            $att->type = $request->type;
-            $att->name = $request->name;
-            $att->validation_required = $request->validation_required;
-            $att->validation_unique = $request->validation_unique;
-            $att->input_validation = $request->input_validation;
-            $att->value_per_local = $request->value_per_local;
-            $att->value_per_channel = $request->value_per_channel;
-            $att->use_in_layered = $request->use_in_layered;
-            $att->use_to_create_configuration_product = $request->use_to_create_configuration_product;
-            $att->visible_on_productview_page_front_end = $request->visible_on_productview_page_front_end;
-            $att->create_in_product_flat_table = $request->create_in_product_flat_table;
-            $att->attribute_comparable = $request->attribute_comparable;
 
-            $att->save();
+            $group = new Group();
+            $group->group_name = $request->group_name;
+            $group->group_based = 'User';
+            $group->save();
+
+            $attribite_family_group = new AttributeFamilyGroup();
+            $group_id = $group->where('group_name', $request->group_name)->first()->id;
+            $attribite_family_group->group_id = $group_id;
+            $attribite_family_group->attribute_family_id = $id;
+
+            $attribite_family_group->save();
+
             return response()->json([
                 'Insert Data' => 'Successfully Inserted !',
             ]);
@@ -125,6 +83,31 @@ class GroupController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+    public function insertAttribute(Request $request, $id)
+    {
+        try {
+            $credentials = $request->only(['attribute_name']);
+            $attribute = new AppAttribute();
+            $flag = $attribute->where('id', $id)->value('group_id');
+
+            if ($flag == null) {
+                $attribute->where('id', $id)
+                    ->update([
+                        'group_id' => $id,
+                    ]);
+                $attribute->save();
+            }
+
+            return response()->json([
+                'Insert Data' => 'Successfully Inserted !',
+            ]);
+
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+    }
+
     public function search(Request $request)
     {
         $query = $request->input('query');

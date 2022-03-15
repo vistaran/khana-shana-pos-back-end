@@ -18,7 +18,7 @@ class CreateAttributeFamilyGroupTable extends Migration
             $table->unsignedBigInteger('group_id')->nullable();
             $table->foreign('group_id')->references('id')->on('group')->onDelete('cascade');
             $table->unsignedBigInteger('attribute_family_id')->nullable();
-            $table->foreign('attribute_family_id')->references('id')->on('attribute_family')->onDelete('cascade');
+            $table->foreign('attribute_family_id')->references('id')->on('attribute')->onDelete('cascade');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

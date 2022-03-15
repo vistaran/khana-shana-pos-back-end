@@ -133,7 +133,8 @@ Route::group(
         Route::get('show/{id}', 'GroupController@show_data');
         Route::put('edit/{id}', 'GroupController@edit');
         Route::get('delete/{id}', 'GroupController@delete');
-        Route::post('insert', 'GroupController@insert');
+        Route::post('insert/{id}', 'GroupController@insert');
+        Route::post('insertAttribute/{id}', 'GroupController@insertAttribute');
         Route::get('search', 'GroupController@search');
     }
 );
