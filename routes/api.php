@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
  */
-//User Token Api
+// User Token Api
 Route::group([
 
     'middleware' => 'api',
@@ -26,7 +26,7 @@ Route::group([
     Route::get('me', 'AuthController@me');
 });
 
-//User APi
+// User APi
 Route::group(
     [
         'middleware' => 'api',
@@ -58,7 +58,7 @@ Route::group(
     }
 );
 
-//Category API
+// Category API
 Route::group(
     [
         'middleware' => 'api',
@@ -74,7 +74,7 @@ Route::group(
     }
 );
 
-//Attribute API
+// Attribute API
 Route::group(
     [
         'middleware' => 'api',
@@ -90,7 +90,7 @@ Route::group(
     }
 );
 
-//Attribute_family API
+// Attribute_family API
 Route::group(
     [
         'middleware' => 'api',
@@ -105,7 +105,8 @@ Route::group(
         Route::get('search', 'AttributeFamilyController@search');
     }
 );
-//Product API
+
+// Product API
 Route::group(
     [
         'middleware' => 'api',
@@ -118,5 +119,22 @@ Route::group(
         Route::get('delete/{id}', 'ProductController@delete');
         Route::post('insert', 'ProductController@insert');
         Route::get('search', 'ProductController@search');
+    }
+);
+
+// Group API
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'group',
+    ],
+    function ($router) {
+        Route::get('show', 'GroupController@show');
+        Route::get('show/{id}', 'GroupController@show_data');
+        Route::put('edit/{id}', 'GroupController@edit');
+        Route::get('delete/{id}', 'GroupController@delete');
+        Route::post('insert/{id}', 'GroupController@insert');
+        Route::post('insertAttribute/{id}', 'GroupController@insertAttribute');
+        Route::get('search', 'GroupController@search');
     }
 );

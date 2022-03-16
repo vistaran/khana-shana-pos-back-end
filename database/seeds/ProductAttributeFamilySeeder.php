@@ -4,15 +4,14 @@ use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
 
-class ProductAttributeFamilySeeder extends Seeder
-{
+class ProductAttributeFamilySeeder extends Seeder {
     /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
+    * Run the database seeds.
+    *
+    * @return void
+    */
+
+    public function run() {
         $faker = Faker::create();
         $attribute_family_id = DB::table('attribute_family')->pluck('id');
         for ($i = 0; $i < 50; $i++) {

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Attribute;
 use Exception;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AttributeController extends Controller
 {
@@ -148,8 +148,8 @@ class AttributeController extends Controller
         $data =
             Attribute::where('id', $query)
             ->orWhere('attribute_code', 'like', '%' . $query . '%')
-            ->orWhere('type', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
+            ->orWhere('type', 'like', '%' . $query . '%')
             ->paginate(10);
 
         return response()->json([

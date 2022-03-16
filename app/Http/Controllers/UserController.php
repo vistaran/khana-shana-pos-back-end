@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Outlet;
-use App\User;
 use App\UserOutlet;
 use App\Users;
 use Exception;
-use Illuminate\Foundation\Auth\User as AuthUser;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -19,7 +17,7 @@ class UserController extends Controller
             $user = Users::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
                 ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
                 ->select(
-                    'user.id',
+                    'user_outlet.user_id',
                     'user.user_avatar',
                     'user.username',
                     'user.email',
@@ -47,7 +45,7 @@ class UserController extends Controller
             $outlet = new Outlet();
 
             $user->first_name = $request->first_name;
-            $user->lastname =  $request->lastname;
+            $user->lastname = $request->lastname;
             $user->username = $request->username;
             $user->email = $request->email;
             $user->password = bcrypt($request->password);
@@ -62,7 +60,6 @@ class UserController extends Controller
             $user_id = $user->where('email', $request->email)->first()->id;
             $outlet_id = $outlet->where('Outlet_name', $request->outlet_name)->first()->id;
             // dd($outlet_id);
-
 
             $user_outlet->user_id = $user_id;
             $user_outlet->outlet_id = $outlet_id;
@@ -131,14 +128,13 @@ class UserController extends Controller
             ->orWhere('outlets.Outlet_name', 'like', '%' . $query . '%')
             ->orWhere('user.email', 'like', '%' . $query . '%')
             ->select(
-                'user.id',
+                'user_outlet.user_id',
                 'user.user_avatar',
                 'user.username',
                 'user.email',
                 'user.status',
                 'outlets.Outlet_name',
                 'user.created_at'
-
             )
             ->paginate(10);
 
