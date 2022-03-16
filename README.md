@@ -27,6 +27,7 @@
 
 ### Git Bash
 - php artisan migrate:fresh && php artisan db:seed
+- composer dump-autoload && php artisan migrate:fresh && php artisan db:seed
 
 ### for Terminal
 - php artisan migrate
