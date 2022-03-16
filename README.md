@@ -9,15 +9,33 @@
 
 # Project Setup
 
-composer install
+## Dependency install
+- composer install
 
-copy .env.example .env
-php artisan key:generate
+## Environment setup
 
-php artisan migrate
-composer dump-autoload
-php artisan db:seed
+### for windows user
+- copy .env.example .env
+- php artisan key:generate
 
+### for linux user
+- cp .env.example .env
+- php artisan key:generate
+
+## Database setup
+- create database name as "laravel".
+
+### Git Bash
+- php artisan migrate:fresh && php artisan db:seed
+- composer dump-autoload && php artisan migrate:fresh && php artisan db:seed
+
+### for Terminal
+- php artisan migrate
+- composer dump-autoload
+- php artisan db:seed
+
+## Start server
+- php artisan serve
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
