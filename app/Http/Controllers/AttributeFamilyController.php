@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AttributeFamily;
+use App\AttributeFamilyGroup;
 use Attribute;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -55,6 +56,8 @@ class AttributeFamilyController extends Controller
     {
         try {
             AttributeFamily::find($id)
+                ->delete();
+            AttributeFamilyGroup::where('attribute_family_id', $id)
                 ->delete();
             return response()->json([
                 'Delete Message' => 'Successfully Deleted !',

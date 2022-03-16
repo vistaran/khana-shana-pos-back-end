@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
             CategoryProductSeeder::class,
             AttributeFamilySeeder::class,
             GroupSeeder::class,
-            // AttributeFamilyGroupSeeder::class,
             AttributeSeeder::class,
+            AttributeFamilyGroupSeeder::class,
             ProductAttributeFamilySeeder::class,
 
         ]);

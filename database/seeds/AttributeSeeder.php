@@ -15,7 +15,7 @@ class AttributeSeeder extends Seeder
     {
         $faker = Faker::create();
         $group_id = DB::table('group')->pluck('id');
-        for ($i = 0; $i < 7; $i++) {
+        for ($i = 0; $i <6 ; $i++) {
             DB::table('attribute')
                 ->insert([
                     'group_id' => $faker->randomElement($group_id),

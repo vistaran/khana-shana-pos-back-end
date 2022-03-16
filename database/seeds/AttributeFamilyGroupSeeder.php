@@ -14,22 +14,24 @@ class AttributeFamilyGroupSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-        $group_user_id = DB::table('group')->where('group_based', 'User')->pluck('id');
+        $group_id = DB::table('group')->pluck('id');
+        $attribute_id = DB::table('attribute')->pluck('id');
+        $family_id = DB::Table('attribute_family')->pluck('id');
         // for ($i = 0; $i < 3; $i++) {
         //     for ($j = 0; $j < 3; $j++) {
 
-                // DB::table('attribute_family_group')->insert([
-                //     'group_id' => 1,
-                //     'attribute_family_id' => 2,
-                // ]);
+        // DB::table('attribute_family_group')->insert([
+        //     'group_id' => 1,
+        //     'attribute_family_id' => 2,
+        // ]);
         //     }
         // }
 
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 1; $i < 4; $i++) {
             DB::table('attribute_family_group')->insert([
-                'group_id'
-                => $faker->randomElement($group_user_id),
-                'attribute_family_id' => $i,
+                'attribute_family_id' => $faker->unique()->randomElement($family_id),
+                'group_id' => $faker->randomElement($group_id),
+                'attribute_id' => $faker->randomElement($attribute_id),
             ]);
         }
     }

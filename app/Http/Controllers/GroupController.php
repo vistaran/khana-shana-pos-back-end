@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Attribute as AppAttribute;
+use App\AttributeFamily;
 use App\AttributeFamilyGroup;
 use App\Group;
 use Attribute;
@@ -86,22 +87,57 @@ class GroupController extends Controller
     public function insertAttribute(Request $request, $id)
     {
         try {
-            $credentials = $request->only(['attribute_name']);
+            $group_id = $request->input('group_id');
+            $atribute_family_id = $request->input('atribute_family_id');
             $attribute = new AppAttribute();
-            $flag = $attribute->where('id', $id)->value('group_id');
+            $family = new AttributeFamilyGroup();
+            $flag_group = Group::where('id', $group_id)->value('group_based');
+            // dd($flag == 'System');
+            Group::when(($flag1 == 'System'), function ($q) use ($id, $flag1, $attribute, $group_id) {
 
-            if ($flag == null) {
-                $attribute->where('id', $id)
+                $attribute->where('attribute_based', $flag1)
+                    ->where('id', $id)
                     ->update([
-                        'group_id' => $id,
+                        'group_id' => $group_id,
                     ]);
                 $attribute->save();
+                return $q;
+            });
+
+            $flag_attribute = $attribute->where('id', $id)->value('group_id');
+            // dd($group_id);
+            if ($flag_attribute == null) {
+                Group::when(($flag_group == 'User'), function ($q) use ($id, $flag_group, $attribute, $group_id) {
+
+                    $attribute->where('attribute_based', $flag_group)
+                        ->where('id', $id)
+                        ->update([
+                            'group_id' => $group_id,
+                        ]);
+                    $attribute->save();
+                    return $q;
+                });
             }
+            if ($flag_attribute != null) {
+                Group::when(($flag_group == 'User'), function ($q) use ($id, $atribute_family_id, $group_id) {
+                    $family->attribute_family_id= $atribute_family_id;
+                    $family->group_id=$group_id;
+                    $family->attribute_id=$id;
+                    $family->save();
+                    return $q;
+                });
+            }
+
+            //     $attribute->where('id', $id)
+            //         ->update([
+            //             'group_id' => $group_id,
+            //         ]);
+            //     $attribute->save();
+            // }
 
             return response()->json([
                 'Insert Data' => 'Successfully Inserted !',
             ]);
-
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -112,7 +148,7 @@ class GroupController extends Controller
     {
         $query = $request->input('query');
         $data =
-        Group::where('id', $query)
+            Group::where('id', $query)
             ->orWhere('attribute_code', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
             ->orWhere('type', 'like', '%' . $query . '%')
