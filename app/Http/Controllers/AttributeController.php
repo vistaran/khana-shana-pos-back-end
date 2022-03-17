@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Attribute;
+use App\AttributeFamilyGroup;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -14,7 +15,7 @@ class AttributeController extends Controller
         try {
             $attribute = Attribute::select(
                 'id',
-                'group_id',
+                // 'group_id',
                 'attribute_based',
                 'attribute_code',
                 'name',
@@ -61,23 +62,29 @@ class AttributeController extends Controller
                 'create_in_product_flat_table',
                 'attribute_comparable',
             ]);
-            $att = new Attribute();
-            $att->attribute_code = $request->attribute_code;
-            $att->type = $request->type;
-            $att->name = $request->name;
-            $att->attribute_based = $user;
-            $att->validation_required = $request->validation_required;
-            $att->validation_unique = $request->validation_unique;
-            $att->input_validation = $request->input_validation;
-            $att->value_per_local = $request->value_per_local;
-            $att->value_per_channel = $request->value_per_channel;
-            $att->use_in_layered = $request->use_in_layered;
-            $att->use_to_create_configuration_product = $request->use_to_create_configuration_product;
-            $att->visible_on_productview_page_front_end = $request->visible_on_productview_page_front_end;
-            $att->create_in_product_flat_table = $request->create_in_product_flat_table;
-            $att->attribute_comparable = $request->attribute_comparable;
+            $attribute = new Attribute();
 
-            $att->save();
+            $attribute->attribute_code = $request->attribute_code;
+            $attribute->type = $request->type;
+            $attribute->name = $request->name;
+            $attribute->attribute_based = $user;
+            $attribute->validation_required = $request->validation_required;
+            $attribute->validation_unique = $request->validation_unique;
+            $attribute->input_validation = $request->input_validation;
+            $attribute->value_per_local = $request->value_per_local;
+            $attribute->value_per_channel = $request->value_per_channel;
+            $attribute->use_in_layered = $request->use_in_layered;
+            $attribute->use_to_create_configuration_product = $request->use_to_create_configuration_product;
+            $attribute->visible_on_productview_page_front_end = $request->visible_on_productview_page_front_end;
+            $attribute->create_in_product_flat_table = $request->create_in_product_flat_table;
+            $attribute->attribute_comparable = $request->attribute_comparable;
+
+            $attribute->save();
+            $attribute_family = new AttributeFamilyGroup();
+            $attribute_id = $attribute->where('attribute_code', $request->attribute_code)->first()->id;
+            // dd($attribute_id);
+            $attribute_family->attribute_id = $attribute_id;
+            $attribute_family->save();
             return response()->json([
                 'Insert Data' => 'Successfully Inserted !',
             ]);

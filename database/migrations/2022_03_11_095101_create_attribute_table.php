@@ -15,8 +15,8 @@ class CreateAttributeTable extends Migration
     {
         Schema::create('attribute', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('group_id')->nullable();
-            $table->foreign('group_id')->references('id')->on('group')->onDelete('cascade');
+            // $table->unsignedBigInteger('group_id')->nullable();
+            // $table->foreign('group_id')->references('id')->on('group')->onDelete('cascade');
             $table->string('attribute_based');
             $table->string('attribute_code')->unique();
             $table->string('name');

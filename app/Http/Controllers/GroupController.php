@@ -91,11 +91,12 @@ class GroupController extends Controller
             $atribute_family_id = $request->input('atribute_family_id');
             $attribute = new AppAttribute();
             $family = new AttributeFamilyGroup();
+
             $flag_group = Group::where('id', $group_id)->value('group_based');
             // dd($flag == 'System');
-            Group::when(($flag1 == 'System'), function ($q) use ($id, $flag1, $attribute, $group_id) {
+            Group::when(($flag_group == 'System'), function ($q) use ($id, $flag_group, $attribute, $group_id) {
 
-                $attribute->where('attribute_based', $flag1)
+                $attribute->where('attribute_based', $flag_group)
                     ->where('id', $id)
                     ->update([
                         'group_id' => $group_id,
@@ -104,25 +105,26 @@ class GroupController extends Controller
                 return $q;
             });
 
-            $flag_attribute = $attribute->where('id', $id)->value('group_id');
-            // dd($group_id);
+            $flag_attribute = $family->where('attribute_id', $id)->value('group_id');
+            // dd($flag_attribute);
             if ($flag_attribute == null) {
-                Group::when(($flag_group == 'User'), function ($q) use ($id, $flag_group, $attribute, $group_id) {
+                Group::when(($flag_group == 'User'), function ($q) use ($id, $atribute_family_id, $family, $group_id) {
 
-                    $attribute->where('attribute_based', $flag_group)
-                        ->where('id', $id)
+                    $family->where('attribute_id', $id)
                         ->update([
                             'group_id' => $group_id,
+                            'attribute_family_id' => $atribute_family_id,
                         ]);
-                    $attribute->save();
+                    $family->save();
                     return $q;
                 });
             }
+            // dd($flag_attribute);
             if ($flag_attribute != null) {
-                Group::when(($flag_group == 'User'), function ($q) use ($id, $atribute_family_id, $group_id) {
-                    $family->attribute_family_id= $atribute_family_id;
-                    $family->group_id=$group_id;
-                    $family->attribute_id=$id;
+                Group::when(($flag_group == 'User'), function ($q) use ($id, $atribute_family_id, $family, $group_id) {
+                    $family->attribute_family_id = $atribute_family_id;
+                    $family->group_id = $group_id;
+                    $family->attribute_id = $id;
                     $family->save();
                     return $q;
                 });
