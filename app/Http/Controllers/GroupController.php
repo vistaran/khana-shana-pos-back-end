@@ -31,7 +31,6 @@ class GroupController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
     public function delete($id)
     {
         try {
@@ -87,62 +86,67 @@ class GroupController extends Controller
     public function insertAttribute(Request $request, $id)
     {
         try {
-            $group_id = $request->input('group_id');
-            $atribute_family_id = $request->input('atribute_family_id');
+            // request
+            $group_name = $request->input('group_name');
+            $attribute_family_name = $request->input('atribute_family_name');
+
+            // data load from database
+            $group = new Group;
             $attribute = new AppAttribute();
+            $attribite_family = new AttributeFamily();
             $family = new AttributeFamilyGroup();
 
-            $flag_group = Group::where('id', $group_id)->value('group_based');
-            // dd($flag == 'System');
-            Group::when(($flag_group == 'System'), function ($q) use ($id, $flag_group, $attribute, $group_id) {
+            // fetch ids and data
+            $group_id = $group->where('group_name', $group_name)->first()->id;
+            $flag_group = $group->where('id', $group_id)->value('group_based');
+            $attribute_family_id = $attribite_family->where('attribute_family_name', $attribute_family_name)->first()->id;
+            $flag_attribute = count($family->where('attribute_family_id', 2)->where('attribute_id', $id)->get());
 
-                $attribute->where('attribute_based', $flag_group)
-                    ->where('id', $id)
+            // dd(!($flag_attribute));
+
+            // dd($flag_group == 'User');
+
+            // Group::when(($flag_group == 'System'), function ($q) use ($id, $attribute, $group_id) {
+            //     $attribute->where('attribute_based', 'User')
+            //         ->where('id', $id)
+            //         ->update([
+            //             'group_id' => $group_id,
+            //         ]);
+            //     $attribute->save();
+            //     return $q;
+            // });
+
+            // dd($flag_attribute);
+            if ($flag_attribute) {
+                $family->where('attribute_id', $id)
                     ->update([
                         'group_id' => $group_id,
+                        'attribute_family_id' => $attribute_family_id,
                     ]);
-                $attribute->save();
-                return $q;
-            });
-
-            $flag_attribute = $family->where('attribute_id', $id)->value('group_id');
-            // dd($flag_attribute);
-            if ($flag_attribute == null) {
-                Group::when(($flag_group == 'User'), function ($q) use ($id, $atribute_family_id, $family, $group_id) {
-
-                    $family->where('attribute_id', $id)
-                        ->update([
-                            'group_id' => $group_id,
-                            'attribute_family_id' => $atribute_family_id,
-                        ]);
-                    $family->save();
-                    return $q;
-                });
+                $family->save();
             }
             // dd($flag_attribute);
-            if ($flag_attribute != null) {
-                Group::when(($flag_group == 'User'), function ($q) use ($id, $atribute_family_id, $family, $group_id) {
-                    $family->attribute_family_id = $atribute_family_id;
-                    $family->group_id = $group_id;
-                    $family->attribute_id = $id;
-                    $family->save();
-                    return $q;
-                });
+            if (!$flag_attribute) {
+                $family->attribute_family_id = $attribute_family_id;
+                $family->group_id = $group_id;
+                $family->attribute_id = $id;
+                $family->save();
             }
+
             return response()->json([
                 'Insert Data' => 'Successfully Inserted !',
             ]);
+
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
     public function search(Request $request)
     {
         $query = $request->input('query');
         $data =
-            Group::where('id', $query)
+        Group::where('id', $query)
             ->orWhere('attribute_code', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
             ->orWhere('type', 'like', '%' . $query . '%')
