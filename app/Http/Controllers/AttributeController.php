@@ -141,6 +141,8 @@ class AttributeController extends Controller
         try {
             Attribute::find($id)
                 ->delete();
+            AttributeFamilyGroup::where('attribute_id', $id)
+                ->delete();
             return response()->json([
                 'Delete Message' => 'Successfully Deleted !',
             ]);

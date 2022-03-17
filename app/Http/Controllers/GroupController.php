@@ -129,14 +129,6 @@ class GroupController extends Controller
                     return $q;
                 });
             }
-
-            //     $attribute->where('id', $id)
-            //         ->update([
-            //             'group_id' => $group_id,
-            //         ]);
-            //     $attribute->save();
-            // }
-
             return response()->json([
                 'Insert Data' => 'Successfully Inserted !',
             ]);
