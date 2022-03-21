@@ -32,15 +32,15 @@ class GroupController extends Controller
     public function delete($id)
     {
         try {
-            $flag = Group::where('id', $id)->value('group_based');
-            Group::when(($flag == 'User'), function ($q) use ($id) {
+            $group_based = Group::where('id', $id)->value('group_based');
+            Group::when(($group_based == 'User'), function ($q) use ($id) {
                 // dd();
                 Attribute::where('group_id', $id)
                     ->update(['group_id' => null]);
                 $q->find($id)->delete();
                 return $q;
             });
-            if ($flag == 'User') {
+            if ($group_based == 'User') {
                 return response()->json([
                     'delete message' => 'Successfully Deleted !',
                 ]);
@@ -89,27 +89,27 @@ class GroupController extends Controller
             $attribute_family_id = $request->input('attribute_family_id');
 
             // data load from database
-            $family = new AttributeFamilyGroup();
+            $attribute_family_group = new AttributeFamilyGroup();
 
             // fetch ids and data
-            $flag_attribute = count($family->where('attribute_family_id', $attribute_family_id)->where('attribute_id', $id)->get());
+            $flag_attribute = count($attribute_family_group->where('attribute_family_id', $attribute_family_id)->where('attribute_id', $id)->get());
 
             // dd($flag_attribute);
             if ($flag_attribute) {
-                $family->where('attribute_id', $id)
+                $attribute_family_group->where('attribute_id', $id)
                     ->update([
                         'group_id' => $group_id,
                         'attribute_family_id' => $attribute_family_id,
                     ]);
-                $family->save();
+                $attribute_family_group->save();
             }
 
             // dd($flag_attribute);
             if (!$flag_attribute) {
-                $family->attribute_family_id = $attribute_family_id;
-                $family->group_id = $group_id;
-                $family->attribute_id = $id;
-                $family->save();
+                $attribute_family_group->attribute_family_id = $attribute_family_id;
+                $attribute_family_group->group_id = $group_id;
+                $attribute_family_group->attribute_id = $id;
+                $attribute_family_group->save();
             }
 
             return response()->json([
@@ -125,7 +125,7 @@ class GroupController extends Controller
         try {
 
             // data load from database
-            $family = AttributeFamilyGroup::join('attribute', 'attribute.id', '=', 'attribute_family_group.attribute_id')
+            $attribute_family_group = AttributeFamilyGroup::join('attribute', 'attribute.id', '=', 'attribute_family_group.attribute_id')
                 ->select(
                     'attribute_family_group.attribute_id',
                     'attribute_family_group.group_id',
@@ -139,7 +139,7 @@ class GroupController extends Controller
                 ->get();
 
             return response()->json([
-                'insert data' => $family,
+                'insert data' => $attribute_family_group,
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());

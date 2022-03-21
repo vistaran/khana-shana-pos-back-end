@@ -81,11 +81,11 @@ class AttributeController extends Controller
             $attribute->attribute_comparable = $request->attribute_comparable;
 
             $attribute->save();
-            $attribute_family = new AttributeFamilyGroup();
+            $attribute_family_group = new AttributeFamilyGroup();
             $attribute_id = $attribute->where('attribute_code', $request->attribute_code)->first()->id;
             // dd($attribute_id);
-            $attribute_family->attribute_id = $attribute_id;
-            $attribute_family->save();
+            $attribute_family_group->attribute_id = $attribute_id;
+            $attribute_family_group->save();
             return response()->json([
                 'insert data' => 'successfully inserted !',
             ]);
@@ -114,7 +114,7 @@ class AttributeController extends Controller
                 'create_in_product_flat_table',
                 'attribute_comparable',
             ]);
-            $outlet = Attribute::where('id', $id)
+            Attribute::where('id', $id)
                 ->update([
                     'attribute_code' => $request->attribute_code,
                     'type' => $request->type,
@@ -169,10 +169,10 @@ class AttributeController extends Controller
     }
     public function show_data($id)
     {
-        $attr = Attribute::where('id', $id)->first();
+        $attribute = Attribute::where('id', $id)->first();
 
         return response()->json([
-            'show_data' => $attr,
+            'show_data' => $attribute,
         ]);
     }
 
@@ -181,11 +181,11 @@ class AttributeController extends Controller
 
         $group_name_input = $request->input('group_name');
         $group_name = Group::where('group_name', $group_name_input)->first()->id;
-        $att_group_id = $group_name->where('group_id', $group_id)->first()->id;
+        $attribute_group_id = $group_name->where('group_id', $group_id)->first()->id;
         $group = Group::where('id', $id)->first()->id;
-        $group_id = AttributeFamilyGroup::where('attribute_id', $id)->where('group_id', $att_group_id)->first()->get();
+        $group_id = AttributeFamilyGroup::where('attribute_id', $id)->where('group_id', $attribute_group_id)->first()->get();
 
-        dd($group);
+        // dd($group);
         return response()->json([
             'group_id' => $group_id,
         ]);

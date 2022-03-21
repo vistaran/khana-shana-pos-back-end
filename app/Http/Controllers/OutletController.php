@@ -35,7 +35,7 @@ class OutletController extends Controller
 
         try {
             $credential = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status', 'inventory_source']);
-            $outlet = Outlet::where('id', $id)
+            Outlet::where('id', $id)
                 ->update([
                     'Outlet_name' => $request->name,
                     'Outlet_Address' => $request->address,
@@ -71,16 +71,16 @@ class OutletController extends Controller
     {
         try {
             $credentials = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status', 'inventory_source']);
-            $out = new Outlet();
-            $out->Outlet_name = $request->name;
-            $out->Outlet_Address = $request->address;
-            $out->Country = $request->country;
-            $out->State = $request->state;
-            $out->City = $request->city;
-            $out->Postcode = $request->postcode;
-            $out->Status = $request->status;
-            $out->inventory_source = $request->inventory_source;
-            $out->save();
+            $outlet = new Outlet();
+            $outlet->Outlet_name = $request->name;
+            $outlet->Outlet_Address = $request->address;
+            $outlet->Country = $request->country;
+            $outlet->State = $request->state;
+            $outlet->City = $request->city;
+            $outlet->Postcode = $request->postcode;
+            $outlet->Status = $request->status;
+            $outlet->inventory_source = $request->inventory_source;
+            $outlet->save();
             return response()->json([
                 'insert data' => 'Successfully Inserted !',
             ]);

@@ -68,14 +68,14 @@ class ProductController extends Controller
 
             $category_id = Category::where('name', $request->category_name)->first()->id;
 
-            $flag = CategoryProduct::where('product_id', $id)->get();
-            CategoryProduct::when($flag->isEmpty(), function () use ($category_id, $id) {
-                $p = new CategoryProduct();
-                $p->category_id = $category_id;
-                $p->product_id = $id;
-                $p->save();
+            $flag_category_product = CategoryProduct::where('product_id', $id)->get();
+            CategoryProduct::when($flag_category_product->isEmpty(), function () use ($category_id, $id) {
+                $category_product = new CategoryProduct();
+                $category_product->category_id = $category_id;
+                $category_product->product_id = $id;
+                $category_product->save();
             })
-                ->when($flag->isNotEmpty(), function ($q) use ($category_id, $id) {
+                ->when($flag_category_product->isNotEmpty(), function ($q) use ($category_id, $id) {
                     $q->update([
                         'category_id' => $category_id,
                         'product_id' => $id
@@ -120,25 +120,25 @@ class ProductController extends Controller
                 'quantity',
                 'attribute_family_name',
             ]);
-            $p = new Product();
-            $paf = new ProductAttributeFamily();
+            $product = new Product();
+            $product_attribute_family = new ProductAttributeFamily();
 
-            $p->sku = $request->sku;
-            $p->name = $request->name;
-            $p->product_type = $request->product_type;
-            $p->status = $request->status;
-            $p->price = $request->price;
-            $p->quantity = $request->quantity;
+            $product->sku = $request->sku;
+            $product->name = $request->name;
+            $product->product_type = $request->product_type;
+            $product->status = $request->status;
+            $product->price = $request->price;
+            $product->quantity = $request->quantity;
 
-            $p->save();
+            $product->save();
 
-            $ProductAttributeID = AttributeFamily::where('attribute_family_name', $request->attribute_family_name)->first()->id;
+            $product_attribute_id = AttributeFamily::where('attribute_family_name', $request->attribute_family_name)->first()->id;
 
-            $id = Product::where('name', $request->name)->first()->id;
+            $product_id = Product::where('name', $request->name)->first()->id;
 
-            $paf->attribute_family_id = $ProductAttributeID;
-            $paf->product_id = $id;
-            $paf->save();
+            $product_attribute_family->attribute_family_id = $ProductAttributeID;
+            $product_attribute_family->product_id = $id;
+            $product_attribute_family->save();
             return response()->json([
                 'insert data' => 'Successfully Inserted !',
             ]);
@@ -152,7 +152,7 @@ class ProductController extends Controller
     {
         $query = $request->input('query');
         $data =
-            $product = Product::join('product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id')
+            Product::join('product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id')
             ->join('attribute_family', 'product_attribute_family.attribute_family_id', '=', 'attribute_family.id')
             ->where('product_attribute_family.product_id', $query)
             ->orWhere('product.price', $query)

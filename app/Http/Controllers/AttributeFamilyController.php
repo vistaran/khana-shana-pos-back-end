@@ -39,7 +39,7 @@ class AttributeFamilyController extends Controller
                 'attribute_family_code',
                 'attribute_family_name',
             ]);
-            $outlet = AttributeFamily::where('id', $id)
+            AttributeFamily::where('id', $id)
                 ->update([
                     'attribute_family_code' => $request->attribute_family_code,
                     'attribute_family_name' => $request->attribute_family_name,
@@ -74,11 +74,11 @@ class AttributeFamilyController extends Controller
                 'attribute_family_code',
                 'attribute_family_name',
             ]);
-            $attf = new AttributeFamily();
-            $attf->attribute_family_code = $request->attribute_family_code;
-            $attf->attribute_family_name = $request->attribute_family_name;
+            $attribute_family = new AttributeFamily();
+            $attribute_family->attribute_family_code = $request->attribute_family_code;
+            $attribute_family->attribute_family_name = $request->attribute_family_name;
 
-            $attf->save();
+            $attribute_family->save();
             return response()->json([
                 'insert data' => 'successfully inserted !',
             ]);
@@ -102,10 +102,10 @@ class AttributeFamilyController extends Controller
     }
     public function show_data($id)
     {
-        $att = AttributeFamily::where('id', $id)->first();
+        $attribute_family = AttributeFamily::where('id', $id)->first();
 
         return response()->json([
-            'show_data' => $att,
+            'show_data' => $attribute_family,
         ]);
     }
 }

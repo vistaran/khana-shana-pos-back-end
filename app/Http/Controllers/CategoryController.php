@@ -37,7 +37,7 @@ class CategoryController extends Controller
             $credential = $request->only([
                 'name', 'visible_in_menu', 'position', 'display_mode', 'description', 'image', 'category_logo', 'parent_category', 'attri', 'meta_title', 'slug', 'meta_description', 'meta_keyword', 'status',
             ]);
-            $cp = new CategoryProduct();
+            $category_product = new CategoryProduct();
             $category = new Category();
 
             $category->name = $request->name;
@@ -56,8 +56,8 @@ class CategoryController extends Controller
             $category->status = $request->status;
             $category->save();
             $category_id = $category->where('name', $request->name)->first()->id;
-            $cp->category_id = $category_id;
-            $cp->save();
+            $category_product->category_id = $category_id;
+            $category_product->save();
             return response()->json([
                 'insert data' => 'Successfully Inserted !',
             ]);
