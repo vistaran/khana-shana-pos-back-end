@@ -21,7 +21,7 @@ class GroupController extends Controller
             )->orderBy('id')
                 ->paginate(10);
             return response()->json([
-                'Groups' => $group,
+                'groups' => $group,
 
             ]);
         } catch (Exception $e) {
@@ -42,11 +42,11 @@ class GroupController extends Controller
             });
             if ($flag == 'User') {
                 return response()->json([
-                    'Delete Message' => 'Successfully Deleted !',
+                    'delete message' => 'Successfully Deleted !',
                 ]);
             } else {
                 return response()->json([
-                    'Delete Message' => 'System cannot be delete !',
+                    'delete message' => 'System cannot be delete !',
                 ]);
             }
         } catch (Exception $e) {
@@ -74,7 +74,7 @@ class GroupController extends Controller
             $attribite_family_group->save();
 
             return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
+                'insert data' => 'Successfully Inserted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -113,7 +113,7 @@ class GroupController extends Controller
             }
 
             return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
+                'insert data' => 'Successfully Inserted !',
             ]);
 
         } catch (Exception $e) {
@@ -128,15 +128,16 @@ class GroupController extends Controller
             // data load from database
             $family = AttributeFamilyGroup::join('attribute', 'attribute.id', '=', 'attribute_family_group.attribute_id')
                 ->select(
+                    'attribute_family_group.attribute_family_id',
                     'attribute_family_group.attribute_id',
                     'attribute_family_group.group_id',
-                    'attribute_family_group.attribute_family_id',
+                    'attribute.name',
                     'attribute.attribute_based')
                 ->orderBy('attribute_family_id', 'ASC')
                 ->get();
 
             return response()->json([
-                'Insert Data' => $family,
+                'attribute group how' => $family,
             ]);
 
         } catch (Exception $e) {
@@ -156,7 +157,7 @@ class GroupController extends Controller
             ->paginate(10);
 
         return response()->json([
-            'Groups' => $data,
+            'groups' => $data,
         ]);
     }
 
