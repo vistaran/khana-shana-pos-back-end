@@ -104,7 +104,7 @@ class GroupController extends Controller
                 $family->save();
             }
 
-            dd($flag_attribute);
+            // dd($flag_attribute);
             if (!$flag_attribute) {
                 $family->attribute_family_id = $attribute_family_id;
                 $family->group_id = $group_id;
