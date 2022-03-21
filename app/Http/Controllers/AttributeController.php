@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Attribute;
 use App\AttributeFamilyGroup;
+use App\Group;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -97,6 +98,7 @@ class AttributeController extends Controller
     {
 
         try {
+
             $credential = $request->only([
                 'attribute_code',
                 'name',
@@ -155,7 +157,7 @@ class AttributeController extends Controller
     {
         $query = $request->input('query');
         $data =
-            Attribute::where('id', $query)
+        Attribute::where('id', $query)
             ->orWhere('attribute_code', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
             ->orWhere('type', 'like', '%' . $query . '%')
@@ -172,5 +174,21 @@ class AttributeController extends Controller
         return response()->json([
             'Show_Data' => $attr,
         ]);
+    }
+
+    public function group_id()
+    {
+
+        $group_name_input = $request->input('group_name');
+        $group_name = Group::where('group_name', $group_name_input)->first()->id;
+        $att_group_id = $group_name->where('group_id', $group_id)->first()->id;
+        $group = Group::where('id', $id)->first()->id;
+        $group_id = AttributeFamilyGroup::where('attribute_id', $id)->where('group_id', $att_group_id)->first()->get();
+
+        dd($group);
+        return response()->json([
+            'group_id' => $group_id,
+        ]);
+
     }
 }

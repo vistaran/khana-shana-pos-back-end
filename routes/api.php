@@ -82,6 +82,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'AttributeController@show');
+        Route::get('group_id', 'AttributeController@group_id');
         Route::get('show/{id}', 'AttributeController@show_data');
         Route::put('edit/{id}', 'AttributeController@edit');
         Route::get('delete/{id}', 'AttributeController@delete');

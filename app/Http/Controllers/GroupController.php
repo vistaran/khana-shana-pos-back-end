@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Attribute as AppAttribute;
-use App\AttributeFamily;
 use App\AttributeFamilyGroup;
 use App\Group;
 use Attribute;
@@ -87,34 +85,14 @@ class GroupController extends Controller
     {
         try {
             // request
-            $group_name = $request->input('group_name');
-            $attribute_family_name = $request->input('atribute_family_name');
+            $group_id = $request->input('group_id');
+            $attribute_family_id = $request->input('attribute_family_id');
 
             // data load from database
-            $group = new Group;
-            $attribute = new AppAttribute();
-            $attribite_family = new AttributeFamily();
             $family = new AttributeFamilyGroup();
 
             // fetch ids and data
-            $group_id = $group->where('group_name', $group_name)->first()->id;
-            $flag_group = $group->where('id', $group_id)->value('group_based');
-            $attribute_family_id = $attribite_family->where('attribute_family_name', $attribute_family_name)->first()->id;
-            $flag_attribute = count($family->where('attribute_family_id', 2)->where('attribute_id', $id)->get());
-
-            // dd(!($flag_attribute));
-
-            // dd($flag_group == 'User');
-
-            // Group::when(($flag_group == 'System'), function ($q) use ($id, $attribute, $group_id) {
-            //     $attribute->where('attribute_based', 'User')
-            //         ->where('id', $id)
-            //         ->update([
-            //             'group_id' => $group_id,
-            //         ]);
-            //     $attribute->save();
-            //     return $q;
-            // });
+            $flag_attribute = count($family->where('attribute_family_id', $attribute_family_id)->where('attribute_id', $id)->get());
 
             // dd($flag_attribute);
             if ($flag_attribute) {
@@ -125,7 +103,8 @@ class GroupController extends Controller
                     ]);
                 $family->save();
             }
-            // dd($flag_attribute);
+
+            dd($flag_attribute);
             if (!$flag_attribute) {
                 $family->attribute_family_id = $attribute_family_id;
                 $family->group_id = $group_id;
@@ -156,12 +135,14 @@ class GroupController extends Controller
             'Groups' => $data,
         ]);
     }
-    public function show_data($id)
+    public function show_data($id, Request $request)
     {
+        $attribute_family_name = $request->input('atribute_family_name');
         $attr = Group::where('id', $id)->first();
 
         return response()->json([
             'Show_Data' => $attr,
+            'group_id' => $group_id,
         ]);
     }
 }
