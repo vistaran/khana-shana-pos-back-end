@@ -132,7 +132,7 @@ class GroupController extends Controller
                     'attribute_family_group.group_id',
                     'attribute_family_group.attribute_family_id',
                     'attribute.attribute_based')
-                ->orderBy('attribute_id', 'ASC')
+                ->orderBy('attribute_family_id', 'ASC')
                 ->get();
 
             return response()->json([
