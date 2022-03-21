@@ -15,6 +15,8 @@ class CreateCategoryTable extends Migration
     {
         Schema::create('category', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('parent_category_id')->nullable();
+            $table->foreign('parent_category_id')->references('id')->on('category')->onDelete('cascade');
             $table->string('name');
             $table->string('visible_in_menu');
             $table->integer('position');
@@ -22,7 +24,6 @@ class CreateCategoryTable extends Migration
             $table->string('decription');
             $table->string('image');
             $table->string('category_logo');
-            $table->integer('parent_category_id');
             $table->string('attributes');
             $table->string('meta_title');
             $table->string('slug');
