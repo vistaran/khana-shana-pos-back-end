@@ -121,6 +121,30 @@ class GroupController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+    public function attribute_group_show()
+    {
+        try {
+
+            // data load from database
+            $family = AttributeFamilyGroup::join('attribute', 'attribute.id', '=', 'attribute_family_group.attribute_id')
+                ->select(
+                    'attribute_family_group.attribute_id',
+                    'attribute_family_group.group_id',
+                    'attribute_family_group.attribute_family_id',
+                    'attribute.attribute_based')
+                ->orderBy('attribute_id', 'ASC')
+                ->get();
+
+            return response()->json([
+                'Insert Data' => $family,
+            ]);
+
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+
+    }
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -135,14 +159,5 @@ class GroupController extends Controller
             'Groups' => $data,
         ]);
     }
-    public function show_data($id, Request $request)
-    {
-        $attribute_family_name = $request->input('atribute_family_name');
-        $attr = Group::where('id', $id)->first();
 
-        return response()->json([
-            'Show_Data' => $attr,
-            'group_id' => $group_id,
-        ]);
-    }
 }
