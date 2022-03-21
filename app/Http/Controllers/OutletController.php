@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class OutletController extends Controller
 {
+    //Show Outlte Datas
     public function show()
     {
         try {
@@ -18,7 +19,6 @@ class OutletController extends Controller
                 'inventory_source',
                 'created_at',
                 'Status',
-                'inventory_source'
             )->orderBy('id')
                 ->paginate(10);
             return response()->json([
@@ -30,6 +30,30 @@ class OutletController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+    //Insert Outlet
+    public function insert(Request $request)
+    {
+        try {
+            $credentials = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status', 'inventory_source']);
+            $outlet = new Outlet();
+            $outlet->Outlet_name = $request->name;
+            $outlet->Outlet_Address = $request->address;
+            $outlet->Country = $request->country;
+            $outlet->State = $request->state;
+            $outlet->City = $request->city;
+            $outlet->Postcode = $request->postcode;
+            $outlet->Status = $request->status;
+            $outlet->inventory_source = $request->inventory_source;
+            $outlet->save();
+            return response()->json([
+                'insert data' => 'Successfully Inserted !',
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+    }
+    //Edit Outlet
     public function edit($id, Request $request)
     {
 
@@ -54,6 +78,7 @@ class OutletController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+    //Delete Outlet
     public function delete($id)
     {
         try {
@@ -67,43 +92,21 @@ class OutletController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    public function insert(Request $request)
-    {
-        try {
-            $credentials = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status', 'inventory_source']);
-            $outlet = new Outlet();
-            $outlet->Outlet_name = $request->name;
-            $outlet->Outlet_Address = $request->address;
-            $outlet->Country = $request->country;
-            $outlet->State = $request->state;
-            $outlet->City = $request->city;
-            $outlet->Postcode = $request->postcode;
-            $outlet->Status = $request->status;
-            $outlet->inventory_source = $request->inventory_source;
-            $outlet->save();
-            return response()->json([
-                'insert data' => 'Successfully Inserted !',
-            ]);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
-        }
-    }
+    //Search Outlte
     public function search(Request $request)
     {
         $query = $request->input('query');
         $data = Outlet::where('id', $query)
             ->orWhere('Outlet_name', 'like', '%' . $query . '%')
-            ->orWhere('Country', 'like', '%' . $query . '%')
-            ->orWhere('State', 'like', '%' . $query . '%')
-            ->orWhere('City', 'like', $query . '%')
-            ->orWhere('Postcode', $query)
+            ->orWhere('inventory_source', 'like', '%' . $query . '%')
+            ->orWhere('Status', 'like', '%' . $query . '%')
             ->paginate(10);
 
         return response()->json([
             'outlets' => $data,
         ]);
     }
+    //Show Outlet Datas using ID
     public function show_data($id)
     {
         $outlet = Outlet::where('id', $id)->first();

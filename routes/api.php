@@ -99,7 +99,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'AttributeFamilyController@show');
-        Route::get('show', 'AttributeFamilyController@show');
+        Route::get('show/{id}', 'AttributeFamilyController@show_data');
         Route::put('edit/{id}', 'AttributeFamilyController@edit');
         Route::get('delete/{id}', 'AttributeFamilyController@delete');
         Route::post('insert', 'AttributeFamilyController@insert');

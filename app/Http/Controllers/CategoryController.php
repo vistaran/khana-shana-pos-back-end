@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-
+    //Show Category Datas
     public function show()
     {
         try {
@@ -29,7 +29,7 @@ class CategoryController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
+    //Insert Category
     public function add(Request $request)
     {
 
@@ -66,7 +66,7 @@ class CategoryController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
+    //Edit Category
     public function edit($id, Request $request)
     {
         try {
@@ -96,7 +96,7 @@ class CategoryController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
+    //Delete Category
     public function delete($id)
     {
         try {
@@ -116,7 +116,7 @@ class CategoryController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
+    //Search Category
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -155,7 +155,7 @@ class CategoryController extends Controller
             'category' => $data,
         ]);
     }
-
+    //Shoe Product Datas using ID
     public function show_data($id)
     {
         $category = Category::where('id', $id)->first();

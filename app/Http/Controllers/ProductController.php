@@ -16,6 +16,7 @@ use ProductAttributeFamilySeeder;
 
 class ProductController extends Controller
 {
+    //Show Products Datas
     public function show()
     {
         try {
@@ -32,7 +33,7 @@ class ProductController extends Controller
                     'product.created_at',
                     'product.updated_at',
                     'attribute_family.attribute_family_name',
-                )->orderBy('id', "DESC")
+                )->orderBy('id')
                 ->paginate(10);
             return response()->json([
                 'products' => $product,
@@ -43,7 +44,47 @@ class ProductController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+    //Insert Product
+    public function insert(Request $request)
+    {
+        try {
+            $credentials = $request->only([
+                'sku',
+                'name',
+                'product_type',
+                'status',
+                'price',
+                'quantity',
+                'attribute_family_name',
+            ]);
+            $product = new Product();
+            $product_attribute_family = new ProductAttributeFamily();
 
+            $product->sku = $request->sku;
+            $product->name = $request->name;
+            $product->product_type = $request->product_type;
+            $product->status = $request->status;
+            $product->price = $request->price;
+            $product->quantity = $request->quantity;
+
+            $product->save();
+
+            $product_attribute_id = AttributeFamily::where('attribute_family_name', $request->attribute_family_name)->first()->id;
+
+            $product_id = Product::where('name', $request->name)->first()->id;
+
+            $product_attribute_family->attribute_family_id = $product_attribute_id;
+            $product_attribute_family->product_id = $product_id;
+            $product_attribute_family->save();
+            return response()->json([
+                'insert data' => 'Successfully Inserted !',
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+    }
+    //Edit Product
     public function edit($id, Request $request)
     {
 
@@ -89,7 +130,7 @@ class ProductController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
+    //Delete Product
     public function delete($id)
     {
         try {
@@ -107,47 +148,7 @@ class ProductController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
-    public function insert(Request $request)
-    {
-        try {
-            $credentials = $request->only([
-                'sku',
-                'name',
-                'product_type',
-                'status',
-                'price',
-                'quantity',
-                'attribute_family_name',
-            ]);
-            $product = new Product();
-            $product_attribute_family = new ProductAttributeFamily();
-
-            $product->sku = $request->sku;
-            $product->name = $request->name;
-            $product->product_type = $request->product_type;
-            $product->status = $request->status;
-            $product->price = $request->price;
-            $product->quantity = $request->quantity;
-
-            $product->save();
-
-            $product_attribute_id = AttributeFamily::where('attribute_family_name', $request->attribute_family_name)->first()->id;
-
-            $product_id = Product::where('name', $request->name)->first()->id;
-
-            $product_attribute_family->attribute_family_id = $ProductAttributeID;
-            $product_attribute_family->product_id = $id;
-            $product_attribute_family->save();
-            return response()->json([
-                'insert data' => 'Successfully Inserted !',
-            ]);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
-        }
-    }
-
+    //Search Product
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -179,6 +180,7 @@ class ProductController extends Controller
             'products' => $data,
         ]);
     }
+    //Show Product Datas using ID
     public function show_data($id)
     {
         $product = Product::where('id', $id)->first();

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class AttributeController extends Controller
 {
+    // Show Attribute Data
     public function show()
     {
         try {
@@ -44,6 +45,8 @@ class AttributeController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+
+    //Insert Attributes
     public function insert(Request $request)
     {
         try {
@@ -94,6 +97,8 @@ class AttributeController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+
+    //Edit Attributes
     public function edit($id, Request $request)
     {
 
@@ -138,6 +143,8 @@ class AttributeController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+
+    //Delete Attributes
     public function delete($id)
     {
         try {
@@ -153,6 +160,8 @@ class AttributeController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+
+    //Search Attributes
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -167,6 +176,8 @@ class AttributeController extends Controller
             'attributes' => $data,
         ]);
     }
+
+    //Show Attributes Data using ID
     public function show_data($id)
     {
         $attribute = Attribute::where('id', $id)->first();
@@ -176,18 +187,18 @@ class AttributeController extends Controller
         ]);
     }
 
-    public function group_id()
-    {
+    // public function group_id()
+    // {
 
-        $group_name_input = $request->input('group_name');
-        $group_name = Group::where('group_name', $group_name_input)->first()->id;
-        $attribute_group_id = $group_name->where('group_id', $group_id)->first()->id;
-        $group = Group::where('id', $id)->first()->id;
-        $group_id = AttributeFamilyGroup::where('attribute_id', $id)->where('group_id', $attribute_group_id)->first()->get();
+    //     $group_name_input = $request->input('group_name');
+    //     $group_name = Group::where('group_name', $group_name_input)->first()->id;
+    //     $attribute_group_id = $group_name->where('group_id', $group_id)->first()->id;
+    //     $group = Group::where('id', $id)->first()->id;
+    //     $group_id = AttributeFamilyGroup::where('attribute_id', $id)->where('group_id', $attribute_group_id)->first()->get();
 
-        // dd($group);
-        return response()->json([
-            'group_id' => $group_id,
-        ]);
-    }
+    //     // dd($group);
+    //     return response()->json([
+    //         'group_id' => $group_id,
+    //     ]);
+    // }
 }

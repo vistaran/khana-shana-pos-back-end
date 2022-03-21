@@ -13,11 +13,12 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login']]);
     }
-
+    //Login User
     public function login()
     {
         $credentials = request(['email', 'password']);
@@ -39,6 +40,7 @@ class AuthController extends Controller
         ], 200);
         return $this->respondWithToken($token);
     }
+    //show Details of loggend in User
     public function me(Request $request)
     {
         $this->validate($request, [
@@ -62,19 +64,19 @@ class AuthController extends Controller
 
         return response()->json(['user' => $user], 201);
     }
-
+    //Logout User
     public function logout()
     {
         auth('api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
-
+    //Refresh Token
     public function refresh()
     {
         return $this->respondWithToken(auth('api')->refresh());
     }
-
+    //Respond with Token
     protected function respondWithToken($token)
     {
         return response()->json([
