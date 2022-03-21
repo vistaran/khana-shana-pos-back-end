@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateUserTable extends Migration
@@ -13,19 +14,22 @@ class CreateUserTable extends Migration
      */
     public function up()
     {
+
         Schema::create('user', function (Blueprint $table) {
             $table->id();
             $table->string('first_name');
             $table->string('lastname');
             $table->string('username');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('confirm_password');
-            $table->rememberToken();
+            $table->string('outlet_name');
+            $table->string('outlet_status');
+            $table->string('phone_no');
             $table->string('user_avatar');
             $table->string('status');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

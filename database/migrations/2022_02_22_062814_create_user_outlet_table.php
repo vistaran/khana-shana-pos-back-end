@@ -19,7 +19,8 @@ class CreateUserOutletTable extends Migration
             $table->foreign('user_id')->references('id')->on('user')->nullOnDelete();
             $table->unsignedBigInteger('outlet_id')->nullable();
             $table->foreign('outlet_id')->references('id')->on('outlets')->nullOnDelete();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

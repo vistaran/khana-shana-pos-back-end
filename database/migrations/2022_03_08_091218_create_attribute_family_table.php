@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOutletsTable extends Migration
+class CreateAttributeFamilyTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,10 @@ class CreateOutletsTable extends Migration
      */
     public function up()
     {
-        Schema::create('outlets', function (Blueprint $table) {
+        Schema::create('attribute_family', function (Blueprint $table) {
             $table->id();
-            $table->string('Outlet_name');
-            $table->string('Outlet_Address');
-            $table->string('Country');
-            $table->string('State');
-            $table->string('City');
-            $table->integer('Postcode');
-            $table->string('Status');
+            $table->string('attribute_family_code');
+            $table->string('attribute_family_name');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
@@ -34,6 +29,6 @@ class CreateOutletsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('outlets');
+        Schema::dropIfExists('attribute_family');
     }
 }

@@ -44,9 +44,7 @@ class AuthController extends Controller
         $this->validate($request, [
             'token' => 'required',
         ]);
-
         $user = JWTAuth::authenticate($request->token);
-
         try {
             if (!$user = JWTAuth::parseToken()->authenticate()) {
                 return response()->json(['user_not_found'], 404);
@@ -67,7 +65,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        auth()->logout();
+        auth('api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }

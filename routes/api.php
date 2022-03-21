@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
  */
-//User Token Api
+// User Token Api
 Route::group([
 
     'middleware' => 'api',
@@ -23,10 +23,10 @@ Route::group([
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
+    Route::get('me', 'AuthController@me');
 });
 
-//User APi
+// User APi
 Route::group(
     [
         'middleware' => 'api',
@@ -34,6 +34,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'UserController@show');
+        Route::get('show/{id}', 'UserController@show_data');
         Route::post('insert', 'UserController@add');
         Route::put('edit/{id}', 'UserController@edit');
         Route::get('delete/{id}', 'UserController@delete');
@@ -49,6 +50,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'OutletController@show');
+        Route::get('show/{id}', 'OutletController@show_data');
         Route::put('edit/{id}', 'OutletController@edit');
         Route::get('delete/{id}', 'OutletController@delete');
         Route::post('insert', 'OutletController@insert');
@@ -56,7 +58,7 @@ Route::group(
     }
 );
 
-//Category API
+// Category API
 Route::group(
     [
         'middleware' => 'api',
@@ -64,9 +66,77 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'CategoryController@show');
+        Route::get('show/{id}', 'CategoryController@show_data');
         Route::put('edit/{id}', 'CategoryController@edit');
         Route::get('delete/{id}', 'CategoryController@delete');
         Route::post('insert', 'CategoryController@add');
         Route::get('search', 'CategoryController@search');
+    }
+);
+
+// Attribute API
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'attribute',
+    ],
+    function ($router) {
+        Route::get('show', 'AttributeController@show');
+        Route::get('group_id', 'AttributeController@group_id');
+        Route::get('show/{id}', 'AttributeController@show_data');
+        Route::put('edit/{id}', 'AttributeController@edit');
+        Route::get('delete/{id}', 'AttributeController@delete');
+        Route::post('insert', 'AttributeController@insert');
+        Route::get('search', 'AttributeController@search');
+    }
+);
+
+// Attribute_family API
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'attribute_family',
+    ],
+    function ($router) {
+        Route::get('show', 'AttributeFamilyController@show');
+        Route::get('show', 'AttributeFamilyController@show');
+        Route::put('edit/{id}', 'AttributeFamilyController@edit');
+        Route::get('delete/{id}', 'AttributeFamilyController@delete');
+        Route::post('insert', 'AttributeFamilyController@insert');
+        Route::get('search', 'AttributeFamilyController@search');
+    }
+);
+
+// Product API
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'product',
+    ],
+    function ($router) {
+        Route::get('show', 'ProductController@show');
+        Route::get('show/{id}', 'ProductController@show_data');
+        Route::put('edit/{id}', 'ProductController@edit');
+        Route::get('delete/{id}', 'ProductController@delete');
+        Route::post('insert', 'ProductController@insert');
+        Route::get('search', 'ProductController@search');
+    }
+);
+
+// Group API
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'group',
+    ],
+    function ($router) {
+        Route::get('show', 'GroupController@show');
+        Route::get('show/{id}', 'GroupController@show_data');
+        Route::get('attribute_group_show', 'GroupController@attribute_group_show');
+        Route::put('edit/{id}', 'GroupController@edit');
+        Route::get('delete/{id}', 'GroupController@delete');
+        Route::post('insert/{id}', 'GroupController@insert');
+        Route::post('insertAttribute/{id}', 'GroupController@insertAttribute');
+        Route::get('search', 'GroupController@search');
     }
 );

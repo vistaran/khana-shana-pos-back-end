@@ -17,6 +17,11 @@ class ProductSeeder extends Seeder
 
         for ($i = 0; $i < 50; $i++) {
             DB::table('product')->insert([
+                'sku' => $faker->name,
+                'name' => $faker->name,
+                'product_type' => $faker->randomElement(['booking', 'simple', 'bundle', 'bundle']),
+                'status' => $faker->randomElement(['active', 'deactive']),
+                'price' => $faker->randomDigit,
                 'quantity' => $faker->randomDigit,
             ]);
         }

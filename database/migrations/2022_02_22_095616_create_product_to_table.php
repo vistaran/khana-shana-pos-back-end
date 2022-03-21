@@ -15,8 +15,14 @@ class CreateProductToTable extends Migration
     {
         Schema::create('product', function (Blueprint $table) {
             $table->id();
+            $table->string('sku');
+            $table->string('name');
+            $table->string('product_type');
+            $table->string('status');
+            $table->float('price');
             $table->integer('quantity');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

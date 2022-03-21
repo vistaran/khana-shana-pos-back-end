@@ -18,6 +18,7 @@ class OutletController extends Controller
                 'inventory_source',
                 'created_at',
                 'Status',
+                'inventory_source'
             )->orderBy('id')
                 ->paginate(10);
             return response()->json([
@@ -33,7 +34,7 @@ class OutletController extends Controller
     {
 
         try {
-            $credential = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status']);
+            $credential = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status', 'inventory_source']);
             $outlet = Outlet::where('id', $id)
                 ->update([
                     'Outlet_name' => $request->name,
@@ -43,6 +44,7 @@ class OutletController extends Controller
                     'City' => $request->city,
                     'Postcode' => $request->postcode,
                     'Status' => $request->status,
+                    'inventory_source' => $request->inventory_source,
                 ]);
             return response()->json([
                 'Update Message' => 'Successfully Updated !',
@@ -68,7 +70,7 @@ class OutletController extends Controller
     public function insert(Request $request)
     {
         try {
-            $credentials = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status']);
+            $credentials = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status', 'inventory_source']);
             $out = new Outlet();
             $out->Outlet_name = $request->name;
             $out->Outlet_Address = $request->address;
@@ -100,6 +102,14 @@ class OutletController extends Controller
 
         return response()->json([
             'Outlets' => $data,
+        ]);
+    }
+    public function show_data($id)
+    {
+        $outlet = Outlet::where('id', $id)->first();
+
+        return response()->json([
+            'Show_Data' => $outlet,
         ]);
     }
 }
