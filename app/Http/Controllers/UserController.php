@@ -69,7 +69,7 @@ class UserController extends Controller
             // $user_outlet-> outlet_id = $request->$outlet_id;
 
             return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
+                'insert data' => 'Successfully Inserted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -83,7 +83,7 @@ class UserController extends Controller
             Users::find($id)
                 ->delete();
             return response()->json([
-                'Delete Message' => 'Successfully Deleted !',
+                'delete message' => 'Successfully Deleted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -110,7 +110,7 @@ class UserController extends Controller
 
                 ]);
             return response()->json([
-                'Update Message' => 'Successfully Updated !',
+                'update message' => 'Successfully Updated !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -139,7 +139,7 @@ class UserController extends Controller
             ->paginate(10);
 
         return response()->json([
-            'Users' => $data,
+            'users' => $data,
         ]);
     }
     public function show_data($id)
@@ -147,7 +147,7 @@ class UserController extends Controller
         $user = Users::where('id', $id)->first();
 
         return response()->json([
-            'Show_Data' => $user,
+            'show_data' => $user,
         ]);
     }
 }

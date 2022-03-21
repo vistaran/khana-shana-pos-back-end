@@ -21,7 +21,7 @@ class CategoryController extends Controller
                 ->orderBy('id')
                 ->paginate(10);
             return response()->json([
-                'Category' => $category,
+                'category' => $category,
 
             ]);
         } catch (Exception $e) {
@@ -59,7 +59,7 @@ class CategoryController extends Controller
             $cp->category_id = $category_id;
             $cp->save();
             return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
+                'insert data' => 'Successfully Inserted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -89,7 +89,7 @@ class CategoryController extends Controller
                     'status' => $request->status,
                 ]);
             return response()->json([
-                'Update Message' => 'Successfully Updated !',
+                'update message' => 'Successfully Updated !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -109,7 +109,7 @@ class CategoryController extends Controller
                 ->delete();
 
             return response()->json([
-                'Delete Message' => 'Successfully Deleted !',
+                'delete message' => 'Successfully Deleted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -152,7 +152,7 @@ class CategoryController extends Controller
             ->paginate(10);
 
         return response()->json([
-            'Category' => $data,
+            'category' => $data,
         ]);
     }
 
@@ -161,7 +161,7 @@ class CategoryController extends Controller
         $category = Category::where('id', $id)->first();
 
         return response()->json([
-            'Show_Data' => $category,
+            'show_data' => $category,
         ]);
     }
 }

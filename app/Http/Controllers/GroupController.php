@@ -21,7 +21,7 @@ class GroupController extends Controller
             )->orderBy('id')
                 ->paginate(10);
             return response()->json([
-                'Groups' => $group,
+                'groups' => $group,
 
             ]);
         } catch (Exception $e) {
@@ -42,11 +42,11 @@ class GroupController extends Controller
             });
             if ($flag == 'User') {
                 return response()->json([
-                    'Delete Message' => 'Successfully Deleted !',
+                    'delete message' => 'Successfully Deleted !',
                 ]);
             } else {
                 return response()->json([
-                    'Delete Message' => 'System cannot be delete !',
+                    'delete message' => 'System cannot be delete !',
                 ]);
             }
         } catch (Exception $e) {
@@ -74,7 +74,7 @@ class GroupController extends Controller
             $attribite_family_group->save();
 
             return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
+                'insert data' => 'Successfully Inserted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -113,9 +113,8 @@ class GroupController extends Controller
             }
 
             return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
+                'insert data' => 'Successfully Inserted !',
             ]);
-
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -131,33 +130,34 @@ class GroupController extends Controller
                     'attribute_family_group.attribute_id',
                     'attribute_family_group.group_id',
                     'attribute_family_group.attribute_family_id',
-                    'attribute.attribute_based')
+                    'attribute.attribute_based',
+                    'attribute.attribute_code',
+                    'attribute.name',
+                    'attribute.type',
+                )
                 ->orderBy('attribute_family_id', 'ASC')
                 ->get();
 
             return response()->json([
-                'Insert Data' => $family,
+                'insert data' => $family,
             ]);
-
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
-
     }
     public function search(Request $request)
     {
         $query = $request->input('query');
         $data =
-        Group::where('id', $query)
+            Group::where('id', $query)
             ->orWhere('attribute_code', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
             ->orWhere('type', 'like', '%' . $query . '%')
             ->paginate(10);
 
         return response()->json([
-            'Groups' => $data,
+            'groups' => $data,
         ]);
     }
-
 }

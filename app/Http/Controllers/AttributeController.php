@@ -36,7 +36,7 @@ class AttributeController extends Controller
             )->orderBy('id')
                 ->paginate(10);
             return response()->json([
-                'Attributes' => $attribute,
+                'attributes' => $attribute,
 
             ]);
         } catch (Exception $e) {
@@ -87,7 +87,7 @@ class AttributeController extends Controller
             $attribute_family->attribute_id = $attribute_id;
             $attribute_family->save();
             return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
+                'insert data' => 'successfully inserted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -131,7 +131,7 @@ class AttributeController extends Controller
                     'attribute_comparable' => $request->attribute_comparable,
                 ]);
             return response()->json([
-                'Update Message' => 'Successfully Updated !',
+                'update message' => 'successfully updated !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -146,7 +146,7 @@ class AttributeController extends Controller
             AttributeFamilyGroup::where('attribute_id', $id)
                 ->delete();
             return response()->json([
-                'Delete Message' => 'Successfully Deleted !',
+                'delete message' => 'successfully deleted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -157,14 +157,14 @@ class AttributeController extends Controller
     {
         $query = $request->input('query');
         $data =
-        Attribute::where('id', $query)
+            Attribute::where('id', $query)
             ->orWhere('attribute_code', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
             ->orWhere('type', 'like', '%' . $query . '%')
             ->paginate(10);
 
         return response()->json([
-            'Attributes' => $data,
+            'attributes' => $data,
         ]);
     }
     public function show_data($id)
@@ -172,7 +172,7 @@ class AttributeController extends Controller
         $attr = Attribute::where('id', $id)->first();
 
         return response()->json([
-            'Show_Data' => $attr,
+            'show_data' => $attr,
         ]);
     }
 
@@ -189,6 +189,5 @@ class AttributeController extends Controller
         return response()->json([
             'group_id' => $group_id,
         ]);
-
     }
 }

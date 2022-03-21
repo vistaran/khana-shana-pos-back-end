@@ -23,7 +23,7 @@ class AttributeFamilyController extends Controller
             )->orderBy('id')
                 ->paginate(10);
             return response()->json([
-                'Attributes' => $attribute,
+                'attributes' => $attribute,
 
             ]);
         } catch (Exception $e) {
@@ -45,7 +45,7 @@ class AttributeFamilyController extends Controller
                     'attribute_family_name' => $request->attribute_family_name,
                 ]);
             return response()->json([
-                'Update Message' => 'Successfully Updated !',
+                'update message' => 'successfully updated !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -60,7 +60,7 @@ class AttributeFamilyController extends Controller
             AttributeFamilyGroup::where('attribute_family_id', $id)
                 ->delete();
             return response()->json([
-                'Delete Message' => 'Successfully Deleted !',
+                'delete message' => 'successfully deleted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -80,7 +80,7 @@ class AttributeFamilyController extends Controller
 
             $attf->save();
             return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
+                'insert data' => 'successfully inserted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -97,7 +97,7 @@ class AttributeFamilyController extends Controller
             ->paginate(10);
 
         return response()->json([
-            'Attributes_Family' => $data,
+            'attributes_family' => $data,
         ]);
     }
     public function show_data($id)
@@ -105,7 +105,7 @@ class AttributeFamilyController extends Controller
         $att = AttributeFamily::where('id', $id)->first();
 
         return response()->json([
-            'Show_Data' => $att,
+            'show_data' => $att,
         ]);
     }
 }
