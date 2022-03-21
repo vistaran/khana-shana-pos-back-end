@@ -14,10 +14,6 @@
 
 ## Environment setup
 
-### for windows user
-- copy .env.example .env
-- php artisan key:generate
-
 ### for linux user
 - cp .env.example .env
 - php artisan key:generate
