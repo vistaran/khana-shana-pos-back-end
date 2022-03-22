@@ -25,7 +25,7 @@ class AttributeFamilyController extends Controller
             )->orderBy('id')
                 ->paginate(10);
             return response()->json([
-                'attributes' => $attribute,
+                'attributefamily' => $attribute,
 
             ]);
         } catch (Exception $e) {

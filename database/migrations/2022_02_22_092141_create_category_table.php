@@ -11,12 +11,12 @@ class CreateCategoryTable extends Migration
      *
      * @return void
      */
+    //Category Table
     public function up()
     {
         Schema::create('category', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_category_id')->nullable();
-            $table->foreign('parent_category_id')->references('id')->on('category')->onDelete('cascade');
+            $table->Integer('parent_category_id')->nullable();
             $table->string('name');
             $table->string('visible_in_menu');
             $table->integer('position');

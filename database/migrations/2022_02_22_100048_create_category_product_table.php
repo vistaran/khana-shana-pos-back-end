@@ -11,6 +11,7 @@ class CreateCategoryProductTable extends Migration
      *
      * @return void
      */
+    //Category Product Table
     public function up()
     {
         Schema::create('category_product', function (Blueprint $table) {

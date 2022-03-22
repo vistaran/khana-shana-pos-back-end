@@ -35,11 +35,15 @@ class CategoryController extends Controller
 
         try {
             $credential = $request->only([
-                'name', 'visible_in_menu', 'position', 'display_mode', 'description', 'image', 'category_logo', 'parent_category', 'attri', 'meta_title', 'slug', 'meta_description', 'meta_keyword', 'status',
+                'parent_id', 'name', 'visible_in_menu', 'position', 'display_mode', 'description', 'image', 'category_logo', 'parent_category', 'attri', 'meta_title', 'slug', 'meta_description', 'meta_keyword', 'status',
             ]);
             $category_product = new CategoryProduct();
             $category = new Category();
-
+            if ($request->parent_id == null) {
+                $category->parent_category_id = null;
+            } else {
+                $category->parent_category_id = $request->parent_id;
+            }
             $category->name = $request->name;
             $category->visible_in_menu = $request->visible_in_menu;
             $category->position = $request->position;
@@ -47,7 +51,6 @@ class CategoryController extends Controller
             $category->decription = $request->decription;
             $category->image = $request->image;
             $category->category_logo = $request->category_logo;
-            $category->parent_category = $request->parent_category;
             $category->attributes = $request->attri;
             $category->meta_title = $request->meta_title;
             $category->slug = $request->slug;
@@ -58,6 +61,8 @@ class CategoryController extends Controller
             $category_id = $category->where('name', $request->name)->first()->id;
             $category_product->category_id = $category_id;
             $category_product->save();
+
+
             return response()->json([
                 'insert data' => 'Successfully Inserted !',
             ]);
@@ -70,9 +75,11 @@ class CategoryController extends Controller
     public function edit($id, Request $request)
     {
         try {
-            $credential = $request->only(['name', 'visible_in_menu', 'position', 'display_mode', 'description', 'image', 'category_logo', 'parent_category', 'attri', 'meta_title', 'slug', 'meta_description', 'meta_keyword', 'status']);
+            $credential = $request->only(['parent_category_id', 'name', 'visible_in_menu', 'position', 'display_mode', 'description', 'image', 'category_logo', 'attri', 'meta_title', 'slug', 'meta_description', 'meta_keyword', 'status']);
+            // dd($id);
             Category::where('id', $id)
                 ->update([
+                    'parent_category_id' => $request->parent_category_id,
                     'name' => $request->name,
                     'visible_in_menu' => $request->visible_in_menu,
                     'position' => $request->position,
@@ -80,7 +87,6 @@ class CategoryController extends Controller
                     'decription' => $request->decription,
                     'image' => $request->image,
                     'category_logo' => $request->category_logo,
-                    'parent_category' => $request->parent_category,
                     'attributes' => $request->attri,
                     'meta_title' => $request->meta_title,
                     'slug' => $request->slug,
@@ -142,12 +148,11 @@ class CategoryController extends Controller
                 "category.status",
                 "category.created_at",
                 "category.updated_at",
-                "category.number_of_products",
 
-                'category_product.product_id',
-                'product.quantity',
-                'product.created_at',
-                'product.updated_at',
+                // 'category_product.product_id',
+                // 'product.quantity',
+                // 'product.created_at',
+                // 'product.updated_at',
             )
             ->paginate(10);
 
