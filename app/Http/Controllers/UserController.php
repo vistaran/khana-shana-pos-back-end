@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
+    //Show Product Datas
     public function show()
     {
         try {
@@ -36,6 +37,7 @@ class UserController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+    //Insert Product
     public function add(Request $request)
     {
         try {
@@ -69,54 +71,56 @@ class UserController extends Controller
             // $user_outlet-> outlet_id = $request->$outlet_id;
 
             return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
+                'insert data' => 'Successfully Inserted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+    //Edit Product
+    public function edit($id,Request $request )
+    {
+        try {
+            $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status']);
+            Users::where('id', $id)
+            ->update([
+                'first_name' => $request->first_name,
+                'lastname' => $request->lastname,
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'confirm_password' => bcrypt($request->confirm_password),
+                'outlet_name' => $request->outlet_name,
+                'outlet_status' => $request->outlet_status,
+                'phone_no' => $request->phone_no,
+                'user_avatar' => $request->user_avatar,
+                'status' => $request->status,
 
+            ]);
+            return response()->json([
+                'update message' => 'Successfully Updated !',
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+    }
+    //Delete Product
     public function delete($id)
     {
         try {
             Users::find($id)
                 ->delete();
             return response()->json([
-                'Delete Message' => 'Successfully Deleted !',
+                'delete message' => 'Successfully Deleted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    public function edit($id, Request $request)
-    {
-        try {
-            $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status']);
-            $user = Users::where('id', $id)
-                ->update([
-                    'first_name' => $request->first_name,
-                    'lastname' => $request->lastname,
-                    'username' => $request->username,
-                    'email' => $request->email,
-                    'password' => bcrypt($request->password),
-                    'confirm_password' => bcrypt($request->confirm_password),
-                    'outlet_name' => $request->outlet_name,
-                    'outlet_status' => $request->outlet_status,
-                    'phone_no' => $request->phone_no,
-                    'user_avatar' => $request->user_avatar,
-                    'status' => $request->status,
-
-                ]);
-            return response()->json([
-                'Update Message' => 'Successfully Updated !',
-            ]);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
-        }
-    }
+    //Search Product
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -139,15 +143,16 @@ class UserController extends Controller
             ->paginate(10);
 
         return response()->json([
-            'Users' => $data,
+            'users' => $data,
         ]);
     }
+    //Show Product Datas using ID
     public function show_data($id)
     {
         $user = Users::where('id', $id)->first();
 
         return response()->json([
-            'Show_Data' => $user,
+            'show_data' => $user,
         ]);
     }
 }

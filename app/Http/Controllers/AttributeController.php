@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class AttributeController extends Controller
 {
+    // Show Attribute Data
     public function show()
     {
         try {
@@ -36,7 +37,7 @@ class AttributeController extends Controller
             )->orderBy('id')
                 ->paginate(10);
             return response()->json([
-                'Attributes' => $attribute,
+                'attributes' => $attribute,
 
             ]);
         } catch (Exception $e) {
@@ -44,6 +45,8 @@ class AttributeController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+
+    //Insert Attributes
     public function insert(Request $request)
     {
         try {
@@ -81,19 +84,21 @@ class AttributeController extends Controller
             $attribute->attribute_comparable = $request->attribute_comparable;
 
             $attribute->save();
-            $attribute_family = new AttributeFamilyGroup();
+            $attribute_family_group = new AttributeFamilyGroup();
             $attribute_id = $attribute->where('attribute_code', $request->attribute_code)->first()->id;
             // dd($attribute_id);
-            $attribute_family->attribute_id = $attribute_id;
-            $attribute_family->save();
+            $attribute_family_group->attribute_id = $attribute_id;
+            $attribute_family_group->save();
             return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
+                'insert data' => 'successfully inserted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+
+    //Edit Attributes
     public function edit($id, Request $request)
     {
 
@@ -114,7 +119,7 @@ class AttributeController extends Controller
                 'create_in_product_flat_table',
                 'attribute_comparable',
             ]);
-            $outlet = Attribute::where('id', $id)
+            Attribute::where('id', $id)
                 ->update([
                     'attribute_code' => $request->attribute_code,
                     'type' => $request->type,
@@ -131,13 +136,15 @@ class AttributeController extends Controller
                     'attribute_comparable' => $request->attribute_comparable,
                 ]);
             return response()->json([
-                'Update Message' => 'Successfully Updated !',
+                'update message' => 'successfully updated !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+
+    //Delete Attributes
     public function delete($id)
     {
         try {
@@ -146,49 +153,52 @@ class AttributeController extends Controller
             AttributeFamilyGroup::where('attribute_id', $id)
                 ->delete();
             return response()->json([
-                'Delete Message' => 'Successfully Deleted !',
+                'delete message' => 'successfully deleted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+
+    //Search Attributes
     public function search(Request $request)
     {
         $query = $request->input('query');
         $data =
-        Attribute::where('id', $query)
+            Attribute::where('id', $query)
             ->orWhere('attribute_code', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
             ->orWhere('type', 'like', '%' . $query . '%')
             ->paginate(10);
 
         return response()->json([
-            'Attributes' => $data,
+            'attributes' => $data,
         ]);
     }
+
+    //Show Attributes Data using ID
     public function show_data($id)
     {
-        $attr = Attribute::where('id', $id)->first();
+        $attribute = Attribute::where('id', $id)->first();
 
         return response()->json([
-            'Show_Data' => $attr,
+            'show_data' => $attribute,
         ]);
     }
 
-    public function group_id()
-    {
+    // public function group_id()
+    // {
 
-        $group_name_input = $request->input('group_name');
-        $group_name = Group::where('group_name', $group_name_input)->first()->id;
-        $att_group_id = $group_name->where('group_id', $group_id)->first()->id;
-        $group = Group::where('id', $id)->first()->id;
-        $group_id = AttributeFamilyGroup::where('attribute_id', $id)->where('group_id', $att_group_id)->first()->get();
+    //     $group_name_input = $request->input('group_name');
+    //     $group_name = Group::where('group_name', $group_name_input)->first()->id;
+    //     $attribute_group_id = $group_name->where('group_id', $group_id)->first()->id;
+    //     $group = Group::where('id', $id)->first()->id;
+    //     $group_id = AttributeFamilyGroup::where('attribute_id', $id)->where('group_id', $attribute_group_id)->first()->get();
 
-        dd($group);
-        return response()->json([
-            'group_id' => $group_id,
-        ]);
-
-    }
+    //     // dd($group);
+    //     return response()->json([
+    //         'group_id' => $group_id,
+    //     ]);
+    // }
 }
