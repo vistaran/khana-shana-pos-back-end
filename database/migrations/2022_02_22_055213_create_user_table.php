@@ -12,6 +12,7 @@ class CreateUserTable extends Migration
      *
      * @return void
      */
+    //User Table 
     public function up()
     {
 

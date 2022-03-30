@@ -11,6 +11,7 @@ class CreateGroupTable extends Migration
      *
      * @return void
      */
+    //Group Table 
     public function up()
     {
         Schema::create('group', function (Blueprint $table) {

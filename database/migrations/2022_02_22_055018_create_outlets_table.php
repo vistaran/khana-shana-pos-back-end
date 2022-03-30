@@ -11,6 +11,7 @@ class CreateOutletsTable extends Migration
      *
      * @return void
      */
+    //Outlet Table
     public function up()
     {
         Schema::create('outlets', function (Blueprint $table) {
@@ -22,6 +23,7 @@ class CreateOutletsTable extends Migration
             $table->string('City');
             $table->integer('Postcode');
             $table->string('Status');
+            $table->string('inventory_source');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

@@ -15,8 +15,9 @@ class CategorySeeder extends Seeder
     {
         $faker = Faker::create();
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             DB::table('category')->insert([
+                'parent_category_id' => $i + 2,
                 'name' => $faker->name,
                 'visible_in_menu' => $faker->randomElement(['yes', 'no']),
                 'position' => $faker->randomDigit,
@@ -24,7 +25,6 @@ class CategorySeeder extends Seeder
                 'decription' => $faker->text(100),
                 'image' => $faker->imageUrl($width = 400, $height = 400),
                 'category_logo' => $faker->imageUrl($width = 400, $height = 400),
-                'parent_category_id' => $faker->randomElement([$i + 2]),
                 'attributes' => $faker->randomElement(['price',  'brand']),
                 'meta_title' => $faker->title,
                 'slug' => $faker->name,
