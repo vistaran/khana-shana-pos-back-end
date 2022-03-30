@@ -30,7 +30,6 @@ class GroupController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    //Insert Group
     public function insert(Request $request, $id)
     {
         try {
@@ -104,6 +103,7 @@ class GroupController extends Controller
         try {
 
             // data load from database
+
             $attribute_family_group = AttributeFamilyGroup::join('attribute', 'attribute.id', '=', 'attribute_family_group.attribute_id')
             ->select(
                 'attribute_family_group.attribute_id',
