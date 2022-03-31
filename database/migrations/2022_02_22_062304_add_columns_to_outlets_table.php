@@ -14,7 +14,7 @@ class AddColumnsToOutletsTable extends Migration
     public function up()
     {
         Schema::table('outlets', function (Blueprint $table) {
-            $table->string('inventory_source');
+            $table->string('inventory_source')->default('default');
         });
     }
 

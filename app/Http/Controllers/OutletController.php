@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Outlet;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class OutletController extends Controller
@@ -18,7 +19,7 @@ class OutletController extends Controller
                 'inventory_source',
                 'created_at',
                 'Status',
-            )->orderBy('id')
+            )->orderBy('id', 'desc')
                 ->paginate(10);
             return response()->json([
                 'outlets' => $outlet,
@@ -77,13 +78,14 @@ class OutletController extends Controller
             $out->City = $request->city;
             $out->Postcode = $request->postcode;
             $out->Status = $request->status;
+            $out->inventory_source = $request->inventory_source;
             $out->save();
             return response()->json([
                 'Insert Data' => 'Successfully Inserted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
     public function search(Request $request)

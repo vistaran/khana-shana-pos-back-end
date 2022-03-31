@@ -4,6 +4,7 @@
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -14,21 +15,18 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Faker::create();
 
-        for ($i = 0; $i < 50; $i++) {
+        // for ($i = 0; $i < 50; $i++) {
             DB::table('user')->insert([
-                'first_name' => $faker->firstName,
-                'lastname' => $faker->lastName,
-                'username' => $faker->username,
-                'email' => $faker->email,
-                'password' => bcrypt('secret'),
-                'confirm_password' => bcrypt('secret'),
+                'first_name' => 'Khana Shana',
+                'lastname' => 'Admin',
+                'username' => 'khanashanaadmin',
+                'email' => 'admin@khanashana.com',
+                'password' => Hash::make('khanashana@123'),
+                'confirm_password' => Hash::make('khanashana@123'),
                 'user_avatar' => 'user - lg . jpg',
-                'status' => $faker->randomElement(['active', 'inactive']),
-                
-
+                'status' => 'active'
             ]);
-        }
+        // }
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Outlet;
 use App\User;
-use App\Users;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
@@ -14,7 +13,7 @@ class UserController extends Controller
     public function show()
     {
         try {
-            $user = Users::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
+            $user = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
                 ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
                 ->select(
                     'user_outlet.user_id',
@@ -40,7 +39,7 @@ class UserController extends Controller
     {
         try {
             $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status']);
-            $user = new Users();
+            $user = new User();
 
             $user->first_name = $request->first_name;
             $user->lastname =  $request->lastname;
@@ -62,7 +61,7 @@ class UserController extends Controller
     public function delete($id)
     {
         try {
-            Users::find($id)
+            User::find($id)
                 ->delete();
             return response()->json([
                 'Delete Message' => 'Successfully Deleted !',
@@ -76,7 +75,7 @@ class UserController extends Controller
     {
         try {
             $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status']);
-            $user = Users::where('id', $id)
+            $user = User::where('id', $id)
                 ->update([
                     'first_name' => $request->first_name,
                     'lastname' => $request->lastname,
@@ -99,7 +98,7 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $data = Users::where('username', 'like', '%' . $query . '%')
+        $data = User::where('username', 'like', '%' . $query . '%')
             ->orWhere('id', $query)
             ->orWhere('first_name', 'like', '%' . $query . '%')
             ->orWhere('lastname', 'like', '%' . $query . '%')
