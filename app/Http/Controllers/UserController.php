@@ -41,10 +41,8 @@ class UserController extends Controller
     public function add(Request $request)
     {
         try {
-            $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'outlet_name', 'outlet_status', 'phone_no', 'user_avatar', 'status']);
             $user = new Users();
             $user_outlet = new UserOutlet();
-            $outlet = new Outlet();
 
             $user->first_name = $request->first_name;
             $user->lastname = $request->lastname;
@@ -52,19 +50,15 @@ class UserController extends Controller
             $user->email = $request->email;
             $user->password = bcrypt($request->password);
             $user->confirm_password = bcrypt($request->confirm_password);
-            $user->outlet_name = $request->outlet_name;
-            $user->outlet_status = $request->outlet_status;
             $user->phone_no = $request->phone_no;
             $user->user_avatar = $request->user_avatar;
             $user->status = $request->status;
             $user->save();
 
-            $user_id = $user->where('email', $request->email)->first()->id;
-            $outlet_id = $outlet->where('Outlet_name', $request->outlet_name)->first()->id;
             // dd($outlet_id);
 
-            $user_outlet->user_id = $user_id;
-            $user_outlet->outlet_id = $outlet_id;
+            $user_outlet->user_id = $user->id;
+            $user_outlet->outlet_id = $request->outlet;
             $user_outlet->save();
 
             // $outlet_id = $user_outlet->where( 'user.outlet_name', $request->outlet_name )->first()->id;
