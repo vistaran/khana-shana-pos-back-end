@@ -140,3 +140,5 @@ Route::group(
         Route::get('search', 'GroupController@search');
     }
 );
+
+Route::resource('vendors', VendorsController::class);
