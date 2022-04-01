@@ -15,18 +15,17 @@ class UserController extends Controller
     public function show()
     {
         try {
-            $user = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
-                ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
+            $user = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id', 'left')
+                ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id', 'left')
                 ->select(
+                    'user.id',
                     'user_outlet.user_id',
                     'user.user_avatar',
                     'user.username',
                     'user.email',
-                    'user.outlet_name',
                     'user.status',
-                    'user.created_at',
-
-                )->orderBy('user.id')
+                    'user.created_at'
+                )->orderBy('user.id', 'desc')
                 ->paginate(10);
             return response()->json([
                 'user' => $user,
