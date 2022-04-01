@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Units;
+use App\PurchaseItems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Response;
 
 
-class UnitsController extends Controller
+class PurchaseItemsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +18,9 @@ class UnitsController extends Controller
     public function index()
     {
         try {
-            $units = Units::orderBy('id', 'desc')->paginate(10);
+            $pitems = PurchaseItems::orderBy('id', 'desc')->paginate(10);
             return response()->json([
-                'units' => $units
+                'purchase_items' => $pitems
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -46,9 +46,9 @@ class UnitsController extends Controller
     public function store(Request $request)
     {
         try {
-            $vendor = new Units();
-            $vendor->unit_name = $request->unit_name;
-            $vendor->unit =  $request->unit;
+            $vendor = new PurchaseItems();
+            $vendor->item_name = $request->item_name;
+            $vendor->unit_id =  $request->unit_id;
             $vendor->save();
             return response()->json($vendor);
         } catch (\Exception $e) {
@@ -65,7 +65,7 @@ class UnitsController extends Controller
      */
     public function show($id) {
          try {
-            $vendor = Units::where('id', $id)->first();
+            $vendor = PurchaseItems::where('id', $id)->first();
             return response()->json($vendor);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -93,11 +93,11 @@ class UnitsController extends Controller
      */
     public function update(Request $request, $id) {
         try {
-            Units::where('id', $id)->update([
-                'unit_name' => $request->unit_name,
-                'unit' => $request->unit
+            PurchaseItems::where('id', $id)->update([
+                'item_name' => $request->item_name,
+                'unit_id' => $request->unit_id
             ]);
-            $vendor = Units::where('id', $id)->first();
+            $vendor = PurchaseItems::where('id', $id)->first();
             return response()->json($vendor);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -113,7 +113,7 @@ class UnitsController extends Controller
      */
     public function destroy($id) {
         try {
-            Units::find($id)->delete();
+            PurchaseItems::find($id)->delete();
             return response()->json([
                 'status' => true,
             ]);

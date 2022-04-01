@@ -143,3 +143,4 @@ Route::group(
 
 Route::resource('vendors', VendorsController::class);
 Route::resource('units', UnitsController::class);
+Route::resource('purchase_items', PurchaseItemsController::class);
