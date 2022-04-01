@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Outlet;
 use App\UserOutlet;
-use App\Users;
+    use App\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +15,7 @@ class UserController extends Controller
     public function show()
     {
         try {
-            $user = Users::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
+            $user = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
                 ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
                 ->select(
                     'user_outlet.user_id',
@@ -41,7 +41,8 @@ class UserController extends Controller
     public function add(Request $request)
     {
         try {
-            $user = new Users();
+            $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status']);
+            $user = new User();
             $user_outlet = new UserOutlet();
 
             $user->first_name = $request->first_name;
@@ -77,7 +78,7 @@ class UserController extends Controller
     {
         try {
             $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status']);
-            Users::where('id', $id)
+            User::where('id', $id)
             ->update([
                 'first_name' => $request->first_name,
                 'lastname' => $request->lastname,
@@ -104,7 +105,7 @@ class UserController extends Controller
     public function delete($id)
     {
         try {
-            Users::find($id)
+            User::find($id)
                 ->delete();
             return response()->json([
                 'delete message' => 'Successfully Deleted !',
@@ -118,7 +119,7 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $data = Users::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
+        $data = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
             ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
             ->where('user_outlet.user_id', $query)
             ->orWhere('user.username', 'like', '%' . $query . '%')
@@ -143,7 +144,7 @@ class UserController extends Controller
     //Show Product Datas using ID
     public function show_data($id)
     {
-        $user = Users::where('id', $id)->first();
+        $user = User::where('id', $id)->first();
 
         return response()->json([
             'show_data' => $user,

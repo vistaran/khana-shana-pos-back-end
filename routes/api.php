@@ -50,7 +50,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'OutletController@show');
-        Route::get('show/{id}', 'OutletController@show_data');
+        Route::get('show/{id}', 'OutletController@showDetail');
         Route::put('edit/{id}', 'OutletController@edit');
         Route::get('delete/{id}', 'OutletController@delete');
         Route::post('insert', 'OutletController@insert');
