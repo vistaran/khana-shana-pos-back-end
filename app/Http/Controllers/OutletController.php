@@ -30,6 +30,19 @@ class OutletController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+
+    public function showDetail($id)
+    {
+        try {
+            $outlet = Outlet::where('id', $id)->first();
+
+            return response()->json($outlet);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+    }
+
     public function edit($id, Request $request)
     {
 
