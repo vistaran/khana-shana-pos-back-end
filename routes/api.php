@@ -142,3 +142,4 @@ Route::group(
 );
 
 Route::resource('vendors', VendorsController::class);
+Route::resource('units', UnitsController::class);
