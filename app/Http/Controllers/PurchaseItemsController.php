@@ -18,7 +18,11 @@ class PurchaseItemsController extends Controller
     public function index()
     {
         try {
-            $pitems = PurchaseItems::orderBy('id', 'desc')->paginate(10);
+            $pitems = PurchaseItems::select('purchase_items.*', 'units.unit as unit_name', 'item_groups.group_name')
+                ->join('item_groups', 'item_groups.id', '=', 'purchase_items.item_group_id', 'left')
+                ->join('units', 'units.id', '=', 'purchase_items.unit_id', 'left')
+                ->orderBy('id', 'desc')
+                ->paginate(10);
             return response()->json([
                 'purchase_items' => $pitems
             ]);
@@ -33,8 +37,8 @@ class PurchaseItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request) {
-        
+    public function create(Request $request)
+    {
     }
 
     /**
@@ -64,8 +68,9 @@ class PurchaseItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {
-         try {
+    public function show($id)
+    {
+        try {
             $vendor = PurchaseItems::where('id', $id)->first();
             return response()->json($vendor);
         } catch (\Exception $e) {
@@ -92,7 +97,8 @@ class PurchaseItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         try {
             PurchaseItems::where('id', $id)->update([
                 'item_name' => $request->item_name,
@@ -113,7 +119,8 @@ class PurchaseItemsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         try {
             PurchaseItems::find($id)->delete();
             return response()->json([
