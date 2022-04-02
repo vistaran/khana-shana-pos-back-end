@@ -145,3 +145,4 @@ Route::resource('vendors', VendorsController::class);
 Route::resource('units', UnitsController::class);
 Route::resource('purchase_items', PurchaseItemsController::class);
 Route::resource('item_groups', ItemGroup::class);
+Route::resource('purchase_order', PurchaseOrder::class);
