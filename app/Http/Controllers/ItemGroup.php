@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\PurchaseItems;
+use App\ItemGroup as AppItemGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Response;
 
-
-class PurchaseItemsController extends Controller
+class ItemGroup extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +17,9 @@ class PurchaseItemsController extends Controller
     public function index()
     {
         try {
-            $pitems = PurchaseItems::orderBy('id', 'desc')->paginate(10);
+            $pitems = AppItemGroup::orderBy('id', 'desc')->paginate(10);
             return response()->json([
-                'purchase_items' => $pitems
+                'item_groups' => $pitems
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -46,10 +45,8 @@ class PurchaseItemsController extends Controller
     public function store(Request $request)
     {
         try {
-            $vendor = new PurchaseItems();
-            $vendor->item_name = $request->item_name;
-            $vendor->item_group_id = $request->item_group_id;
-            $vendor->unit_id =  $request->unit_id;
+            $vendor = new AppItemGroup();
+            $vendor->group_name = $request->group_name;
             $vendor->save();
             return response()->json($vendor);
         } catch (\Exception $e) {
@@ -66,7 +63,7 @@ class PurchaseItemsController extends Controller
      */
     public function show($id) {
          try {
-            $vendor = PurchaseItems::where('id', $id)->first();
+            $vendor = AppItemGroup::where('id', $id)->first();
             return response()->json($vendor);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -94,12 +91,10 @@ class PurchaseItemsController extends Controller
      */
     public function update(Request $request, $id) {
         try {
-            PurchaseItems::where('id', $id)->update([
-                'item_name' => $request->item_name,
-                'item_group_id' => $request->item_group_id,
-                'unit_id' => $request->unit_id
+            AppItemGroup::where('id', $id)->update([
+                'group_name' => $request->group_name
             ]);
-            $vendor = PurchaseItems::where('id', $id)->first();
+            $vendor = AppItemGroup::where('id', $id)->first();
             return response()->json($vendor);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -115,7 +110,7 @@ class PurchaseItemsController extends Controller
      */
     public function destroy($id) {
         try {
-            PurchaseItems::find($id)->delete();
+            AppItemGroup::find($id)->delete();
             return response()->json([
                 'status' => true,
             ]);
