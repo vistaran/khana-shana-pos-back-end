@@ -50,7 +50,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('show', 'OutletController@show');
-        Route::get('show/{id}', 'OutletController@show_data');
+        Route::get('show/{id}', 'OutletController@showDetail');
         Route::put('edit/{id}', 'OutletController@edit');
         Route::get('delete/{id}', 'OutletController@delete');
         Route::post('insert', 'OutletController@insert');
@@ -140,3 +140,9 @@ Route::group(
         Route::get('search', 'GroupController@search');
     }
 );
+
+Route::resource('vendors', VendorsController::class);
+Route::resource('units', UnitsController::class);
+Route::resource('purchase_items', PurchaseItemsController::class);
+Route::resource('item_groups', ItemGroup::class);
+Route::resource('purchase_order', PurchaseOrder::class);

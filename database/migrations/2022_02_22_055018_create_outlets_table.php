@@ -16,13 +16,13 @@ class CreateOutletsTable extends Migration
     {
         Schema::create('outlets', function (Blueprint $table) {
             $table->id();
-            $table->string('Outlet_name');
-            $table->string('Outlet_Address');
-            $table->string('Country');
-            $table->string('State');
-            $table->string('City');
-            $table->integer('Postcode');
-            $table->string('Status');
+            $table->string('outlet_name');
+            $table->string('outlet_Address');
+            $table->string('country');
+            $table->string('state');
+            $table->string('city');
+            $table->integer('postcode');
+            $table->string('status');
             $table->string('inventory_source');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

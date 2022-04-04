@@ -2,13 +2,17 @@
 
 namespace App;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Users extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
+
+    protected $table = 'user';
 
     /**
      * The attributes that are mass assignable.
@@ -56,5 +60,4 @@ class Users extends Authenticatable implements JWTSubject
     {
         return [];
     }
-    protected $table = 'user';
 }

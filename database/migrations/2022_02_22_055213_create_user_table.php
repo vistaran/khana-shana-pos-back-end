@@ -24,8 +24,6 @@ class CreateUserTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('confirm_password');
-            $table->string('outlet_name');
-            $table->string('outlet_status');
             $table->string('phone_no');
             $table->string('user_avatar');
             $table->string('status');
