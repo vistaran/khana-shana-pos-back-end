@@ -79,25 +79,25 @@ class UserController extends Controller
         }
     }
     //Edit Product
-    public function edit($id,Request $request )
+    public function edit($id, Request $request)
     {
         try {
             $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status']);
             Users::where('id', $id)
-            ->update([
-                'first_name' => $request->first_name,
-                'lastname' => $request->lastname,
-                'username' => $request->username,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'confirm_password' => bcrypt($request->confirm_password),
-                'outlet_name' => $request->outlet_name,
-                'outlet_status' => $request->outlet_status,
-                'phone_no' => $request->phone_no,
-                'user_avatar' => $request->user_avatar,
-                'status' => $request->status,
+                ->update([
+                    'first_name' => $request->first_name,
+                    'lastname' => $request->lastname,
+                    'username' => $request->username,
+                    'email' => $request->email,
+                    'password' => bcrypt($request->password),
+                    'confirm_password' => bcrypt($request->confirm_password),
+                    'outlet_name' => $request->outlet_name,
+                    'outlet_status' => $request->outlet_status,
+                    'phone_no' => $request->phone_no,
+                    'user_avatar' => $request->user_avatar,
+                    'status' => $request->status,
 
-            ]);
+                ]);
             return response()->json([
                 'update message' => 'Successfully Updated !',
             ]);
