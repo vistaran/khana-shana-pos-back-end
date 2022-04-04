@@ -71,6 +71,7 @@ class PurchaseOrder extends Controller
                     $purchase_item->qty = $item['qty'];
                     $purchase_item->unit_id = $item['unit_id'];
                     $purchase_item->unit_name = $item['unit_name'];
+                    $purchase_item->price = $item['price'];
                     $purchase_item->subtotal = $item['subtotal'];
                     $purchase_item->save();
                 }
@@ -147,6 +148,7 @@ class PurchaseOrder extends Controller
                     'qty' => $item['qty'],
                     'unit_id' => $item['unit_id'],
                     'unit_name' => $item['unit_name'],
+                    'price' => $item['price'],
                     'subtotal' => $item['subtotal']
                 ]);
             }
