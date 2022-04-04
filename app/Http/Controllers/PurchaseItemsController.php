@@ -15,13 +15,20 @@ class PurchaseItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $pitems = PurchaseItems::select('purchase_items.*', 'units.unit as unit_name', 'item_groups.group_name')
+            $pitems = PurchaseItems::query();
+
+            $pitems->select('purchase_items.*', 'units.unit as unit_name', 'item_groups.group_name')
                 ->join('item_groups', 'item_groups.id', '=', 'purchase_items.item_group_id', 'left')
-                ->join('units', 'units.id', '=', 'purchase_items.unit_id', 'left')
-                ->orderBy('id', 'desc')
+                ->join('units', 'units.id', '=', 'purchase_items.unit_id', 'left');
+
+            if (!empty($request->get('group_id'))) {
+                $pitems->where('item_group_id', $request->get('group_id'));
+            }
+
+            $pitems->orderBy('id', 'desc')
                 ->paginate(10);
             return response()->json([
                 'purchase_items' => $pitems
