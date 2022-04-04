@@ -28,10 +28,11 @@ class PurchaseItemsController extends Controller
                 $pitems->where('item_group_id', $request->get('group_id'));
             }
 
-            $pitems->orderBy('id', 'desc')
+            $data = $pitems->orderBy('id', 'desc')
                 ->paginate(10);
+
             return response()->json([
-                'purchase_items' => $pitems
+                'purchase_items' => $data
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
