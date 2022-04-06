@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\AttributeFamilyGroup;
 use App\Group;
 use Attribute;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class GroupController extends Controller
 {
@@ -115,7 +117,6 @@ class GroupController extends Controller
             return response()->json([
                 'insert data' => 'Successfully Inserted !',
             ]);
-
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -126,31 +127,33 @@ class GroupController extends Controller
         try {
 
             // data load from database
-            $family = AttributeFamilyGroup::join('attribute', 'attribute.id', '=', 'attribute_family_group.attribute_id')
+
+            $attribute_family_group = AttributeFamilyGroup::join('attribute', 'attribute.id', '=', 'attribute_family_group.attribute_id')
                 ->select(
-                    'attribute_family_group.attribute_family_id',
                     'attribute_family_group.attribute_id',
                     'attribute_family_group.group_id',
+                    'attribute_family_group.attribute_family_id',
+                    'attribute.attribute_based',
+                    'attribute.attribute_code',
                     'attribute.name',
-                    'attribute.attribute_based')
+                    'attribute.type',
+                )
                 ->orderBy('attribute_family_id', 'ASC')
                 ->get();
 
             return response()->json([
-                'attribute group how' => $family,
+                'insert data' => $attribute_family_group,
             ]);
-
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
-
     }
     public function search(Request $request)
     {
         $query = $request->input('query');
         $data =
-        Group::where('id', $query)
+            Group::where('id', $query)
             ->orWhere('attribute_code', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
             ->orWhere('type', 'like', '%' . $query . '%')
@@ -160,5 +163,4 @@ class GroupController extends Controller
             'groups' => $data,
         ]);
     }
-
 }
