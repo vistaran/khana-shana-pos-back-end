@@ -51,10 +51,10 @@ class PurchaseOrder extends Controller
     {
         try {
             $purchaseOrder = new AppPurchaseOrder();
-            $exception = DB::transaction(function () use ($request, &$purchaseOrder) {
-
+            $purchase_item_data = [];
+            $exception = DB::transaction(function () use ($request, &$purchaseOrder, &$purchase_item_data) {
                 $user = JWTAuth::parseToken()->toUser();
-                
+
                 // create order entry
                 $purchaseOrder->vendor_id = $request->vendor_id;
                 $purchaseOrder->outlet_id =  $request->outlet_id;
@@ -78,11 +78,12 @@ class PurchaseOrder extends Controller
                     $purchase_item->price = $item['price'];
                     $purchase_item->subtotal = $item['subtotal'];
                     $purchase_item->save();
+                    array_push($purchase_item_data, $purchase_item);
                 }
             });
 
             if (is_null($exception)) {
-                return response()->json($purchaseOrder);
+                return response()->json(['purchaseOrder' => $purchaseOrder, 'purchase_item'=>$purchase_item_data]);
             } else {
                 throw new \Exception;
             }
