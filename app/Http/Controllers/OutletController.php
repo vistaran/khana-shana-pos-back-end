@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class OutletController extends Controller
 {
-    //Show Outlte Datas
     public function show()
     {
         try {
@@ -48,7 +47,7 @@ class OutletController extends Controller
 
         try {
             $credential = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status', 'inventory_source']);
-            Outlet::where('id', $id)
+            $outlet = Outlet::where('id', $id)
                 ->update([
                     'Outlet_name' => $request->name,
                     'Outlet_Address' => $request->address,
@@ -60,14 +59,13 @@ class OutletController extends Controller
                     'inventory_source' => $request->inventory_source,
                 ]);
             return response()->json([
-                'update message' => 'Successfully Updated !',
+                'Update Message' => 'Successfully Updated !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    //Delete Outlet
     public function delete($id)
     {
         try {
@@ -109,12 +107,14 @@ class OutletController extends Controller
         $query = $request->input('query');
         $data = Outlet::where('id', $query)
             ->orWhere('Outlet_name', 'like', '%' . $query . '%')
-            ->orWhere('inventory_source', 'like', '%' . $query . '%')
-            ->orWhere('Status', 'like', '%' . $query . '%')
+            ->orWhere('Country', 'like', '%' . $query . '%')
+            ->orWhere('State', 'like', '%' . $query . '%')
+            ->orWhere('City', 'like', $query . '%')
+            ->orWhere('Postcode', $query)
             ->paginate(10);
 
         return response()->json([
-            'outlets' => $data,
+            'Outlets' => $data,
         ]);
     }
 }
