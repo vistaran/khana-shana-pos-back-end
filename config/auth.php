@@ -17,7 +17,6 @@ return [
         'guard' => 'api',
         'passwords' => 'users',
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Guards
@@ -68,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Users::class,
+            'model' => App\User::class,
         ],
 
         // 'user' => [

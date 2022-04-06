@@ -11,6 +11,7 @@ class CreateProductAttributeFamilyTable extends Migration
      *
      * @return void
      */
+    //Product Attribute Family Table
     public function up()
     {
         Schema::create('product_attribute_family', function (Blueprint $table) {

@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 
 class AttributeFamilyController extends Controller
 {
+
+    //Show AttributeFamily Data
     public function show()
     {
         try {
@@ -23,7 +25,7 @@ class AttributeFamilyController extends Controller
             )->orderBy('id')
                 ->paginate(10);
             return response()->json([
-                'Attributes' => $attribute,
+                'attributefamily' => $attribute,
 
             ]);
         } catch (Exception $e) {
@@ -31,6 +33,28 @@ class AttributeFamilyController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+    //Insert AttributeFamily
+    public function insert(Request $request)
+    {
+        try {
+            $credentials = $request->only([
+                'attribute_family_code',
+                'attribute_family_name',
+            ]);
+            $attribute_family = new AttributeFamily();
+            $attribute_family->attribute_family_code = $request->attribute_family_code;
+            $attribute_family->attribute_family_name = $request->attribute_family_name;
+
+            $attribute_family->save();
+            return response()->json([
+                'insert data' => 'successfully inserted !',
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+    }
+    // Edit AttributeFamily
     public function edit($id, Request $request)
     {
 
@@ -39,19 +63,20 @@ class AttributeFamilyController extends Controller
                 'attribute_family_code',
                 'attribute_family_name',
             ]);
-            $outlet = AttributeFamily::where('id', $id)
+            AttributeFamily::where('id', $id)
                 ->update([
                     'attribute_family_code' => $request->attribute_family_code,
                     'attribute_family_name' => $request->attribute_family_name,
                 ]);
             return response()->json([
-                'Update Message' => 'Successfully Updated !',
+                'update message' => 'successfully updated !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+    //Delete AtrributeFamily
     public function delete($id)
     {
         try {
@@ -60,33 +85,14 @@ class AttributeFamilyController extends Controller
             AttributeFamilyGroup::where('attribute_family_id', $id)
                 ->delete();
             return response()->json([
-                'Delete Message' => 'Successfully Deleted !',
+                'delete message' => 'successfully deleted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    public function insert(Request $request)
-    {
-        try {
-            $credentials = $request->only([
-                'attribute_family_code',
-                'attribute_family_name',
-            ]);
-            $attf = new AttributeFamily();
-            $attf->attribute_family_code = $request->attribute_family_code;
-            $attf->attribute_family_name = $request->attribute_family_name;
-
-            $attf->save();
-            return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
-            ]);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
-        }
-    }
+    //Search AttributeFamily Datas
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -97,15 +103,16 @@ class AttributeFamilyController extends Controller
             ->paginate(10);
 
         return response()->json([
-            'Attributes_Family' => $data,
+            'attributes_family' => $data,
         ]);
     }
+    //Show AttributeFamily Datas using ID
     public function show_data($id)
     {
-        $att = AttributeFamily::where('id', $id)->first();
+        $attribute_family = AttributeFamily::where('id', $id)->first();
 
         return response()->json([
-            'Show_Data' => $att,
+            'show_data' => $attribute_family,
         ]);
     }
 }

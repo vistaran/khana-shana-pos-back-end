@@ -11,6 +11,7 @@ class CreateProductToTable extends Migration
      *
      * @return void
      */
+    //Product Table
     public function up()
     {
         Schema::create('product', function (Blueprint $table) {

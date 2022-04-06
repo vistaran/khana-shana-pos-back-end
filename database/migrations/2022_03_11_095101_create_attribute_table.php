@@ -11,6 +11,7 @@ class CreateAttributeTable extends Migration
      *
      * @return void
      */
+    //Attribute Table
     public function up()
     {
         Schema::create('attribute', function (Blueprint $table) {

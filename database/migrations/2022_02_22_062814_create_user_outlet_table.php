@@ -11,6 +11,7 @@ class CreateUserOutletTable extends Migration
      *
      * @return void
      */
+    //User Outlet Table
     public function up()
     {
         Schema::create('user_outlet', function (Blueprint $table) {

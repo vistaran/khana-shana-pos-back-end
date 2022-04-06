@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Outlet;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class OutletController extends Controller
@@ -18,13 +19,24 @@ class OutletController extends Controller
                 'inventory_source',
                 'created_at',
                 'Status',
-                'inventory_source'
-            )->orderBy('id')
+            )->orderBy('id', 'desc')
                 ->paginate(10);
             return response()->json([
                 'outlets' => $outlet,
 
             ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+    }
+    
+    public function showDetail($id)
+    {
+        try {
+            $outlet = Outlet::where('id', $id)->first();
+
+            return response()->json($outlet);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -70,10 +82,10 @@ class OutletController extends Controller
     public function insert(Request $request)
     {
         try {
-            $credentials = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status', 'inventory_source']);
+            $credentials = $request->only(['name', 'address', 'country', 'state', 'city', 'postcode', 'status']);
             $out = new Outlet();
             $out->Outlet_name = $request->name;
-            $out->Outlet_Address = $request->address;
+            $out->Outlet_Address =  $request->address;
             $out->Country = $request->country;
             $out->State = $request->state;
             $out->City = $request->city;
@@ -86,9 +98,10 @@ class OutletController extends Controller
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+    //Search Outlte
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -102,14 +115,6 @@ class OutletController extends Controller
 
         return response()->json([
             'Outlets' => $data,
-        ]);
-    }
-    public function show_data($id)
-    {
-        $outlet = Outlet::where('id', $id)->first();
-
-        return response()->json([
-            'Show_Data' => $outlet,
         ]);
     }
 }

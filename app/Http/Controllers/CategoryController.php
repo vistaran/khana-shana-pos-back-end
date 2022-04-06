@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-
+    //Show Category Datas
     public function show()
     {
         try {
@@ -21,7 +21,7 @@ class CategoryController extends Controller
                 ->orderBy('id')
                 ->paginate(10);
             return response()->json([
-                'Category' => $category,
+                'category' => $category,
 
             ]);
         } catch (Exception $e) {
@@ -29,17 +29,21 @@ class CategoryController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
+    //Insert Category
     public function add(Request $request)
     {
 
         try {
             $credential = $request->only([
-                'name', 'visible_in_menu', 'position', 'display_mode', 'description', 'image', 'category_logo', 'parent_category', 'attri', 'meta_title', 'slug', 'meta_description', 'meta_keyword', 'status',
+                'parent_id', 'name', 'visible_in_menu', 'position', 'display_mode', 'description', 'image', 'category_logo', 'parent_category', 'attri', 'meta_title', 'slug', 'meta_description', 'meta_keyword', 'status',
             ]);
-            $cp = new CategoryProduct();
+            $category_product = new CategoryProduct();
             $category = new Category();
-
+            if ($request->parent_id == null) {
+                $category->parent_category_id = null;
+            } else {
+                $category->parent_category_id = $request->parent_id;
+            }
             $category->name = $request->name;
             $category->visible_in_menu = $request->visible_in_menu;
             $category->position = $request->position;
@@ -47,7 +51,6 @@ class CategoryController extends Controller
             $category->decription = $request->decription;
             $category->image = $request->image;
             $category->category_logo = $request->category_logo;
-            $category->parent_category = $request->parent_category;
             $category->attributes = $request->attri;
             $category->meta_title = $request->meta_title;
             $category->slug = $request->slug;
@@ -56,23 +59,27 @@ class CategoryController extends Controller
             $category->status = $request->status;
             $category->save();
             $category_id = $category->where('name', $request->name)->first()->id;
-            $cp->category_id = $category_id;
-            $cp->save();
+            $category_product->category_id = $category_id;
+            $category_product->save();
+
+
             return response()->json([
-                'Insert Data' => 'Successfully Inserted !',
+                'insert data' => 'Successfully Inserted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
+    //Edit Category
     public function edit($id, Request $request)
     {
         try {
-            $credential = $request->only(['name', 'visible_in_menu', 'position', 'display_mode', 'description', 'image', 'category_logo', 'parent_category', 'attri', 'meta_title', 'slug', 'meta_description', 'meta_keyword', 'status']);
+            $credential = $request->only(['parent_category_id', 'name', 'visible_in_menu', 'position', 'display_mode', 'description', 'image', 'category_logo', 'attri', 'meta_title', 'slug', 'meta_description', 'meta_keyword', 'status']);
+            // dd($id);
             Category::where('id', $id)
                 ->update([
+                    'parent_category_id' => $request->parent_category_id,
                     'name' => $request->name,
                     'visible_in_menu' => $request->visible_in_menu,
                     'position' => $request->position,
@@ -80,7 +87,6 @@ class CategoryController extends Controller
                     'decription' => $request->decription,
                     'image' => $request->image,
                     'category_logo' => $request->category_logo,
-                    'parent_category' => $request->parent_category,
                     'attributes' => $request->attri,
                     'meta_title' => $request->meta_title,
                     'slug' => $request->slug,
@@ -89,14 +95,14 @@ class CategoryController extends Controller
                     'status' => $request->status,
                 ]);
             return response()->json([
-                'Update Message' => 'Successfully Updated !',
+                'update message' => 'Successfully Updated !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
+    //Delete Category
     public function delete($id)
     {
         try {
@@ -109,14 +115,14 @@ class CategoryController extends Controller
                 ->delete();
 
             return response()->json([
-                'Delete Message' => 'Successfully Deleted !',
+                'delete message' => 'Successfully Deleted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-
+    //Search Category
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -142,26 +148,25 @@ class CategoryController extends Controller
                 "category.status",
                 "category.created_at",
                 "category.updated_at",
-                "category.number_of_products",
 
-                'category_product.product_id',
-                'product.quantity',
-                'product.created_at',
-                'product.updated_at',
+                // 'category_product.product_id',
+                // 'product.quantity',
+                // 'product.created_at',
+                // 'product.updated_at',
             )
             ->paginate(10);
 
         return response()->json([
-            'Category' => $data,
+            'category' => $data,
         ]);
     }
-
+    //Shoe Product Datas using ID
     public function show_data($id)
     {
         $category = Category::where('id', $id)->first();
 
         return response()->json([
-            'Show_Data' => $category,
+            'show_data' => $category,
         ]);
     }
 }

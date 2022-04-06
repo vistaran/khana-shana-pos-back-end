@@ -13,17 +13,16 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            OutletsSeeder::class,
-            CategorySeeder::class,
-            ProductSeeder::class,
-            UserOutletSeeder::class,
-            CategoryProductSeeder::class,
-            AttributeFamilySeeder::class,
-            GroupSeeder::class,
-            AttributeSeeder::class,
-            AttributeFamilyGroupSeeder::class,
-            ProductAttributeFamilySeeder::class,
-
+            // OutletsSeeder::class,
+            // CategorySeeder::class,
+            // ProductSeeder::class,
+            // UserOutletSeeder::class,
+            // CategoryProductSeeder::class,
+            // AttributeFamilySeeder::class,
+            // GroupSeeder::class,
+            // AttributeSeeder::class,
+            // AttributeFamilyGroupSeeder::class,
+            // ProductAttributeFamilySeeder::class
         ]);
     }
 }

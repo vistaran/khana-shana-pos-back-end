@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnsToOutletsTable extends Migration
+class CreatePurchaseItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class AddColumnsToOutletsTable extends Migration
      */
     public function up()
     {
-        Schema::table('outlets', function (Blueprint $table) {
-            $table->string('inventory_source');
+        Schema::create('purchase_items', function (Blueprint $table) {
+            $table->id();
+            $table->string('item_name');
+            $table->integer('item_group_id');
+            $table->string('unit_id');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ class AddColumnsToOutletsTable extends Migration
      */
     public function down()
     {
-        Schema::table('outlets', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('purchase_items');
     }
 }

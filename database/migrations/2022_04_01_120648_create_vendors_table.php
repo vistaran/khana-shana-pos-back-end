@@ -4,22 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGroupTable extends Migration
+class CreateVendorsTable extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    //Group Table 
     public function up()
     {
-        Schema::create('group', function (Blueprint $table) {
+        Schema::create('vendors', function (Blueprint $table) {
             $table->id();
-            $table->string('group_name');
-            $table->string('group_based');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->string('name');
+            $table->string('phone_numbers');
+            $table->string('address');
+            $table->boolean('status')->default(1);
+            $table->timestamps();
         });
     }
 
@@ -30,6 +30,6 @@ class CreateGroupTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('group');
+        Schema::dropIfExists('vendors');
     }
 }

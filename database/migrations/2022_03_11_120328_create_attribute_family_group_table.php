@@ -11,6 +11,7 @@ class CreateAttributeFamilyGroupTable extends Migration
      *
      * @return void
      */
+    //AttributeFamily Group Table
     public function up()
     {
         Schema::create('attribute_family_group', function (Blueprint $table) {
