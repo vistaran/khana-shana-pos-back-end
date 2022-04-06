@@ -21,7 +21,6 @@ class PurchaseOrder extends Controller
     public function index()
     {
         try {
-            
             $orders = AppPurchaseOrder::orderBy('id', 'desc')->paginate(10);
             return response()->json([
                 'orders' => $orders
@@ -83,7 +82,7 @@ class PurchaseOrder extends Controller
             });
 
             if (is_null($exception)) {
-                return response()->json(['purchaseOrder' => $purchaseOrder, 'purchase_item'=>$purchase_item_data]);
+                return response()->json(['purchaseOrder' => $purchaseOrder, 'purchase_item' => $purchase_item_data]);
             } else {
                 throw new \Exception;
             }
@@ -103,8 +102,9 @@ class PurchaseOrder extends Controller
     {
         try {
             $order = AppPurchaseOrder::where('id', $id)->first();
+            $items = PurchaseOrderItems::where('purchase_order_id', $id)->get();
 
-            return response()->json($order);
+            return response()->json(['order' => $order, 'items' => $items]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
