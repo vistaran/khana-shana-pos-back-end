@@ -21,7 +21,10 @@ class PurchaseOrder extends Controller
     public function index()
     {
         try {
-            $orders = AppPurchaseOrder::orderBy('id', 'desc')->paginate(10);
+            $orders = AppPurchaseOrder::join('vendors', 'vendors.id', '=', 'purchase_orders.vendor_id', 'left')
+                ->join('outlets', 'outlets.id', '=', 'purchase_orders.outlet_id', 'left')
+                ->select('vendors.name', 'outlets.outlet_name', 'purchase_orders.*')
+                ->orderBy('purchase_orders.id', 'desc')->paginate(10);
             return response()->json([
                 'orders' => $orders
             ]);
