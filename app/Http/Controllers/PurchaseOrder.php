@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PurchaseOrder extends Controller
 {
@@ -20,6 +21,7 @@ class PurchaseOrder extends Controller
     public function index()
     {
         try {
+            
             $orders = AppPurchaseOrder::orderBy('id', 'desc')->paginate(10);
             return response()->json([
                 'orders' => $orders
@@ -51,10 +53,12 @@ class PurchaseOrder extends Controller
             $purchaseOrder = new AppPurchaseOrder();
             $exception = DB::transaction(function () use ($request, &$purchaseOrder) {
 
+                $user = JWTAuth::parseToken()->toUser();
+                
                 // create order entry
                 $purchaseOrder->vendor_id = $request->vendor_id;
                 $purchaseOrder->outlet_id =  $request->outlet_id;
-                $purchaseOrder->user_id =  $request->user_id;
+                $purchaseOrder->user_id =  $user->id;
                 $purchaseOrder->notes =  $request->notes;
                 $purchaseOrder->shipping_charge =  $request->shipping_charge;
                 $purchaseOrder->total_amount =  $request->total_amount;
