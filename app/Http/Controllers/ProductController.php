@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AttributeFamily;
+use App\AttributeFamilyGroup;
 use App\Category;
 use App\CategoryProduct;
 use App\Product;
@@ -14,99 +15,147 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use ProductAttributeFamilySeeder;
 
-class ProductController extends Controller {
-    public function show() {
+class ProductController extends Controller
+{
+    public function show()
+    {
         try {
-            $product = Product::join( 'product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id' )
-            ->join( 'attribute_family', 'product_attribute_family.attribute_family_id', '=', 'attribute_family.id' )
-            ->select(
-                'product.id',
-                'product.sku',
-                'product.name',
-                'product.product_type',
-                'product.status',
-                'product.price',
-                'product.quantity',
-                'product.created_at',
-                'product.updated_at',
-                'attribute_family.attribute_family_name',
-            )->orderBy( 'id',"DESC" )
-            ->paginate( 10 );
-            return response()->json( [
+            $product = Product::join('product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id')
+                ->join('attribute_family', 'product_attribute_family.attribute_family_id', '=', 'attribute_family.id')
+                ->select(
+                    'product.id',
+                    'product.sku',
+                    'product.name',
+                    'product.product_type',
+                    'product.status',
+                    'product.price',
+                    'product.quantity',
+                    'product.created_at',
+                    'product.updated_at',
+                    'attribute_family.attribute_family_name',
+                )->orderBy('id', "DESC")
+                ->paginate(10);
+            return response()->json([
                 'Products' => $product,
 
-            ] );
-        } catch ( Exception $e ) {
-            Log::error( $e->getMessage() );
-            return response()->json( [ 'error' => $e->getMessage() . ' ' . $e->getLine() ] );
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
 
-    public function edit( $id, Request $request ) {
+    public function edit(Request $request)
+    {
+        $attribute_id = $request->attribute_id;
+        $group_id = $request->group_id;
+        $attribute_family_id = $request->attribute_family_id;
+
+        foreach ($request->update_product_data as $uData) {
+            foreach ($uData['group_data'] as $gData) {
+                foreach ($gData['items'] as $item) {
+                    $group = AttributeFamilyGroup::where('attribute_family_id', $attribute_family_id)
+                        ->where('attribute_id', $attribute_id)
+                        ->where('group_id', $group_id)
+                        ->update([
+                            'attribute_data' => $item['data'],
+                        ]);
+                    // dd($group);
+                }
+            }
+        }
+        return response(['data' => $group]);
+    }
+    /**public function edit($id, Request $request)
+    {
 
         try {
-            $credential = $request->only( [
+            $credential = $request->only([
                 'sku',
                 'name',
                 'product_type',
                 'status',
                 'price',
                 'quantity',
-            ] );
-            Product::where( 'id', $id )
-            ->update( [
-                'sku' => $request->sku,
-                'name' => $request->name,
-                'product_type' => $request->product_type,
-                'status' => $request->status,
-                'price' => $request->price,
-                'quantity' => $request->quantity,
-            ] );
+            ]);
+            Product::where('id', $id)
+                ->update([
+                    'sku' => $request->sku,
+                    'name' => $request->name,
+                    'product_type' => $request->product_type,
+                    'status' => $request->status,
+                    'price' => $request->price,
+                    'quantity' => $request->quantity,
+                ]);
 
-            $category_id = Category::where( 'name', $request->category_name )->first()->id;
+            $category_id = Category::where('name', $request->category_name)->first()->id;
 
             $flag = CategoryProduct::where('product_id', $id)->get();
-            CategoryProduct::when($flag->isEmpty(), function( ) use ($category_id, $id ) {
+            CategoryProduct::when($flag->isEmpty(), function () use ($category_id, $id) {
                 $p = new CategoryProduct();
                 $p->category_id = $category_id;
                 $p->product_id = $id;
                 $p->save();
             })
-            ->when( $flag->isNotEmpty(), function($q) use ($category_id, $id ) {
-            $q -> update([
-            'category_id' => $category_id,
-            'product_id' => $id
-            ]);
-        });
-            return response()->json( [
+                ->when($flag->isNotEmpty(), function ($q) use ($category_id, $id) {
+                    $q->update([
+                        'category_id' => $category_id,
+                        'product_id' => $id
+                    ]);
+                });
+            return response()->json([
                 'Update Message' => 'Successfully Updated !',
-            ] );
-        } catch ( Exception $e ) {
-            Log::error( $e->getMessage() );
-            return response()->json( [ 'error' => $e->getMessage() . ' ' . $e->getLine() ] );
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
-    }
+    }**/
 
-    public function delete( $id ) {
+    public function delete($id)
+    {
         try {
-            DB::table( 'category_product' )
-            ->where( 'product_id', $id )
-            ->delete();
+            DB::table('category_product')
+                ->where('product_id', $id)
+                ->delete();
 
-            Product::find( $id )
-            ->delete();
-            return response()->json( [
+            Product::find($id)
+                ->delete();
+            return response()->json([
                 'Delete Message' => 'Successfully Deleted !',
-            ] );
-        } catch ( Exception $e ) {
-            Log::error( $e->getMessage() );
-            return response()->json( [ 'error' => $e->getMessage() . ' ' . $e->getLine() ] );
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
 
-    public function insert( Request $request ) {
+    public function insert(Request $request)
+    {
+        $attribute_id = $request->attribute_id;
+        $group_id = $request->group_id;
+        $attribute_family_id = $request->attribute_family_id;
+        foreach ($request->insert_product_data as $uData) {
+            // dd($uData);
+            foreach ($uData['group_data'] as $gData) {
+                foreach ($gData['items'] as $item) {
+                    $group = AttributeFamilyGroup::where('attribute_family_id', $attribute_family_id)
+                        ->where('attribute_id', $attribute_id)
+                        ->where('group_id', $group_id)
+                        ->insert([
+                            'attribute_data' => $item['data'],
+                            'attribute_id' => $item['attribute_id'],
+                            'group_id' => $item['group_id'],
+                            'attribute_family_id' => $item['attribute_family_id'],
+                        ]);
+                }
+            }
+        }
+    }
+    /**public function insert(Request $request)
+    {
         try {
-            $credentials = $request->only( [
+            $credentials = $request->only([
                 'sku',
                 'name',
                 'product_type',
@@ -114,7 +163,7 @@ class ProductController extends Controller {
                 'price',
                 'quantity',
                 'attribute_family_name',
-            ] );
+            ]);
             $p = new Product();
             $paf = new ProductAttributeFamily();
 
@@ -127,24 +176,25 @@ class ProductController extends Controller {
 
             $p->save();
 
-            $ProductAttributeID = AttributeFamily::where( 'attribute_family_name', $request->attribute_family_name )->first()->id;
+            $ProductAttributeID = AttributeFamily::where('attribute_family_name', $request->attribute_family_name)->first()->id;
 
-            $id=Product::where( 'name', $request->name )->first()->id;
+            $id = Product::where('name', $request->name)->first()->id;
 
             $paf->attribute_family_id = $ProductAttributeID;
             $paf->product_id = $id;
             $paf->save();
-            return response()->json( [
+            return response()->json([
                 'Insert Data' => 'Successfully Inserted !',
-            ] );
-        } catch ( Exception $e ) {
-            Log::error( $e->getMessage() );
-            return response()->json( [ 'error' => $e->getMessage() . ' ' . $e->getLine() ] );
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
-    }
+    }**/
 
-    public function search( Request $request ) {
-        $query = $request->input( 'query' );
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
         $data =
             $product = Product::join('product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id')
             ->join('attribute_family', 'product_attribute_family.attribute_family_id', '=', 'attribute_family.id')

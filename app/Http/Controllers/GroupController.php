@@ -122,6 +122,7 @@ class GroupController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+    
     public function attribute_group_show()
     {
         try {
