@@ -24,7 +24,7 @@ class CreatePurchaseOrderItemsTable extends Migration
             $table->unsignedInteger('qty');
             $table->unsignedInteger('unit_id');
             $table->float('price', 8, 2);
-            $table->unsignedInteger('unit_name');
+            $table->string('unit_name');
             $table->float('subtotal', 8, 2);
             $table->timestamps();
         });
