@@ -20,19 +20,14 @@ class ProductController extends Controller
     public function show()
     {
         try {
-            $product = Product::join('product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id')
-                ->join('attribute_family', 'product_attribute_family.attribute_family_id', '=', 'attribute_family.id')
+            $product = Product::join('attribute', 'attribute.id', '=', 'product.attribute_id')
+                ->join('attribute_family', 'attribute_family.id', '=', 'product.attribute_family_id', 'left')
+                ->join('group', 'group.id', '=', 'product.group_id', 'left')
                 ->select(
-                    'product.id',
-                    'product.sku',
-                    'product.name',
-                    'product.product_type',
-                    'product.status',
-                    'product.price',
-                    'product.quantity',
-                    'product.created_at',
-                    'product.updated_at',
-                    'attribute_family.attribute_family_name',
+                    'product.*',
+                    'attribute.name',
+                    'group.name',
+                    'group.group_based'
                 )->orderBy('id', "DESC")
                 ->paginate(10);
             return response()->json([
@@ -50,17 +45,19 @@ class ProductController extends Controller
         $attribute_id = $request->attribute_id;
         $group_id = $request->group_id;
         $attribute_family_id = $request->attribute_family_id;
-
-        foreach ($request->update_product_data as $uData) {
-            foreach ($uData['group_data'] as $gData) {
+        foreach ($request->update_product_data as $iData) {
+            // dd($uData);
+            foreach ($iData['group_data'] as $gData) {
                 foreach ($gData['items'] as $item) {
-                    $group = AttributeFamilyGroup::where('attribute_family_id', $attribute_family_id)
-                        ->where('attribute_id', $attribute_id)
-                        ->where('group_id', $group_id)
+                    $group = Product::where('attribute_family_id', '=', $attribute_family_id)
+                        ->where('attribute_id', '=', $attribute_id)
+                        ->where('group_id', '=', $group_id)
                         ->update([
                             'attribute_data' => $item['data'],
+                            // 'attribute_id' => $item['attribute_id'],
+                            // 'group_id' => $item['group_id'],
+                            // 'attribute_family_id' => $item['attribute_family_id'],
                         ]);
-                    // dd($group);
                 }
             }
         }
@@ -139,7 +136,7 @@ class ProductController extends Controller
             // dd($uData);
             foreach ($uData['group_data'] as $gData) {
                 foreach ($gData['items'] as $item) {
-                    $group = AttributeFamilyGroup::where('attribute_family_id', $attribute_family_id)
+                    $group = Product::where('attribute_family_id', $attribute_family_id)
                         ->where('attribute_id', $attribute_id)
                         ->where('group_id', $group_id)
                         ->insert([
