@@ -17,7 +17,7 @@ class CreatePurchaseItemsTable extends Migration
             $table->id();
             $table->string('item_name');
             $table->integer('item_group_id');
-            $table->string('unit_id');
+            $table->unsignedInteger('unit_id');
             $table->timestamps();
         });
     }
