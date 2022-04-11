@@ -14,6 +14,7 @@ class UpdateUserAddressesLatLongColumnTable extends Migration
     public function up()
     {
         Schema::table('user_addresses', function (Blueprint $table) {
+            $table->rename('user_id', 'customer_id')->change();
             $table->decimal('latitude', 11, 8)->nullable()->change();
             $table->decimal('longitude', 11, 8)->nullable()->change();
         });

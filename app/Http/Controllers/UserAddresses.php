@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\UserAddress;
-use Dotenv\Result\Success;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -18,8 +17,8 @@ class UserAddresses extends Controller
     public function index()
     {
         try {
-            $UserAddress = UserAddress::select('user_addresses.*')->get();
-            return response()->json(['userAddress' => $UserAddress]);
+            $customerAddress = UserAddress::select('user_addresses.*')->get();
+            return response()->json(['customerAddress' => $customerAddress]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -46,7 +45,7 @@ class UserAddresses extends Controller
     {
         try {
             UserAddress::insert([
-                'user_id' => $request->user_id,
+                'user_id' => $request->customer_id,
                 'address_type_id' => $request->address_type_id,
                 'address_type' => $request->address_type,
                 'address_line_1' => $request->address_line_1,
@@ -75,8 +74,8 @@ class UserAddresses extends Controller
     public function show($id)
     {
         try {
-            $UserAddress = UserAddress::where('id', $id)->first();
-            return response()->json($UserAddress);
+            $customerAddress = UserAddress::where('user_id', $id)->first();
+            return response()->json($customerAddress);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -120,9 +119,9 @@ class UserAddresses extends Controller
                     'latitude' => $request->latitude,
                     'longitude' => $request->longitude
                 ]);
-            $group = UserAddress::where('id', $id)->first();
+            $customerAddress = UserAddress::where('id', $id)->first();
 
-            return response(['products' => $group]);
+            return response(['customerAddress' => $customerAddress]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
