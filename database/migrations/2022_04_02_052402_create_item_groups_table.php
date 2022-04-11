@@ -16,7 +16,8 @@ class CreateItemGroupsTable extends Migration
         Schema::create('item_groups', function (Blueprint $table) {
             $table->id();
             $table->string('group_name');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

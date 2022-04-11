@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CategoryProduct;
 use App\Product;
 use Exception;
 use Illuminate\Http\Request;
@@ -50,19 +51,23 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         try {
-            $product_name = $request->product_name;
-            $description = $request->description;
-            $price = $request->price;
-            $category_id = $request->category_id;
-            $product = Product::insert([
-                'product_name' => $product_name,
-                'description' => $description,
-                'price' => $price,
-                'category_id' => $category_id,
+
+            $product = new Product();
+            $product->product_name = $request->product_name;
+            $product->description = $request->description;
+            $product->price = $request->price;
+            $product->category_id = $request->category_id;
+            $product->category_name = $request->category_name;
+            $product->save();
+
+            // dd($product->id);
+            CategoryProduct::insert([
+                'category_id' => $request->category_id,
+                'product_id' => $product->id,
             ]);
 
             return response()->json([
-                'products' => $product,
+                'message' => "Product inserted",
             ]);
             // foreach ($request->insert_product_data as $uData) {
             // dd($uData);
@@ -85,7 +90,13 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $product = Product::where('id', $id)->first();
+            return response()->json($product);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
     }
 
     /**
@@ -96,16 +107,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        try {
-            $product = Product::where('id', $id)->get();
-
-            return response()->json([
-                'products' => $product,
-            ]);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
-        }
+        //
     }
 
     /**
@@ -127,6 +129,7 @@ class ProductController extends Controller
             $group_id = $request->group_id;
             $attribute_family_id = $request->attribute_family_id;
             $attribute_data = $request->attribute_data;
+            $category_name = $request->category_name;
             // dd(Product::where('id', $id)->get());
             Product::where('id', $id)
                 ->update([
@@ -134,7 +137,8 @@ class ProductController extends Controller
                     'product_name' => $product_name,
                     'description' => $description,
                     'price' => $price,
-                    'category_id' => $category_id
+                    'category_id' => $category_id,
+                    'category_name' => $category_name,
                 ]);
             $group = Product::where('id', $id)->first();
             // foreach ($request->update_product_data as $iData) {
@@ -163,9 +167,9 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try {
-            DB::table('category_product')
-                ->where('product_id', $id)
-                ->delete();
+            // DB::table('category_product')
+            //     ->where('product_id', $id)
+            //     ->delete();
 
             Product::where('id', $id)
                 ->delete();
