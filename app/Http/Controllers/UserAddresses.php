@@ -75,7 +75,7 @@ class UserAddresses extends Controller
     {
         try {
             $customerAddress = UserAddress::where('user_id', $id)->get();
-            return response()->json($customerAddress);
+            return response()->json(['customerAddress' => $customerAddress]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
