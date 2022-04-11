@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Customers;
+use App\UserAddress;
+use Dotenv\Result\Success;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class CustomerController extends Controller
+class UserAddresses extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +18,8 @@ class CustomerController extends Controller
     public function index()
     {
         try {
-            $customers = Customers::select('customers.*')->get();
-            return response()->json(['customers' => $customers]);
+            $UserAddress = UserAddress::select('user_addresses.*')->get();
+            return response()->json(['userAddress' => $UserAddress]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -44,12 +45,21 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         try {
-            $customers = Customers::insert([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'phone_number' => $request->phone_number,
+            UserAddress::insert([
+                'user_id' => $request->user_id,
+                'address_type_id' => $request->address_type_id,
+                'address_type' => $request->address_type,
+                'address_line_1' => $request->address_line_1,
+                'address_line_2' => $request->address_line_2,
+                'address_line_3' => $request->address_line_3,
+                'city' => $request->city,
+                'state' => $request->state,
+                'contry' => $request->contry,
+                'postalcode' => $request->postalcode,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude
             ]);
-            return response()->json(['customers' => $customers]);
+            return response()->json(['message' => "successfully added to the database"]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -65,8 +75,8 @@ class CustomerController extends Controller
     public function show($id)
     {
         try {
-            $customers = Customers::where('id', $id)->select('customers.*')->first();
-            return response()->json($customers);
+            $UserAddress = UserAddress::where('id', $id)->first();
+            return response()->json($UserAddress);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -95,17 +105,24 @@ class CustomerController extends Controller
     {
         try {
 
-            $customers = Customers::where('id', $id)
+            UserAddress::where('id', $id)
                 ->update([
-                    'first_name' => $request->first_name,
-                    'last_name' => $request->last_name,
-                    'phone_number' => $request->phone_number,
-                    'email' => $request->email,
-                    'home_address' => $request->home_address,
-                    'office_address' => $request->office_address,
-                    'other_address' => $request->other_address
+                    'user_id' => $request->user_id,
+                    'address_type_id' => $request->address_type_id,
+                    'address_type' => $request->address_type,
+                    'address_line_1' => $request->address_line_1,
+                    'address_line_2' => $request->address_line_2,
+                    'address_line_3' => $request->address_line_3,
+                    'city' => $request->city,
+                    'state' => $request->state,
+                    'contry' => $request->contry,
+                    'postalcode' => $request->postalcode,
+                    'latitude' => $request->latitude,
+                    'longitude' => $request->longitude
                 ]);
-            return response()->json(['customers' => $customers]);
+            $group = UserAddress::where('id', $id)->first();
+
+            return response(['products' => $group]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -121,7 +138,8 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         try {
-            Customers::where('id', $id)->delete();
+            Product::where('id', $id)
+                ->delete();
             return response()->json([
                 'Delete Message' => 'Successfully Deleted !',
             ]);
