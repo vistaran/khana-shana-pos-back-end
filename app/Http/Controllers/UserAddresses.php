@@ -74,8 +74,8 @@ class UserAddresses extends Controller
     public function show($id)
     {
         try {
-            $customerAddress = UserAddress::where('user_id', $id)->first();
-            return response()->json($customerAddress);
+            $customerAddress = UserAddress::where('user_id', $id)->get();
+            return response()->json(['customerAddress' => $customerAddress]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -90,7 +90,13 @@ class UserAddresses extends Controller
      */
     public function edit($id)
     {
-        //
+        try {
+            $customerAddress = UserAddress::where('id', $id)->get();
+            return response()->json($customerAddress);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
     }
 
     /**
