@@ -138,7 +138,7 @@ class UserAddresses extends Controller
     public function destroy($id)
     {
         try {
-            Product::where('id', $id)
+            UserAddress::where('id', $id)
                 ->delete();
             return response()->json([
                 'Delete Message' => 'Successfully Deleted !',
