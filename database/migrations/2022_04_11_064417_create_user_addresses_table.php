@@ -25,8 +25,8 @@ class CreateUserAddressesTable extends Migration
             $table->string('state')->nullable();
             $table->string('contry')->nullable();
             $table->integer('postalcode')->nullable();
-            $table->decimal('latitude', 11, 8)->nullable();
-            $table->decimal('longitude', 11, 8)->nullable();
+            $table->float('latitude')->nullable();
+            $table->float('longitude')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
