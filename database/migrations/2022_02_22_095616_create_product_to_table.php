@@ -20,6 +20,7 @@ class CreateProductToTable extends Migration
             $table->text('description')->nullable();
             $table->integer('price')->nullable();
             $table->integer('category_id')->nullable();
+            $table->string('category_name')->nullable();
 
             // optional
             $table->text('attribute_data')->nullable();

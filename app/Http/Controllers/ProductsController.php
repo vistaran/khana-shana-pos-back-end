@@ -129,6 +129,7 @@ class ProductsController extends Controller
 
     public function insert(Request $request)
     {
+        
         $attribute_id = $request->attribute_id;
         $group_id = $request->group_id;
         $attribute_family_id = $request->attribute_family_id;

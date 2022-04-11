@@ -21,7 +21,8 @@ class CreatePurchaseOrdersTable extends Migration
             $table->text('notes');
             $table->float('shipping_charge', 6, 2, true);
             $table->float('total_amount', 10, 2, true);
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

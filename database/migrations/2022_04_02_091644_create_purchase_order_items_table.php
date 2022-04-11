@@ -26,7 +26,8 @@ class CreatePurchaseOrderItemsTable extends Migration
             $table->float('price', 8, 2);
             $table->string('unit_name');
             $table->float('subtotal', 8, 2);
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 
