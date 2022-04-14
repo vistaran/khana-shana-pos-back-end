@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\PurchaseOrder as AppPurchaseOrder;
-use App\PurchaseOrderItems;
+use App\Orders as AppOrders;
+use App\OrdersItems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class PurchaseOrder extends Controller
+class Orders extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,10 +20,7 @@ class PurchaseOrder extends Controller
     public function index()
     {
         try {
-            $orders = AppPurchaseOrder::join('vendors', 'vendors.id', '=', 'purchase_orders.vendor_id', 'left')
-                ->join('outlets', 'outlets.id', '=', 'purchase_orders.outlet_id', 'left')
-                ->select('vendors.name', 'outlets.outlet_name', 'purchase_orders.*')
-                ->orderBy('purchase_orders.id', 'desc')->paginate(10);
+            $orders = AppOrders::orderBy('id', 'desc')->paginate(10);
             return response()->json([
                 'orders' => $orders
             ]);
@@ -51,40 +48,31 @@ class PurchaseOrder extends Controller
     public function store(Request $request)
     {
         try {
-            $purchaseOrder = new AppPurchaseOrder();
-            $purchase_item_data = [];
-            $exception = DB::transaction(function () use ($request, &$purchaseOrder, &$purchase_item_data) {
+            $order = new AppOrders();
+            $exception = DB::transaction(function () use ($request, &$order, &$item_data) {
                 $user = JWTAuth::parseToken()->toUser();
-
                 // create order entry
-                $purchaseOrder->vendor_id = $request->vendor_id;
-                $purchaseOrder->outlet_id =  $request->outlet_id;
-                $purchaseOrder->user_id =  $user->id;
-                $purchaseOrder->notes =  $request->notes;
-                $purchaseOrder->shipping_charge =  $request->shipping_charge;
-                $purchaseOrder->total_amount =  $request->total_amount;
-                $purchaseOrder->save();
+                $order->user_id =  $user->id;
+                $order->payment_mode =  $request->payment_mode;
+                $order->customer_id =  $request->customer_id;
+                $order->shipping_charge =  $request->shipping_charge;
+                $order->total_amount =  $request->total_amount;
+                $order->save();
                 // create items entry
-                foreach ($request->items as $item) {
-                    $purchase_item = new PurchaseOrderItems();
-                    $purchase_item->purchase_order_id = $purchaseOrder->id;
-                    $purchase_item->notes = $item['notes'];
-                    $purchase_item->item_id = $item['item_id'];
-                    $purchase_item->item_name = $item['item_name'];
-                    $purchase_item->item_group_id = $item['item_group_id'];
-                    $purchase_item->item_group_name = $item['item_group_name'];
-                    $purchase_item->qty = $item['qty'];
-                    $purchase_item->unit_id = $item['unit_id'];
-                    $purchase_item->unit_name = $item['unit_name'];
-                    $purchase_item->price = $item['price'];
-                    $purchase_item->subtotal = $item['subtotal'];
-                    $purchase_item->save();
-                    array_push($purchase_item_data, $purchase_item);
+                foreach ($request->products as $item) {
+                    $order_item = new OrdersItems();
+                    $order_item->order_id = $order->id;
+                    $order_item->product_id = $item['product_id'];
+                    $order_item->category_id = $item['category_id'];
+                    $order_item->price = $item['price'];
+                    $order_item->quantity = $item['quantity'];
+                    $order_item->subtotal = $item['subtotal'];
+                    $order_item->save();
                 }
             });
 
             if (is_null($exception)) {
-                return response()->json(['purchaseOrder' => $purchaseOrder, 'purchase_item' => $purchase_item_data]);
+                return response()->json(['order' => $order]);
             } else {
                 throw new \Exception;
             }
@@ -103,8 +91,8 @@ class PurchaseOrder extends Controller
     public function show($id)
     {
         try {
-            $order = AppPurchaseOrder::where('id', $id)->first();
-            $items = PurchaseOrderItems::where('purchase_order_id', $id)->get();
+            $order = AppOrders::where('id', $id)->first();
+            $items = OrdersItems::where('purchase_order_id', $id)->get();
 
             return response()->json(['order' => $order, 'items' => $items]);
         } catch (\Exception $e) {
@@ -135,10 +123,8 @@ class PurchaseOrder extends Controller
     {
         try {
 
-            AppPurchaseOrder::where('id', $id)->update([
+            AppOrders::where('id', $id)->update([
                 // create order entry
-                "vendor_id" => $request->vendor_id,
-                "outlet_id" =>  $request->outlet_id,
                 "notes" =>  $request->notes,
                 "shipping_charge" =>  $request->shipping_charge,
                 "total_amount" =>  $request->total_amount
@@ -146,21 +132,16 @@ class PurchaseOrder extends Controller
 
             // create items entry
             foreach ($request->items as $item) {
-                PurchaseOrderItems::where('id', $item['id'])->update([
-                    'notes' => $item['notes'],
-                    'item_id' => $item['item_id'],
-                    'item_name' => $item['item_name'],
-                    'item_group_id' => $item['item_group_id'],
-                    'item_group_name' => $item['item_group_name'],
-                    'qty' => $item['qty'],
-                    'unit_id' => $item['unit_id'],
-                    'unit_name' => $item['unit_name'],
+                OrdersItems::where('id', $item['id'])->update([
+                    'product_id' => $item['product_id'],
+                    'category_id' => $item['category_id'],
+                    'quantity' => $item['quantity'],
                     'price' => $item['price'],
                     'subtotal' => $item['subtotal']
                 ]);
             }
-            $vendor = AppPurchaseOrder::where('id', $id)->first();
-            return response()->json($vendor);
+            $order = AppOrders::where('id', $id)->first();
+            return response()->json($order);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -176,7 +157,7 @@ class PurchaseOrder extends Controller
     public function destroy($id)
     {
         try {
-            AppPurchaseOrder::find($id)->delete();
+            AppOrders::find($id)->delete();
             return response()->json([
                 'status' => true,
             ]);

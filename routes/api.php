@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -135,3 +134,4 @@ Route::resource('units', UnitsController::class);
 Route::resource('purchase_items', PurchaseItemsController::class);
 Route::resource('item_groups', ItemGroup::class);
 Route::resource('purchase_order', PurchaseOrder::class);
+Route::resource('orders', Orders::class);
