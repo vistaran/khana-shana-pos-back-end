@@ -13,16 +13,10 @@ class OutletController extends Controller
     public function show()
     {
         try {
-            $outlet = Outlet::select(
-                'id',
-                'Outlet_name',
-                'inventory_source',
-                'created_at',
-                'Status',
-            )->orderBy('id', 'desc')
+            $outlet = Outlet::orderBy('id', 'desc')
                 ->paginate(10);
             return response()->json([
-                'outlets' => $outlet,
+                'outlets' => $outlet
 
             ]);
         } catch (Exception $e) {
@@ -30,7 +24,7 @@ class OutletController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    
+
     public function showDetail($id)
     {
         try {
@@ -114,7 +108,7 @@ class OutletController extends Controller
             ->paginate(10);
 
         return response()->json([
-            'Outlets' => $data,
+            'outlets' => $data,
         ]);
     }
 }

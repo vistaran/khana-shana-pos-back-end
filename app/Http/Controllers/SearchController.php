@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Customers;
 use App\Product;
 use Illuminate\Http\Request;
 
@@ -20,6 +21,19 @@ class SearchController extends Controller
 
         return response()->json([
             'Products' => $data,
+        ]);
+    }
+    public function searchOrder()
+    {
+        $query = request('query');
+
+        $data = Customers::where('phone_number', $query)
+            ->orWhere('first_name', 'like', $query . '%')
+            ->orWhere('last_name', 'like', $query . '%')
+            ->paginate(10);
+
+        return response()->json([
+            'customers' => $data,
         ]);
     }
 }

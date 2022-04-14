@@ -51,6 +51,7 @@ class Orders extends Controller
             $order = new AppOrders();
             $exception = DB::transaction(function () use ($request, &$order, &$item_data) {
                 $user = JWTAuth::parseToken()->toUser();
+
                 // create order entry
                 $order->user_id =  $user->id;
                 $order->payment_mode =  $request->payment_mode;
@@ -58,6 +59,7 @@ class Orders extends Controller
                 $order->shipping_charge =  $request->shipping_charge;
                 $order->total_amount =  $request->total_amount;
                 $order->save();
+
                 // create items entry
                 foreach ($request->products as $item) {
                     $order_item = new OrdersItems();
@@ -92,7 +94,7 @@ class Orders extends Controller
     {
         try {
             $order = AppOrders::where('id', $id)->first();
-            $items = OrdersItems::where('purchase_order_id', $id)->get();
+            $items = OrdersItems::where('order_id', $id)->get();
 
             return response()->json(['order' => $order, 'items' => $items]);
         } catch (\Exception $e) {
@@ -122,16 +124,16 @@ class Orders extends Controller
     public function update(Request $request, $id)
     {
         try {
-
             AppOrders::where('id', $id)->update([
-                // create order entry
+                // create order entry                
+                "payment_mode" =>  $request->payment_mode,
+                "customer_id" =>  $request->customer_id,
                 "notes" =>  $request->notes,
                 "shipping_charge" =>  $request->shipping_charge,
                 "total_amount" =>  $request->total_amount
             ]);
 
-            // create items entry
-            foreach ($request->items as $item) {
+            foreach ($request->products as $item) {
                 OrdersItems::where('id', $item['id'])->update([
                     'product_id' => $item['product_id'],
                     'category_id' => $item['category_id'],
