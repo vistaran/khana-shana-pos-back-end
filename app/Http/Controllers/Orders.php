@@ -21,7 +21,7 @@ class Orders extends Controller
     {
         try {
             $orders = AppOrders::join('customers', 'customers.id', '=', 'orders.customer_id', 'left')
-                ->select('customers.first_name', 'customers.last_name', 'orders.*')
+                ->select('customers.first_name', 'customers.last_name','customers.phone_number', 'orders.*')
                 ->orderBy('id', 'desc')->paginate(10);
             return response()->json([
                 'orders' => $orders
