@@ -97,7 +97,7 @@ class Orders extends Controller
         try {
             $order = AppOrders::where('orders.id', $id)
                 ->join('customers', 'customers.id', '=', 'orders.customer_id', 'left')
-                ->select('customers.first_name', 'customers.last_name', 'orders.*')
+                ->select('customers.first_name', 'customers.last_name', 'customers.phone_number','orders.*')
                 ->orderBy('orders.id', 'desc')->paginate(10)
                 ->first();
             $items = OrdersItems::where('orders_items.order_id', $id)
