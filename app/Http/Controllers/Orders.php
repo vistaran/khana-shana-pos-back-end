@@ -20,7 +20,9 @@ class Orders extends Controller
     public function index()
     {
         try {
-            $orders = AppOrders::orderBy('id', 'desc')->paginate(10);
+            $orders = AppOrders::join('customers', 'customers.id', '=', 'orders.customer_id', 'left')
+                ->select('customers.first_name', 'customers.last_name', 'orders.*')
+                ->orderBy('id', 'desc')->paginate(10);
             return response()->json([
                 'orders' => $orders
             ]);
@@ -93,8 +95,18 @@ class Orders extends Controller
     public function show($id)
     {
         try {
-            $order = AppOrders::where('id', $id)->first();
-            $items = OrdersItems::where('order_id', $id)->get();
+            $order = AppOrders::where('orders.id', $id)
+                ->join('customers', 'customers.id', '=', 'orders.customer_id', 'left')
+                ->select('customers.first_name', 'customers.last_name', 'orders.*')
+                ->orderBy('orders.id', 'desc')->paginate(10)
+                ->first();
+            $items = OrdersItems::where('orders_items.order_id', $id)
+                ->join('orders', 'orders.id', '=', 'orders_items.order_id', 'left')
+                ->join('customers', 'customers.id', '=', 'orders.customer_id', 'left')
+                ->join('product', 'product.id', '=', 'orders_items.product_id', 'left')
+                ->join('category', 'category.id', '=', 'orders_items.category_id', 'left')
+                ->select('product.product_name', 'category.name', 'customers.first_name', 'customers.last_name', 'customers.phone_number', 'orders_items.*')
+                ->get();
 
             return response()->json(['order' => $order, 'items' => $items]);
         } catch (\Exception $e) {
@@ -125,7 +137,7 @@ class Orders extends Controller
     {
         try {
             AppOrders::where('id', $id)->update([
-                // create order entry                
+                // create order entry
                 "payment_mode" =>  $request->payment_mode,
                 "customer_id" =>  $request->customer_id,
                 "notes" =>  $request->notes,

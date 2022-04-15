@@ -23,10 +23,7 @@ class ProductController extends Controller
                 'product.*',
             )->orderBy('id', "DESC")
                 ->paginate(10);
-            return response()->json([
-                'products' => $product,
-
-            ]);
+            return response()->json(['products' => $product]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
