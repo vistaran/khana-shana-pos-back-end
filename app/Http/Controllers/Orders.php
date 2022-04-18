@@ -146,7 +146,10 @@ class Orders extends Controller
             ]);
 
             foreach ($request->products as $item) {
-                OrdersItems::where('id', $item['id'])->delete();
+                OrdersItems::where('order_id', $request->order_id)
+                    ->where('category_id', $request->category_id)
+                    ->where('product_id', $request->product_id)
+                    ->delete();
             }
             
             $order = AppOrders::where('id', $id)->first();
