@@ -18,21 +18,31 @@ class PurchaseItemsController extends Controller
     public function index(Request $request)
     {
         try {
-            $pitems = PurchaseItems::query();
+             $pitems = PurchaseItems::query();
+            $query = request('query');
 
             $pitems->select('purchase_items.*', 'units.unit as unit_name', 'item_groups.group_name')
                 ->join('item_groups', 'item_groups.id', '=', 'purchase_items.item_group_id', 'left')
                 ->join('units', 'units.id', '=', 'purchase_items.unit_id', 'left');
 
+
             if (!empty($request->get('group_id'))) {
                 $pitems->where('item_group_id', $request->get('group_id'));
             }
+
+            $pitems->when(($query !== null), function ($q) use ($query) {
+                $q->where('item_name', 'like', '%' . $query . '%')
+                    ->orderBy('id', 'desc')
+                    ->paginate(10);
+                return response()->json(['purchase_items' => $q]);
+            });
 
             $pitems->orderBy('id', 'desc')
                 ->paginate(10);
             return response()->json([
                 'purchase_items' => $pitems
             ]);
+            
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
