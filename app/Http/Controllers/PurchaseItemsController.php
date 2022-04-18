@@ -15,9 +15,10 @@ class PurchaseItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+   public function index(Request $request)
     {
         try {
+            // $pitems = PurchaseItems::query();
             $query = request('query');
             $limit = request('limit');
 
@@ -37,27 +38,25 @@ class PurchaseItemsController extends Controller
                 // search by item_name
                 ->when(($query !== null), function ($q) use ($query) {
                     return $q->where('purchase_items.item_name', 'like', '%' . $query . '%');
-                })
-
-                // for dynamic pagination
-                ->when($limit !== null && ($limit <= 500), function ($q) use ($limit) {
-                    return $q->orderBy('purchase_items.id', 'desc')
-                        ->paginate($limit);
-                })
-
-                ->when(($limit !== null && $limit > 500), function ($q) use ($limit) {
-                    return $q->orderBy('purchase_items.id', 'desc')
-                        ->paginate($limit);
-                })
-
-                // Default pagination
-                ->when(($limit == null), function ($q) {
-                    return $q->orderBy('purchase_items.id', 'desc')
-                        ->paginate(10);
                 });
 
+
+            // Default pagination
+            if (($limit == null)) {
+                return $pitems->orderBy('purchase_items.id', 'desc')->paginate(10);
+            }
+
+            // for dynamic pagination
+            if (($limit !== null && $limit <= 500)) {
+                return $pitems->orderBy('purchase_items.id', 'desc')->paginate($limit);
+            }
+
+            if (($limit !== null && $limit > 500)) {
+                return $pitems->orderBy('purchase_items.id', 'desc')->paginate(500);
+            }
+
+
             return response()->json(['purchase_items' => $pitems]);
-            
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
