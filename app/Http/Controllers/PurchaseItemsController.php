@@ -31,13 +31,13 @@ class PurchaseItemsController extends Controller
             }
 
             $pitems->when(($query !== null), function ($q) use ($query) {
-                $q->where('item_name', 'like', '%' . $query . '%')
-                    ->orderBy('id', 'desc')
+                $q->where('purchase_items.item_name', 'like', '%' . $query . '%')
+                    ->orderBy('purchase_items.id', 'desc')
                     ->paginate(10);
                 return response()->json(['purchase_items' => $q]);
             });
 
-            $pitems->orderBy('id', 'desc')
+            $pitems->orderBy('purchase_items.id', 'desc')
                 ->paginate(10);
             return response()->json([
                 'purchase_items' => $pitems
