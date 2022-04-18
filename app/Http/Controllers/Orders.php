@@ -146,12 +146,24 @@ class Orders extends Controller
             ]);
 
             foreach ($request->products as $item) {
-                OrdersItems::where('order_id', $item['order_id'])
-                    ->where('category_id', $item['category_id'])
-                    ->where('product_id', $item['product_id'])
-                    ->delete();
+                if ($item['flag'] == 'add') {
+                    $order_item = new OrdersItems();
+                    $order_item->order_id = $item['order_id'];
+                    $order_item->product_id = $item['product_id'];
+                    $order_item->category_id = $item['category_id'];
+                    $order_item->price = $item['price'];
+                    $order_item->quantity = $item['quantity'];
+                    $order_item->subtotal = $item['subtotal'];
+                    $order_item->save();
+                }
+                if ($item['flag'] == 'delete') {
+                    OrdersItems::where('order_id', $item['order_id'])
+                        ->where('category_id', $item['category_id'])
+                        ->where('product_id', $item['product_id'])
+                        ->delete();
+                }
             }
-            
+
             $order = AppOrders::where('id', $id)->first();
             return response()->json($order);
         } catch (\Exception $e) {
