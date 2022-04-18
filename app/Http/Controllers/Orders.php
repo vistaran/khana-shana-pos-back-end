@@ -146,14 +146,9 @@ class Orders extends Controller
             ]);
 
             foreach ($request->products as $item) {
-                OrdersItems::where('id', $item['id'])->update([
-                    'product_id' => $item['product_id'],
-                    'category_id' => $item['category_id'],
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                    'subtotal' => $item['subtotal']
-                ]);
+                OrdersItems::where('id', $item['id'])->delete();
             }
+            
             $order = AppOrders::where('id', $id)->first();
             return response()->json($order);
         } catch (\Exception $e) {
