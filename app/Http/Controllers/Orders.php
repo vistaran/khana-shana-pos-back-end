@@ -146,9 +146,9 @@ class Orders extends Controller
             ]);
 
             foreach ($request->products as $item) {
-                OrdersItems::where('order_id', $request->order_id)
-                    ->where('category_id', $request->category_id)
-                    ->where('product_id', $request->product_id)
+                OrdersItems::where('order_id', $item['order_id'])
+                    ->where('category_id', $item['category_id'])
+                    ->where('product_id', $item['product_id'])
                     ->delete();
             }
             
