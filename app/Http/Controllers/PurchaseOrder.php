@@ -63,6 +63,7 @@ class PurchaseOrder extends Controller
                 $purchaseOrder->notes =  $request->notes;
                 $purchaseOrder->shipping_charge =  $request->shipping_charge;
                 $purchaseOrder->total_amount =  $request->total_amount;
+                $purchaseOrder->purchase_date =  $request->purchase_date;
                 $purchaseOrder->save();
                 // create items entry
                 foreach ($request->items as $item) {
@@ -141,7 +142,8 @@ class PurchaseOrder extends Controller
                 "outlet_id" =>  $request->outlet_id,
                 "notes" =>  $request->notes,
                 "shipping_charge" =>  $request->shipping_charge,
-                "total_amount" =>  $request->total_amount
+                "total_amount" =>  $request->total_amount,
+                "purchase_date" => $request->purchase_date
             ]);
 
             // create items entry

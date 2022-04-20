@@ -21,6 +21,7 @@ class CreateOrdersTable extends Migration
             $table->string('notes');
             $table->float('shipping_charge', 6, 2, true);
             $table->float('total_amount', 10, 2, true);
+            $table->dateTime('order_date')->nullable();
             $table->timestamps();
         });
     }

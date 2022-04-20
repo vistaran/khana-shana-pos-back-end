@@ -21,7 +21,7 @@ class Orders extends Controller
     {
         try {
             $orders = AppOrders::join('customers', 'customers.id', '=', 'orders.customer_id', 'left')
-                ->select('customers.first_name', 'customers.last_name','customers.phone_number', 'orders.*')
+                ->select('customers.first_name', 'customers.last_name', 'customers.phone_number', 'orders.*')
                 ->orderBy('id', 'desc')->paginate(10);
             return response()->json([
                 'orders' => $orders
@@ -60,6 +60,7 @@ class Orders extends Controller
                 $order->customer_id =  $request->customer_id;
                 $order->shipping_charge =  $request->shipping_charge;
                 $order->total_amount =  $request->total_amount;
+                $order->order_date =  $request->order_date;
                 $order->save();
 
                 // create items entry
@@ -97,7 +98,7 @@ class Orders extends Controller
         try {
             $order = AppOrders::where('orders.id', $id)
                 ->join('customers', 'customers.id', '=', 'orders.customer_id', 'left')
-                ->select('customers.first_name', 'customers.last_name', 'customers.phone_number','orders.*')
+                ->select('customers.first_name', 'customers.last_name', 'customers.phone_number', 'orders.*')
                 ->orderBy('orders.id', 'desc')->paginate(10)
                 ->first();
             $items = OrdersItems::where('orders_items.order_id', $id)
@@ -142,7 +143,8 @@ class Orders extends Controller
                 "customer_id" =>  $request->customer_id,
                 "notes" =>  $request->notes,
                 "shipping_charge" =>  $request->shipping_charge,
-                "total_amount" =>  $request->total_amount
+                "total_amount" =>  $request->total_amount,
+                "order_date" => $request->order_date
             ]);
 
             foreach ($request->products as $item) {
