@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\AttributeFamilyGroup;
 use App\Group;
 use Attribute;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class GroupController extends Controller
 {
-    //Show Group Datas
     public function show()
     {
         try {
@@ -25,6 +26,31 @@ class GroupController extends Controller
                 'groups' => $group,
 
             ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+    }
+    public function delete($id)
+    {
+        try {
+            $flag = Group::where('id', $id)->value('group_based');
+            Group::when(($flag == 'User'), function ($q) use ($id) {
+                // dd();
+                Attribute::where('group_id', $id)
+                    ->update(['group_id' => null]);
+                $q->find($id)->delete();
+                return $q;
+            });
+            if ($flag == 'User') {
+                return response()->json([
+                    'delete message' => 'Successfully Deleted !',
+                ]);
+            } else {
+                return response()->json([
+                    'delete message' => 'System cannot be delete !',
+                ]);
+            }
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -57,7 +83,6 @@ class GroupController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    //Insert Attributes in Group
     public function insertAttribute(Request $request, $id)
     {
         try {
@@ -66,27 +91,27 @@ class GroupController extends Controller
             $attribute_family_id = $request->input('attribute_family_id');
 
             // data load from database
-            $attribute_family_group = new AttributeFamilyGroup();
+            $family = new AttributeFamilyGroup();
 
             // fetch ids and data
-            $flag_attribute = count($attribute_family_group->where('attribute_family_id', $attribute_family_id)->where('attribute_id', $id)->get());
+            $flag_attribute = count($family->where('attribute_family_id', $attribute_family_id)->where('attribute_id', $id)->get());
 
             // dd($flag_attribute);
             if ($flag_attribute) {
-                $attribute_family_group->where('attribute_id', $id)
-                ->update([
-                    'group_id' => $group_id,
-                    'attribute_family_id' => $attribute_family_id,
-                ]);
-                $attribute_family_group->save();
+                $family->where('attribute_id', $id)
+                    ->update([
+                        'group_id' => $group_id,
+                        'attribute_family_id' => $attribute_family_id,
+                    ]);
+                $family->save();
             }
 
             // dd($flag_attribute);
             if (!$flag_attribute) {
-                $attribute_family_group->attribute_family_id = $attribute_family_id;
-                $attribute_family_group->group_id = $group_id;
-                $attribute_family_group->attribute_id = $id;
-                $attribute_family_group->save();
+                $family->attribute_family_id = $attribute_family_id;
+                $family->group_id = $group_id;
+                $family->attribute_id = $id;
+                $family->save();
             }
 
             return response()->json([
@@ -97,7 +122,7 @@ class GroupController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    //Show Attribute which is in Group
+    
     public function attribute_group_show()
     {
         try {
@@ -105,17 +130,17 @@ class GroupController extends Controller
             // data load from database
 
             $attribute_family_group = AttributeFamilyGroup::join('attribute', 'attribute.id', '=', 'attribute_family_group.attribute_id')
-            ->select(
-                'attribute_family_group.attribute_id',
-                'attribute_family_group.group_id',
-                'attribute_family_group.attribute_family_id',
-                'attribute.attribute_based',
-                'attribute.attribute_code',
-                'attribute.name',
-                'attribute.type',
-            )
-            ->orderBy('attribute_family_id', 'ASC')
-            ->get();
+                ->select(
+                    'attribute_family_group.attribute_id',
+                    'attribute_family_group.group_id',
+                    'attribute_family_group.attribute_family_id',
+                    'attribute.attribute_based',
+                    'attribute.attribute_code',
+                    'attribute.name',
+                    'attribute.type',
+                )
+                ->orderBy('attribute_family_id', 'ASC')
+                ->get();
 
             return response()->json([
                 'insert data' => $attribute_family_group,
@@ -125,33 +150,6 @@ class GroupController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    //Delete Group
-    public function delete($id)
-    {
-        try {
-            $group_based = Group::where('id', $id)->value('group_based');
-            Group::when(($group_based == 'User'), function ($q) use ($id) {
-                // dd();
-                Attribute::where('group_id', $id)
-                    ->update(['group_id' => null]);
-                $q->find($id)->delete();
-                return $q;
-            });
-            if ($group_based == 'User') {
-                return response()->json([
-                    'delete message' => 'Successfully Deleted !',
-                ]);
-            } else {
-                return response()->json([
-                    'delete message' => 'System cannot be delete !',
-                ]);
-            }
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
-        }
-    }
-    //Search Group
     public function search(Request $request)
     {
         $query = $request->input('query');

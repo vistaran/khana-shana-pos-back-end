@@ -21,12 +21,13 @@ class CreatePurchaseOrderItemsTable extends Migration
             $table->string('item_name');
             $table->unsignedInteger('item_group_id');
             $table->string('item_group_name');
-            $table->unsignedInteger('qty');
+            $table->float('qty', 8, 2);
             $table->unsignedInteger('unit_id');
             $table->float('price', 8, 2);
-            $table->unsignedInteger('unit_name');
+            $table->string('unit_name');
             $table->float('subtotal', 8, 2);
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

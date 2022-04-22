@@ -18,7 +18,8 @@ class CreatePurchaseItemsTable extends Migration
             $table->string('item_name');
             $table->integer('item_group_id');
             $table->string('unit_id');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\PurchaseItems;
 use App\PurchaseOrder as AppPurchaseOrder;
 use App\PurchaseOrderItems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PurchaseOrder extends Controller
 {
@@ -20,7 +20,10 @@ class PurchaseOrder extends Controller
     public function index()
     {
         try {
-            $orders = AppPurchaseOrder::orderBy('id', 'desc')->paginate(10);
+            $orders = AppPurchaseOrder::join('vendors', 'vendors.id', '=', 'purchase_orders.vendor_id', 'left')
+                ->join('outlets', 'outlets.id', '=', 'purchase_orders.outlet_id', 'left')
+                ->select('vendors.name', 'outlets.outlet_name', 'purchase_orders.*')
+                ->orderBy('purchase_orders.id', 'desc')->paginate(10);
             return response()->json([
                 'orders' => $orders]);
 
@@ -49,15 +52,18 @@ class PurchaseOrder extends Controller
     {
         try {
             $purchaseOrder = new AppPurchaseOrder();
-            $exception = DB::transaction(function () use ($request, &$purchaseOrder) {
+            $purchase_item_data = [];
+            $exception = DB::transaction(function () use ($request, &$purchaseOrder, &$purchase_item_data) {
+                $user = JWTAuth::parseToken()->toUser();
 
                 // create order entry
                 $purchaseOrder->vendor_id = $request->vendor_id;
                 $purchaseOrder->outlet_id =  $request->outlet_id;
-                $purchaseOrder->user_id =  $request->user_id;
+                $purchaseOrder->user_id =  $user->id;
                 $purchaseOrder->notes =  $request->notes;
                 $purchaseOrder->shipping_charge =  $request->shipping_charge;
                 $purchaseOrder->total_amount =  $request->total_amount;
+                $purchaseOrder->purchase_date =  $request->purchase_date;
                 $purchaseOrder->save();
                 // create items entry
                 foreach ($request->items as $item) {
@@ -74,11 +80,12 @@ class PurchaseOrder extends Controller
                     $purchase_item->price = $item['price'];
                     $purchase_item->subtotal = $item['subtotal'];
                     $purchase_item->save();
+                    array_push($purchase_item_data, $purchase_item);
                 }
             });
 
             if (is_null($exception)) {
-                return response()->json($purchaseOrder);
+                return response()->json(['purchaseOrder' => $purchaseOrder, 'purchase_item' => $purchase_item_data]);
             } else {
                 throw new \Exception;
             }
@@ -98,8 +105,9 @@ class PurchaseOrder extends Controller
     {
         try {
             $order = AppPurchaseOrder::where('id', $id)->first();
+            $items = PurchaseOrderItems::where('purchase_order_id', $id)->get();
 
-            return response()->json($order);
+            return response()->json(['order' => $order, 'items' => $items]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -134,7 +142,8 @@ class PurchaseOrder extends Controller
                 "outlet_id" =>  $request->outlet_id,
                 "notes" =>  $request->notes,
                 "shipping_charge" =>  $request->shipping_charge,
-                "total_amount" =>  $request->total_amount
+                "total_amount" =>  $request->total_amount,
+                "purchase_date" => $request->purchase_date
             ]);
 
             // create items entry

@@ -17,7 +17,8 @@ class CreateUnitsTable extends Migration
             $table->id();
             $table->string('unit_name');
             $table->string('unit');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

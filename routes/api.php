@@ -107,22 +107,6 @@ Route::group(
     }
 );
 
-// Product API
-Route::group(
-    [
-        'middleware' => 'api',
-        'prefix' => 'product',
-    ],
-    function ($router) {
-        Route::get('show', 'ProductController@show');
-        Route::get('show/{id}', 'ProductController@show_data');
-        Route::put('edit/{id}', 'ProductController@edit');
-        Route::get('delete/{id}', 'ProductController@delete');
-        Route::post('insert', 'ProductController@insert');
-        Route::get('search', 'ProductController@search');
-    }
-);
-
 // Group API
 Route::group(
     [
@@ -151,9 +135,12 @@ Route::group(
     }
 );
 
+Route::resource('product', ProductController::class);
+Route::resource('customer', CustomerController::class);
+Route::resource('userAddress', UserAddresses::class);
 Route::resource('vendors', VendorsController::class);
 Route::resource('units', UnitsController::class);
 Route::resource('purchase_items', PurchaseItemsController::class);
 Route::resource('item_groups', ItemGroup::class);
 Route::resource('purchase_order', PurchaseOrder::class);
-
+Route::resource('orders', Orders::class);

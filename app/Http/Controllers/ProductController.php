@@ -2,191 +2,180 @@
 
 namespace App\Http\Controllers;
 
-use App\AttributeFamily;
-use App\Category;
 use App\CategoryProduct;
 use App\Product;
-use App\ProductAttributeFamily;
-use Attribute;
 use Exception;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use ProductAttributeFamilySeeder;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-    //Show Products Datas
-    public function show()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
         try {
-            $product = Product::join('product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id')
-                ->join('attribute_family', 'product_attribute_family.attribute_family_id', '=', 'attribute_family.id')
-                ->select(
-                    'product.id',
-                    'product.sku',
-                    'product.name',
-                    'product.product_type',
-                    'product.status',
-                    'product.price',
-                    'product.quantity',
-                    'product.created_at',
-                    'product.updated_at',
-                    'attribute_family.attribute_family_name',
-                )->orderBy('id')
+            $product = Product::select(
+                'product.*',
+            )->orderBy('id', "DESC")
                 ->paginate(10);
-            return response()->json([
-                'products' => $product,
-
-            ]);
+            return response()->json(['products' => $product]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    //Insert Product
-    public function insert(Request $request)
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
     {
         try {
-            $credentials = $request->only([
-                'sku',
-                'name',
-                'product_type',
-                'status',
-                'price',
-                'quantity',
-                'attribute_family_name',
-            ]);
+
             $product = new Product();
-            $product_attribute_family = new ProductAttributeFamily();
-
-            $product->sku = $request->sku;
-            $product->name = $request->name;
-            $product->product_type = $request->product_type;
-            $product->status = $request->status;
+            $product->product_name = $request->product_name;
+            $product->description = $request->description;
             $product->price = $request->price;
-            $product->quantity = $request->quantity;
-
+            $product->category_id = $request->category_id;
+            $product->category_name = $request->category_name;
             $product->save();
 
-            $product_attribute_id = AttributeFamily::where('attribute_family_name', $request->attribute_family_name)->first()->id;
-
-            $product_id = Product::where('name', $request->name)->first()->id;
-
-            $product_attribute_family->attribute_family_id = $product_attribute_id;
-            $product_attribute_family->product_id = $product_id;
-            $product_attribute_family->save();
-            return response()->json([
-                'insert data' => 'Successfully Inserted !',
+            // dd($product->id);
+            CategoryProduct::insert([
+                'category_id' => $request->category_id,
+                'product_id' => $product->id,
             ]);
+
+            return response()->json([
+                'message' => "Product inserted",
+            ]);
+            // foreach ($request->insert_product_data as $uData) {
+            // dd($uData);
+            // foreach ($uData['group_data'] as $gData) {
+            // foreach ($gData['items'] as $item) {
+            //         }
+            //     }
+            // }
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    //Edit Product
-    public function edit($id, Request $request)
-    {
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
         try {
-            $credential = $request->only([
-                'sku',
-                'name',
-                'product_type',
-                'status',
-                'price',
-                'quantity',
-            ]);
+            $product = Product::where('id', $id)->first();
+            return response()->json($product);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+
+            $product_name = $request->product_name;
+            $description = $request->description;
+            $price = $request->price;
+            $category_id = $request->category_id;
+            $attribute_id = $request->attribute_id;
+            $group_id = $request->group_id;
+            $attribute_family_id = $request->attribute_family_id;
+            $attribute_data = $request->attribute_data;
+            $category_name = $request->category_name;
+            // dd(Product::where('id', $id)->get());
             Product::where('id', $id)
                 ->update([
-                    'sku' => $request->sku,
-                    'name' => $request->name,
-                    'product_type' => $request->product_type,
-                    'status' => $request->status,
-                    'price' => $request->price,
-                    'quantity' => $request->quantity,
+                    'attribute_data' => $attribute_data,
+                    'product_name' => $product_name,
+                    'description' => $description,
+                    'price' => $price,
+                    'category_id' => $category_id,
+                    'category_name' => $category_name,
                 ]);
-
-            $category_id = Category::where('name', $request->category_name)->first()->id;
-
-            $flag_category_product = CategoryProduct::where('product_id', $id)->get();
-            CategoryProduct::when($flag_category_product->isEmpty(), function () use ($category_id, $id) {
-                $category_product = new CategoryProduct();
-                $category_product->category_id = $category_id;
-                $category_product->product_id = $id;
-                $category_product->save();
-            })
-                ->when($flag_category_product->isNotEmpty(), function ($q) use ($category_id, $id) {
-                    $q->update([
-                        'category_id' => $category_id,
-                        'product_id' => $id
-                    ]);
-                });
-            return response()->json([
-                'ipdate message' => 'Successfully Updated !',
-            ]);
+            $group = Product::where('id', $id)->first();
+            // foreach ($request->update_product_data as $iData) {
+            // dd($uData);
+            //     foreach ($iData['group_data'] as $gData) {
+            //         foreach ($gData['items'] as $item) {
+            // 'attribute_id' => $item['attribute_id'],
+            // 'group_id' => $item['group_id'],
+            // 'attribute_family_id' => $item['attribute_family_id'],
+            //         }
+            //     }
+            // }
+            return response(['products' => $group]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
-    //Delete Product
-    public function delete($id)
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
     {
         try {
-            DB::table('category_product')
-                ->where('product_id', $id)
-                ->delete();
+            // DB::table('category_product')
+            //     ->where('product_id', $id)
+            //     ->delete();
 
-            Product::find($id)
+            Product::where('id', $id)
                 ->delete();
             return response()->json([
-                'delete message' => 'Successfully Deleted !',
+                'Delete Message' => 'Successfully Deleted !',
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
-    }
-    //Search Product
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
-        $data =
-            Product::join('product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id')
-            ->join('attribute_family', 'product_attribute_family.attribute_family_id', '=', 'attribute_family.id')
-            ->where('product_attribute_family.product_id', $query)
-            ->orWhere('product.price', $query)
-            ->orWhere('product.quantity', $query)
-            ->orWhere('product.sku', 'like', '%' . $query . '%')
-            ->orWhere('product.name', 'like', '%' . $query . '%')
-            ->orWhere('product.product_type', 'like', '%' . $query . '%')
-            ->select(
-                'product.id',
-                'product.sku',
-                'product.name',
-                'product.product_type',
-                'product.status',
-                'product.price',
-                'product.quantity',
-                'product.created_at',
-                'product.updated_at',
-                'attribute_family.attribute_family_name',
-            )
-            ->orderBy('id')
-            ->paginate(10);
-
-        return response()->json([
-            'products' => $data,
-        ]);
-    }
-    //Show Product Datas using ID
-    public function show_data($id)
-    {
-        $product = Product::where('id', $id)->first();
-
-        return response()->json([
-            'show_data' => $product,
-        ]);
     }
 }
