@@ -130,7 +130,10 @@ Route::group(
         'prefix' => 'expense_reports',
     ],
     function ($router) {
-        Route::get('expense','ExpenseReportsController@show');
+         Route::get('expense','ExpenseReportsController@show');
+         Route::get('totalExpense','ExpenseReportsController@totalExpense');
+         Route::get('showItem','ExpenseReportsController@showItem');
+
 
     }
 );
