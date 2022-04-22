@@ -124,17 +124,16 @@ Route::group(
         Route::get('search', 'GroupController@search');
     }
 );
-// Search API
 Route::group(
     [
         'middleware' => 'api',
-        'prefix' => 'search',
+        'prefix' => 'expense_reports',
     ],
     function ($router) {
-        Route::get('customerSearch', 'SearchController@searchOrder');
+        Route::get('expense','ExpenseReportsController@show');
+
     }
 );
-
 
 Route::resource('product', ProductController::class);
 Route::resource('customer', CustomerController::class);

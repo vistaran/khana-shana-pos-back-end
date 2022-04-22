@@ -46,6 +46,7 @@ class PurchaseItemsController extends Controller
                 return $pitems->orderBy('purchase_items.id', 'desc')->paginate(10);
             }
 
+
             // for dynamic pagination
             if (($limit !== null && $limit <= 500)) {
                 return $pitems->orderBy('purchase_items.id', 'desc')->paginate($limit);
@@ -54,7 +55,6 @@ class PurchaseItemsController extends Controller
             if (($limit !== null && $limit > 500)) {
                 return $pitems->orderBy('purchase_items.id', 'desc')->paginate(500);
             }
-
 
             return response()->json(['purchase_items' => $pitems]);
         } catch (\Exception $e) {

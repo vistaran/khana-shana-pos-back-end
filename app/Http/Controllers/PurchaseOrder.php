@@ -25,8 +25,8 @@ class PurchaseOrder extends Controller
                 ->select('vendors.name', 'outlets.outlet_name', 'purchase_orders.*')
                 ->orderBy('purchase_orders.id', 'desc')->paginate(10);
             return response()->json([
-                'orders' => $orders
-            ]);
+                'orders' => $orders]);
+
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
