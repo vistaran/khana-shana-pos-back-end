@@ -178,4 +178,14 @@ class PurchaseOrder extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+    public function showtotal($start_date,$end_date)
+    {
+        PurchaseOrderItems::select(item_group_id,item_group_name)
+        ->whereIn('purchase_order_id', function ($query) {
+            $query->select(DB::raw(1))
+                ->from('purchase_orders ')
+                ->whereRaw('orders.user_id = users.id');
+        })
+            ->get();
+    }
 }
