@@ -147,7 +147,7 @@ Route::group(
     ],
     function ($router) {
         Route::get('expense','ExpenseReportsController@show');
-       
+
     }
 );
 
