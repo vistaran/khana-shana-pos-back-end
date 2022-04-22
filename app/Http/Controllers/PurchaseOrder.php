@@ -22,8 +22,8 @@ class PurchaseOrder extends Controller
         try {
             $orders = AppPurchaseOrder::orderBy('id', 'desc')->paginate(10);
             return response()->json([
-                'orders' => $orders
-            ]);
+                'orders' => $orders]);
+
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -177,15 +177,5 @@ class PurchaseOrder extends Controller
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
-    }
-    public function showtotal($start_date,$end_date)
-    {
-        PurchaseOrderItems::select(item_group_id,item_group_name)
-        ->whereIn('purchase_order_id', function ($query) {
-            $query->select(DB::raw(1))
-                ->from('purchase_orders ')
-                ->whereRaw('orders.user_id = users.id');
-        })
-            ->get();
     }
 }

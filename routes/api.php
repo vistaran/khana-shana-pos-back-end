@@ -140,9 +140,20 @@ Route::group(
         Route::get('search', 'GroupController@search');
     }
 );
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'expense_reports',
+    ],
+    function ($router) {
+        Route::get('expense','ExpenseReportsController@show');
+       
+    }
+);
 
 Route::resource('vendors', VendorsController::class);
 Route::resource('units', UnitsController::class);
 Route::resource('purchase_items', PurchaseItemsController::class);
 Route::resource('item_groups', ItemGroup::class);
 Route::resource('purchase_order', PurchaseOrder::class);
+
