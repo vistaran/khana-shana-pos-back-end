@@ -25,8 +25,8 @@ class PurchaseOrder extends Controller
                 ->select('vendors.name', 'outlets.outlet_name', 'purchase_orders.*')
                 ->orderBy('purchase_orders.id', 'desc')->paginate(10);
             return response()->json([
-                'orders' => $orders]);
-
+                'orders' => $orders
+            ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
@@ -104,7 +104,12 @@ class PurchaseOrder extends Controller
     public function show($id)
     {
         try {
-            $order = AppPurchaseOrder::where('id', $id)->first();
+            $order = AppPurchaseOrder::join('vendors', 'vendors.id', '=', 'purchase_orders.vendor_id', 'left')
+                ->join('outlets', 'outlets.id', '=', 'purchase_orders.outlet_id', 'left')
+                ->where('purchase_orders.id', $id)
+                // ->where('purchase_orders.id', $id)->first();
+                ->select('vendors.name AS vendor_name', 'outlets.outlet_name', 'purchase_orders.*')
+                ->get();
             $items = PurchaseOrderItems::where('purchase_order_id', $id)->get();
 
             return response()->json(['order' => $order, 'items' => $items]);
