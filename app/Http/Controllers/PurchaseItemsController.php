@@ -15,20 +15,18 @@ class PurchaseItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-   public function index(Request $request)
+    public function index(Request $request)
     {
         try {
             // $pitems = PurchaseItems::query();
             $query = request('query');
             $limit = request('limit');
+            $group_id = request('group_id');
 
             $pitems = PurchaseItems::select('purchase_items.*', 'units.unit as unit_name', 'item_groups.group_name')
                 ->join('item_groups', 'item_groups.id', '=', 'purchase_items.item_group_id', 'left')
                 ->join('units', 'units.id', '=', 'purchase_items.unit_id', 'left')
 
-                // if (!empty($request->get('group_id'))) {
-                //     $pitems->where('item_group_id', $request->get('group_id'));
-                // }
 
                 // default
                 ->when(($query == null), function ($q) {
@@ -38,8 +36,16 @@ class PurchaseItemsController extends Controller
                 // search by item_name
                 ->when(($query !== null), function ($q) use ($query) {
                     return $q->where('purchase_items.item_name', 'like', '%' . $query . '%');
+                })
+
+                ->when((!empty($request->get('group_id'))), function ($q) use ($group_id) {
+                    return $q->where('item_group_id', $group_id);
                 });
 
+            // dd($request->get('group_id'));
+            // if (!empty($request->get('group_id'))) {
+            //     return $pitems->where('item_group_id', $request->get('group_id'));
+            // }
 
             // Default pagination
             if (($limit == null)) {
