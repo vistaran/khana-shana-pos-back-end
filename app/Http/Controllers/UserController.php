@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Outlet;
 use App\UserOutlet;
-    use App\User;
+use App\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -18,18 +18,17 @@ class UserController extends Controller
             $user = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id', 'left')
                 ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id', 'left')
                 ->select(
-                    'user.id',
                     'user_outlet.user_id',
                     'user.user_avatar',
                     'user.username',
                     'user.email',
                     'user.status',
+                    'outlets.Outlet_name',
                     'user.created_at'
                 )->orderBy('user.id', 'desc')
                 ->paginate(10);
             return response()->json([
                 'user' => $user,
-
             ]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -77,7 +76,7 @@ class UserController extends Controller
     {
         try {
             $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status']);
-            Users::where('id', $id)
+            User::where('id', $id)
                 ->update([
                     'first_name' => $request->first_name,
                     'lastname' => $request->lastname,
@@ -118,8 +117,9 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $data = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
-            ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
+
+        $data = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id', 'left')
+            ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id', 'left')
             ->where('user_outlet.user_id', $query)
             ->orWhere('user.username', 'like', '%' . $query . '%')
             ->orWhere('user.email', 'like', '%' . $query . '%')
