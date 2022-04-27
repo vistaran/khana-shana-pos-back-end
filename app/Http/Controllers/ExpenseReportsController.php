@@ -57,7 +57,7 @@ class ExpenseReportsController extends Controller
     }
     public function showItem()
     {
-        $data = PurchaseOrderItems::select('item_name', AppPurchaseOrder::raw('SUM(purchase_orders.total_amount) as total'))
+        $data = PurchaseOrderItems::select('item_name', 'subtotal', AppPurchaseOrder::raw('SUM(purchase_orders.total_amount) as total'))
             ->join(
                 'purchase_orders',
                 'purchase_orders.id',
