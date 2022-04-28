@@ -18,7 +18,7 @@ class ItemGroup extends Controller
     {
         try {
             $limit = request('limit');
-            $pitems = AppItemGroup::get();
+            $pitems = AppItemGroup::select('item_groups.*');
 
 
             // default
