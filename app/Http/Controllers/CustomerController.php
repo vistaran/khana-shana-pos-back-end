@@ -21,16 +21,16 @@ class CustomerController extends Controller
             $limit = request('limit');
             // default
             if (($limit == null)) {
-                return $pitems->orderBy('id', 'desc')->paginate(10);
+                return $customers->orderBy('id', 'desc')->paginate(10);
             }
 
             // for dynamic pagination
             if (($limit !== null && $limit <= 500)) {
-                return $pitems->orderBy('id', 'desc')->paginate($limit);
+                return $customers->orderBy('id', 'desc')->paginate($limit);
             }
 
             if (($limit !== null && $limit > 500)) {
-                return $pitems->orderBy('id', 'desc')->paginate(500);
+                return $customers->orderBy('id', 'desc')->paginate(500);
             };
             return response()->json(['customers' => $customers]);
         } catch (Exception $e) {
