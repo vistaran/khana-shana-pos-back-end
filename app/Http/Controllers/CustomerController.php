@@ -18,6 +18,7 @@ class CustomerController extends Controller
     {
         try {
             $customers = Customers::select('customers.*');
+            $limit = request('limit');
             // default
             if (($limit == null)) {
                 return $pitems->orderBy('id', 'desc')->paginate(10);
