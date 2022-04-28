@@ -17,10 +17,28 @@ class ItemGroup extends Controller
     public function index()
     {
         try {
-            $pitems = AppItemGroup::orderBy('id', 'desc')->paginate(10);
+            $limit = request('limit');
+            $pitems = AppItemGroup::get();
+
+
+            // default
+            if (($limit == null)) {
+                return $pitems->orderBy('id', 'desc')->paginate(10);
+            }
+
+            // for dynamic pagination
+            if (($limit !== null && $limit <= 500)) {
+                return $pitems->orderBy('id', 'desc')->paginate($limit);
+            }
+
+            if (($limit !== null && $limit > 500)) {
+                return $pitems->orderBy('id', 'desc')->paginate(500);
+            };
+
             return response()->json([
                 'item_groups' => $pitems
             ]);
+
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
