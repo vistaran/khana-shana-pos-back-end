@@ -140,7 +140,6 @@ class PurchaseOrder extends Controller
     public function update(Request $request, $id)
     {
         try {
-
             AppPurchaseOrder::where('id', $id)->update([
                 // create order entry
                 "vendor_id" => $request->vendor_id,
@@ -151,20 +150,43 @@ class PurchaseOrder extends Controller
                 "purchase_date" => $request->purchase_date
             ]);
 
+
             // create items entry
             foreach ($request->items as $item) {
-                PurchaseOrderItems::where('id', $item['id'])->update([
-                    'notes' => $item['notes'],
-                    'item_id' => $item['item_id'],
-                    'item_name' => $item['item_name'],
-                    'item_group_id' => $item['item_group_id'],
-                    'item_group_name' => $item['item_group_name'],
-                    'qty' => $item['qty'],
-                    'unit_id' => $item['unit_id'],
-                    'unit_name' => $item['unit_name'],
-                    'price' => $item['price'],
-                    'subtotal' => $item['subtotal']
-                ]);
+                if ($item['flag'] == 'update') {
+                    PurchaseOrderItems::where('id', $item['id'])->update([
+                        'notes' => $item['notes'],
+                        'item_id' => $item['item_id'],
+                        'item_name' => $item['item_name'],
+                        'item_group_id' => $item['item_group_id'],
+                        'item_group_name' => $item['item_group_name'],
+                        'qty' => $item['qty'],
+                        'unit_id' => $item['unit_id'],
+                        'unit_name' => $item['unit_name'],
+                        'price' => $item['price'],
+                        'subtotal' => $item['subtotal']
+                    ]);
+                }
+
+                if ($item['flag'] == 'delete') {
+                    PurchaseOrderItems::where('id', $item['id'])->delete();
+                }
+
+                if ($item['flag'] == 'add') {
+                    $purchase_item = new PurchaseOrderItems();
+                    $purchase_item->purchase_order_id = $id;
+                    $purchase_item->notes = $item['notes'];
+                    $purchase_item->item_id = $item['item_id'];
+                    $purchase_item->item_name = $item['item_name'];
+                    $purchase_item->item_group_id = $item['item_group_id'];
+                    $purchase_item->item_group_name = $item['item_group_name'];
+                    $purchase_item->qty = $item['qty'];
+                    $purchase_item->unit_id = $item['unit_id'];
+                    $purchase_item->unit_name = $item['unit_name'];
+                    $purchase_item->price = $item['price'];
+                    $purchase_item->subtotal = $item['subtotal'];
+                    $purchase_item->save();
+                }
             }
             $vendor = AppPurchaseOrder::where('id', $id)->first();
             return response()->json($vendor);
@@ -173,6 +195,7 @@ class PurchaseOrder extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.
