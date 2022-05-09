@@ -18,7 +18,16 @@ class ItemGroup extends Controller
     {
         try {
             $limit = request('limit');
-            $pitems = AppItemGroup::select('item_groups.*');
+            $query = request('query');
+            $pitems = AppItemGroup::when(($query == null), function ($q) {
+                return $q;
+            })
+                ->when(($query !== null), function ($q) use ($query) {
+                    return $q->where('id', '=', $query)
+                        ->orWhere('group_name', 'like', '%' . $query . '%');
+
+                })
+            ->select('item_groups.*');
 
 
             // default
@@ -51,7 +60,7 @@ class ItemGroup extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request) {
-        
+
     }
 
     /**
