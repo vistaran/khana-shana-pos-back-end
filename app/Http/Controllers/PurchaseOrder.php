@@ -20,9 +20,24 @@ class PurchaseOrder extends Controller
     public function index()
     {
         try {
+            $query = request('query');
             $orders = AppPurchaseOrder::join('vendors', 'vendors.id', '=', 'purchase_orders.vendor_id', 'left')
                 ->join('outlets', 'outlets.id', '=', 'purchase_orders.outlet_id', 'left')
+                ->when(($query == null), function ($q) {
+                    return $q;
+                })
+                ->when(($query !== null), function ($q) use ($query) {
+                    return $q->where('purchase_orders.id', '=', $query)
+                        ->orWhere('vendors.name', 'like', '%' . $query . '%')
+                        ->orWhere('outlets.outlet_name', 'like', '%' . $query . '%')
+                    ->orWhere(function ($q) use ($query) {
+                        $q->whereDate('purchase_orders.purchase_date', $query);
+                    });
+
+
+                })
                 ->select('vendors.name', 'outlets.outlet_name', 'purchase_orders.*')
+
                 ->orderBy('purchase_orders.id', 'desc')->paginate(10);
             return response()->json([
                 'orders' => $orders
