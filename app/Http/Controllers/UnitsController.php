@@ -18,7 +18,17 @@ class UnitsController extends Controller
     public function index()
     {
         try {
-            $units = Units::orderBy('id', 'desc')->paginate(10);
+            $query = request('query');
+            $units = Units::when(($query == null), function ($q) {
+                return $q;
+            })
+                ->when(($query !== null), function ($q) use ($query) {
+                    return $q->where('id', '=', $query)
+                    ->orWhere('unit_name', 'like', '%' . $query . '%')
+                    ->orWhere('unit', 'like', '%' . $query . '%');
+                })
+
+                ->orderBy('id', 'desc')->paginate(10);
             return response()->json([
                 'units' => $units
             ]);
@@ -33,8 +43,8 @@ class UnitsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request) {
-        
+    public function create(Request $request)
+    {
     }
 
     /**
@@ -63,8 +73,9 @@ class UnitsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {
-         try {
+    public function show($id)
+    {
+        try {
             $vendor = Units::where('id', $id)->first();
             return response()->json($vendor);
         } catch (\Exception $e) {
@@ -91,7 +102,8 @@ class UnitsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         try {
             Units::where('id', $id)->update([
                 'unit_name' => $request->unit_name,
@@ -111,7 +123,8 @@ class UnitsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         try {
             Units::find($id)->delete();
             return response()->json([
