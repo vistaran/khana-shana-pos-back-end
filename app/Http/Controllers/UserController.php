@@ -19,12 +19,8 @@ class UserController extends Controller
                 ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id', 'left')
                 ->select(
                     'user_outlet.user_id',
-                    'user.user_avatar',
-                    'user.username',
-                    'user.email',
-                    'user.status',
+                    'user.*',
                     'outlets.Outlet_name',
-                    'user.created_at'
                 )->orderBy('user.id', 'desc')
                 ->paginate(10);
             return response()->json([
@@ -42,6 +38,12 @@ class UserController extends Controller
             $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status']);
             $user = new User();
             $user_outlet = new UserOutlet();
+            $userImage = $request->file('user_avatar');
+            // dd($userImage);
+            $extension = $userImage->getClientOriginalExtension();
+            $imageName = time() . "." . $extension;
+
+            $userImage->move(public_path('user_images'), $imageName);
 
             $user->first_name = $request->first_name;
             $user->lastname = $request->lastname;
@@ -50,7 +52,8 @@ class UserController extends Controller
             $user->password = bcrypt($request->password);
             $user->confirm_password = bcrypt($request->confirm_password);
             $user->phone_no = $request->phone_no;
-            $user->user_avatar = $request->user_avatar;
+
+            $user->user_avatar= $request->user_avatar;
             $user->status = $request->status;
             $user->save();
 
