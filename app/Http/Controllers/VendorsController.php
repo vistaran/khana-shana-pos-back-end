@@ -17,7 +17,16 @@ class VendorsController extends Controller
     public function index()
     {
         try {
-            $vendors = Vendors::orderBy('id', 'desc')->paginate(10);
+            $query = request('query');
+            $vendors = Vendors::when(($query == null), function ($q) {
+                return $q;
+            })
+                ->when(($query !== null), function ($q) use ($query) {
+                    return $q->where('id', '=', $query)
+                        ->orWhere('name', 'like', '%' . $query . '%')
+                        ->orWhere('phone_numbers', 'like', '%' . $query . '%');
+                })
+                ->orderBy('id', 'desc')->paginate(10);
             return response()->json([
                 'vendors' => $vendors
             ]);
@@ -33,7 +42,7 @@ class VendorsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request) {
-        
+
     }
 
     /**
