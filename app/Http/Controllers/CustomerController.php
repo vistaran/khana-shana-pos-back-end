@@ -17,7 +17,35 @@ class CustomerController extends Controller
     public function index()
     {
         try {
-            $customers = Customers::select('customers.*')->get();
+            $query = request('query');
+            $limit = request('limit');
+            $customers = Customers::select('customers.*')
+
+                // default
+                ->when(($query == null), function ($q) {
+                    return $q;
+                })
+
+                // search by item_name
+                ->when(($query !== null), function ($q) use ($query) {
+                    return $q->where('phone_number', $query)
+                        ->orWhere('first_name', 'like', $query . '%')
+                        ->orWhere('last_name', 'like', $query . '%');
+                });
+
+            // default
+            if (($limit == null)) {
+                return $customers->orderBy('id', 'desc')->paginate(10);
+            }
+
+            // for dynamic pagination
+            if (($limit !== null && $limit <= 500)) {
+                return $customers->orderBy('id', 'desc')->paginate($limit);
+            }
+
+            if (($limit !== null && $limit > 500)) {
+                return $customers->orderBy('id', 'desc')->paginate(500);
+            };
             return response()->json(['customers' => $customers]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
