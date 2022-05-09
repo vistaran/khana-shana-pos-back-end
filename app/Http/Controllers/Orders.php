@@ -20,7 +20,20 @@ class Orders extends Controller
     public function index()
     {
         try {
+            $query = request('query');
             $orders = AppOrders::join('customers', 'customers.id', '=', 'orders.customer_id', 'left')
+                ->when(($query == null), function ($q) {
+                    return $q;
+                })
+                ->when(($query !== null), function ($q) use ($query) {
+                    return $q->where('orders.id', '=', $query)
+                        ->orWhere('customers.first_name', 'like', '%' . $query . '%')
+                        ->orWhere('customers.last_name', 'like', '%' . $query . '%')
+                        ->orWhere('orders.payment_mode', 'like', '%' . $query . '%')
+                         ->orWhere(function ($q) use ($query) {
+                        $q->whereDate('orders.order_date', $query);
+                    });
+                })
                 ->select('customers.first_name', 'customers.last_name', 'customers.phone_number', 'orders.*')
                 ->orderBy('id', 'desc')->paginate(10);
             return response()->json([
