@@ -53,13 +53,18 @@ class ExpenseReportsController extends Controller
     }
     public function showItem()
     {
-        $data = PurchaseOrderItems::select('item_name')
-        ->whereIn('purchase_order_id', function ($query) {
-            $query->select('id')
-                ->from(with(new AppPurchaseOrder)->getTable())
-                ->whereYear('purchase_date', request('year'))
-                ->whereMonth('purchase_date', request('month'));
-        })->groupBy('item_name')
+        $data = PurchaseOrderItems::select('item_name', AppPurchaseOrder::raw('SUM(purchase_orders.total_amount) as total'))
+            ->join(
+                'purchase_orders',
+                'purchase_orders.id',
+                '=',
+                'purchase_order_items.purchase_order_id',
+                'left'
+            )
+            // ->whereBetween('purchase_orders.purchase_date', [request('startdate'), request('enddate')])
+            ->whereYear('purchase_orders.purchase_date', request('year'))
+            ->whereMonth('purchase_orders.purchase_date', request('month'))
+            ->groupBy('purchase_order_items.item_name')
         ->orderBy('item_id','desc')
         ->paginate(10);
         return response()->json([
