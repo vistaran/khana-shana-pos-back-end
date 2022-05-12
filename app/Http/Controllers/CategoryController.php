@@ -126,26 +126,21 @@ class CategoryController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $data = Category::join('category_product', 'category_product.category_id', '=', 'category.id', 'left')
+        $data = Category::select('category.*', DB::raw('COUNT(category_product.category_id) as number_of_products'))
+            ->join('category_product', 'category_product.category_id', '=', 'category.id')
+
             ->when(($query == null), function ($q) {
                 return $q;
             })
+
             ->when(($query !== null), function ($q) use ($query) {
-                return $q->where('id', $query)
-                    ->orWhere('name', 'like', '%' . $query . '%')
-                    ->orWhere('position', $query);
+                return $q->where('category.id', $query)
+                    ->orWhere('category.name', 'like', '%' . $query . '%')
+                    ->orWhere('category.position', $query);
             })
-            ->select(
-                "category.*",
-                 DB::raw('COUNT(category_product.category_id) as number_of_products'),
-                "category.id as category_id"
 
-                // 'category_product.product_id',
-                // 'product.quantity',
-                // 'product.created_at',
-                // 'product.updated_at',
-            )
-
+            ->groupBy('category.id')
+            // ->select('category.*', DB::raw('COUNT(category_product.category_id) as number_of_products'), "category.id as category_id")
             ->orderBy('category.id', 'desc')->paginate(10);
         return response()->json([
             'category' => $data,
