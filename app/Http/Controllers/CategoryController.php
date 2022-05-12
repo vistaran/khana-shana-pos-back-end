@@ -126,9 +126,10 @@ class CategoryController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $data = Category::when(($query == null), function ($q) {
-            return $q;
-        })
+        $data = Category::join('category_product', 'category_product.category_id', '=', 'category.id', 'left')
+            ->when(($query == null), function ($q) {
+                return $q;
+            })
             ->when(($query !== null), function ($q) use ($query) {
                 return $q->where('id', $query)
                     ->orWhere('name', 'like', '%' . $query . '%')
@@ -136,6 +137,7 @@ class CategoryController extends Controller
             })
             ->select(
                 "category.*",
+                 DB::raw('COUNT(category_product.category_id) as number_of_products'),
                 "category.id as category_id"
 
                 // 'category_product.product_id',
