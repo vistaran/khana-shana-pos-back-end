@@ -126,36 +126,25 @@ class CategoryController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $data = Category::join('category_product', 'category.id', '=', 'category_product.category_id')
-            ->where('category_product.category_id', $query)
-            ->orWhere('category.name', 'like', '%' . $query . '%')
-            ->orWhere('category.position', $query)
+        $data = Category::when(($query == null), function ($q) {
+            return $q;
+        })
+            ->when(($query !== null), function ($q) use ($query) {
+                return $q->where('id', $query)
+                    ->orWhere('name', 'like', '%' . $query . '%')
+                    ->orWhere('position', $query);
+            })
             ->select(
-                "category.id",
-                "category.name",
-                "category.visible_in_menu",
-                "category.position",
-                "category.display_mode",
-                "category.decription",
-                "category.image",
-                "category.category_logo",
-                "category.parent_category_id",
-                "category.attributes",
-                "category.meta_title",
-                "category.slug",
-                "category.meta_description",
-                "category.meta_keyword",
-                "category.status",
-                "category.created_at",
-                "category.updated_at",
+                "category.*",
+                "category.id as category_id"
 
                 // 'category_product.product_id',
                 // 'product.quantity',
                 // 'product.created_at',
                 // 'product.updated_at',
             )
-            ->paginate(10);
 
+            ->orderBy('category.id', 'desc')->paginate(10);
         return response()->json([
             'category' => $data,
         ]);

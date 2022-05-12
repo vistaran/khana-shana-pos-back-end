@@ -129,7 +129,7 @@ class ProductsController extends Controller
 
     public function insert(Request $request)
     {
-        
+
         $attribute_id = $request->attribute_id;
         $group_id = $request->group_id;
         $attribute_family_id = $request->attribute_family_id;
@@ -192,33 +192,22 @@ class ProductsController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('query');
-        $data =
-            $product = Product::join('product_attribute_family', 'product.id', '=', 'product_attribute_family.product_id')
-            ->join('attribute_family', 'product_attribute_family.attribute_family_id', '=', 'attribute_family.id')
-            ->where('product_attribute_family.product_id', $query)
-            ->orWhere('product.price', $query)
-            ->orWhere('product.quantity', $query)
-            ->orWhere('product.sku', 'like', '%' . $query . '%')
-            ->orWhere('product.name', 'like', '%' . $query . '%')
-            ->orWhere('product.product_type', 'like', '%' . $query . '%')
+        $query = request('query');
+        $product = Product::when(($query == null), function ($q) {
+                return $q;
+            })
+            ->when(($query !== null), function ($q) use ($query) {
+                return $q->where('id', $query)
+                    ->orWhere('product_name', 'like', '%' . $query . '%')
+                    ->orWhere('category_name', 'like', '%' . $query . '%');
+            })
             ->select(
-                'product.id',
-                'product.sku',
-                'product.name',
-                'product.product_type',
-                'product.status',
-                'product.price',
-                'product.quantity',
-                'product.created_at',
-                'product.updated_at',
-                'attribute_family.attribute_family_name',
+                'product.*',
             )
-            ->orderBy('id')
-            ->paginate(10);
+            ->orderBy('id', 'desc')->paginate(10);
 
         return response()->json([
-            'Products' => $data,
+            'Products' => $product,
         ]);
     }
     public function show_data($id)
