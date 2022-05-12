@@ -19,10 +19,23 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            $product = Product::select(
+            $query = request('query');
+            $product = Product::
+                when(($query == null), function ($q) {
+                return $q;
+            })
+                ->when(($query !== null), function ($q) use ($query) {
+                    return $q->where('id', $query)
+                    ->orWhere('product_name','like', '%' . $query . '%')
+                    ->orWhere('category_name', 'like', '%' . $query . '%');
+
+
+                })
+                ->select(
                 'product.*',
-            )->orderBy('id', "DESC")
-                ->paginate(10);
+            )
+                ->orderBy('id', 'desc')->paginate(10);
+
             return response()->json(['products' => $product]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
