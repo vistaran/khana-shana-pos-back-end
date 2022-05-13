@@ -18,7 +18,7 @@ class CategoryController extends Controller
             $category = Category::select('category.*', DB::raw('COUNT(category_product.category_id) as number_of_products'))
                 ->join('category_product', 'category_product.category_id', '=', 'category.id')
                 ->groupBy('category.id')
-                ->orderBy('id')
+                ->orderBy('id','desc')
                 ->paginate(10);
             return response()->json([
                 'category' => $category,
