@@ -146,8 +146,11 @@ class UserController extends Controller
     //Show Product Datas using ID
     public function show_data($id)
     {
-        $user = User::where('id', $id)->first();
-
+        $user = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id', 'left')
+            ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id', 'left')
+            ->where('user.id',$id)
+            ->select('user.*','outlets.id as outletid','outlet_name')
+        ->get();
         return response()->json([
             'show_data' => $user,
         ]);
