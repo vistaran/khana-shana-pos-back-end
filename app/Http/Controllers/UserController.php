@@ -53,7 +53,7 @@ class UserController extends Controller
             $user->confirm_password = bcrypt($request->confirm_password);
             $user->phone_no = $request->phone_no;
 
-            $user->user_avatar= $request->user_avatar;
+            $user->user_avatar = $request->user_avatar;
             $user->status = $request->status;
             $user->save();
 
@@ -78,20 +78,21 @@ class UserController extends Controller
     public function edit($id, Request $request)
     {
         try {
-            $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status']);
-            User::where('id', $id)
-                ->update([
-                    'first_name' => $request->first_name,
-                    'lastname' => $request->lastname,
-                    'username' => $request->username,
-                    'email' => $request->email,
-                    'password' => bcrypt($request->password),
-                    'confirm_password' => bcrypt($request->confirm_password),
-                    'outlet_name' => $request->outlet_name,
-                    'outlet_status' => $request->outlet_status,
-                    'phone_no' => $request->phone_no,
-                    'user_avatar' => $request->user_avatar,
-                    'status' => $request->status,
+            $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status', 'outlet_id']);
+            User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
+                ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
+                ->where('user.id', $id)->update([
+                    'user.first_name' => $request->first_name,
+                    'user.lastname' => $request->lastname,
+                    'user.username' => $request->username,
+                    'user.email' => $request->email,
+                    'user.password' => bcrypt($request->password),
+                    'user.confirm_password' => bcrypt($request->confirm_password),
+                    'user_outlet.outlet_id'=>$request->outlet_id,
+                    'outlets.outlet_name' => $request->outlet_name,
+                    'user.phone_no' => $request->phone_no,
+                    'user.user_avatar' => $request->user_avatar,
+                    'user.status' => $request->status,
 
                 ]);
             return response()->json([
@@ -148,9 +149,9 @@ class UserController extends Controller
     {
         $user = User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id', 'left')
             ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id', 'left')
-            ->where('user.id',$id)
-            ->select('user.*','outlets.id as outletid','outlet_name')
-        ->get();
+            ->where('user.id', $id)
+            ->select('user.*', 'outlets.id as outletid', 'outlet_name')
+            ->get();
         return response()->json([
             'show_data' => $user,
         ]);
