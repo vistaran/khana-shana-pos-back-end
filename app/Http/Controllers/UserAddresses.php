@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\UserAddress;
+use App\CustomerAddresses;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -17,7 +17,7 @@ class UserAddresses extends Controller
     public function index()
     {
         try {
-            $customerAddress = UserAddress::select('user_addresses.*')->get();
+            $customerAddress = CustomerAddresses::select('customer_addresses.*')->get();
             return response()->json(['customerAddress' => $customerAddress]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -44,8 +44,8 @@ class UserAddresses extends Controller
     public function store(Request $request)
     {
         try {
-            UserAddress::insert([
-                'user_id' => $request->customer_id,
+            CustomerAddresses::insert([
+                'customer_id' => $request->customer_id,
                 'address_type_id' => $request->address_type_id,
                 'address_type' => $request->address_type,
                 'address_line_1' => $request->address_line_1,
@@ -74,7 +74,7 @@ class UserAddresses extends Controller
     public function show($id)
     {
         try {
-            $customerAddress = UserAddress::where('user_id', $id)->get();
+            $customerAddress = CustomerAddresses::where('customer_id', $id)->get();
             return response()->json(['customerAddress' => $customerAddress]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -91,7 +91,7 @@ class UserAddresses extends Controller
     public function edit($id)
     {
         try {
-            $customerAddress = UserAddress::where('id', $id)->get();
+            $customerAddress = CustomerAddresses::where('id', $id)->get();
             return response()->json($customerAddress);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -110,9 +110,9 @@ class UserAddresses extends Controller
     {
         try {
 
-            UserAddress::where('id', $id)
+            CustomerAddresses::where('id', $id)
                 ->update([
-                    'user_id' => $request->user_id,
+                    'customer_id' => $request->customer_id,
                     'address_type_id' => $request->address_type_id,
                     'address_type' => $request->address_type,
                     'address_line_1' => $request->address_line_1,
@@ -125,7 +125,7 @@ class UserAddresses extends Controller
                     'latitude' => $request->latitude,
                     'longitude' => $request->longitude
                 ]);
-            $customerAddress = UserAddress::where('id', $id)->first();
+            $customerAddress = CustomerAddresses::where('id', $id)->first();
 
             return response(['customerAddress' => $customerAddress]);
         } catch (Exception $e) {
@@ -143,7 +143,7 @@ class UserAddresses extends Controller
     public function destroy($id)
     {
         try {
-            UserAddress::where('id', $id)
+            CustomerAddresses::where('id', $id)
                 ->delete();
             return response()->json([
                 'Delete Message' => 'Successfully Deleted !',
