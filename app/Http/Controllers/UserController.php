@@ -79,8 +79,8 @@ class UserController extends Controller
     {
         try {
             $credential = $request->only(['first_name', 'lastname', 'username', 'email', 'password', 'confirm_password', 'user_avatar', 'status', 'outlet_id']);
-            User::join('user_outlet', 'user.id', '=', 'user_outlet.user_id')
-                ->join('outlets', 'user_outlet.outlet_id', '=', 'outlets.id')
+            User::leftjoin('user_outlet', 'user_outlet.user_id', '=', 'user.id')
+                ->leftjoin('outlets', 'outlets.id', '=', 'user_outlet.outlet_id')
                 ->where('user.id', $id)->update([
                     'user.first_name' => $request->first_name,
                     'user.lastname' => $request->lastname,
@@ -89,7 +89,6 @@ class UserController extends Controller
                     'user.password' => bcrypt($request->password),
                     'user.confirm_password' => bcrypt($request->confirm_password),
                     'user_outlet.outlet_id'=>$request->outlet_id,
-                    'outlets.outlet_name' => $request->outlet_name,
                     'user.phone_no' => $request->phone_no,
                     'user.user_avatar' => $request->user_avatar,
                     'user.status' => $request->status,
