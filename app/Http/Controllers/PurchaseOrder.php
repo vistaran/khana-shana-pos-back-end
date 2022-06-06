@@ -30,11 +30,9 @@ class PurchaseOrder extends Controller
                     return $q->where('purchase_orders.id', '=', $query)
                         ->orWhere('vendors.name', 'like', '%' . $query . '%')
                         ->orWhere('outlets.outlet_name', 'like', '%' . $query . '%')
-                    ->orWhere(function ($q) use ($query) {
-                        $q->whereDate('purchase_orders.purchase_date', $query);
-                    });
-
-
+                        ->orWhere(function ($q) use ($query) {
+                            $q->whereDate('purchase_orders.purchase_date', $query);
+                        });
                 })
                 ->select('vendors.name', 'outlets.outlet_name', 'purchase_orders.*')
 
@@ -221,6 +219,7 @@ class PurchaseOrder extends Controller
     public function destroy($id)
     {
         try {
+            PurchaseOrderItems::where('purchase_order_id', $id)->delete();
             AppPurchaseOrder::find($id)->delete();
             return response()->json([
                 'status' => true,
