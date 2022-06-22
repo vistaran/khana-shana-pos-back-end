@@ -37,7 +37,7 @@ class ExpenseReportsController extends Controller
         //         ->whereBetween('purchase_date', [request('startdate'), request('enddate')]);
         // })->groupBy('item_group_id')
         // ->get();
-        $amount = PurchaseOrderItems::select('purchase_order_items.item_group_name', AppPurchaseOrder::raw('SUM(purchase_orders.total_amount) as total'))
+        $amount = PurchaseOrderItems::select('purchase_order_items.item_group_name', AppPurchaseOrder::raw('SUM(purchase_order_items.subtotal) as total'))
             ->join(
                 'purchase_orders',
                 'purchase_orders.id',
