@@ -3,16 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\PurchaseOrderItems;
-use Carbon\Carbon;
-use App\Http\Controllers\DB;
 use App\PurchaseOrder as AppPurchaseOrder;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ExpenseReportsController extends Controller
 {
     public function show()
     {
-        $data = PurchaseOrderItems::select('subtotal', 'item_group_id', 'item_group_name')
+        $data = PurchaseOrderItems::select(DB::raw('SUM(subtotal) as subtotal, item_group_id, item_group_name'))
             ->whereIn('purchase_order_id', function ($query) {
                 $query->select('id')
                     ->from(with(new AppPurchaseOrder)->getTable())
