@@ -72,12 +72,14 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         try {
-            $customers = Customers::insert([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'phone_number' => $request->phone_number,
-            ]);
-            return response()->json(['customers' => $customers]);
+
+            $customer = new Customers();
+            $customer->first_name = $request->first_name;
+            $customer->last_name = $request->last_name;
+            $customer->phone_number = $request->phone_number;
+            $customer->save();
+
+            return response()->json(['customers' => $customer->id]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
