@@ -20,21 +20,19 @@ class ProductController extends Controller
     {
         try {
             $query = request('query');
-            $product = Product::
-                when(($query == null), function ($q) {
+            $product = Product::when(($query == null), function ($q) {
                 return $q;
             })
                 ->when(($query !== null), function ($q) use ($query) {
                     return $q->where('id', $query)
-                    ->orWhere('product_name','like', '%' . $query . '%')
-                    ->orWhere('category_name', 'like', '%' . $query . '%');
-
-
+                        ->orWhere('product_name', 'like', '%' . $query . '%')
+                        ->orWhere('category_name', 'like', '%' . $query . '%');
                 })
                 ->select(
-                'product.*',
-            )
-                ->orderBy('id', 'desc')->paginate(10);
+                    'product.*',
+                )
+                ->orderBy('id', 'desc')->paginate(10)
+                ->sortBy('item_position');
 
             return response()->json(['products' => $product]);
         } catch (Exception $e) {
@@ -140,6 +138,7 @@ class ProductController extends Controller
             $attribute_family_id = $request->attribute_family_id;
             $attribute_data = $request->attribute_data;
             $category_name = $request->category_name;
+            $item_position = $request->item_position;
             // dd(Product::where('id', $id)->get());
             Product::where('id', $id)
                 ->update([
@@ -149,6 +148,7 @@ class ProductController extends Controller
                     'price' => $price,
                     'category_id' => $category_id,
                     'category_name' => $category_name,
+                    'item_position' => $item_position
                 ]);
             $group = Product::where('id', $id)->first();
             // foreach ($request->update_product_data as $iData) {
