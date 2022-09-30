@@ -130,15 +130,25 @@ Route::group(
         'prefix' => 'expense_reports',
     ],
     function ($router) {
-         Route::get('expense','ExpenseReportsController@show');
-         Route::get('totalExpense','ExpenseReportsController@totalExpense');
-         Route::get('showItem','ExpenseReportsController@showItem');
+        Route::get('expense', 'ExpenseReportsController@show');
+        Route::get('totalExpense', 'ExpenseReportsController@totalExpense');
+        Route::get('showItem', 'ExpenseReportsController@showItem');
+    }
+);
 
-
+// Product API
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'product',
+    ],
+    function ($router) {
+        Route::get('last_position', 'ProductController@getLastPosition');
     }
 );
 
 Route::resource('product', ProductController::class);
+// Route::get('product/last_position', [ProductController::class, 'getLastPosition'])->name('Position');
 Route::resource('customer', CustomerController::class);
 Route::resource('userAddress', UserAddresses::class);
 Route::resource('vendors', VendorsController::class);

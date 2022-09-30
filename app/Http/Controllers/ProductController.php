@@ -31,8 +31,7 @@ class ProductController extends Controller
                 ->select(
                     'product.*',
                 )
-                ->orderBy('id', 'desc')->paginate(10)
-                ->sortBy('item_position');
+                ->orderBy('item_position', 'asc')->paginate(10);
 
             return response()->json(['products' => $product]);
         } catch (Exception $e) {
@@ -66,6 +65,7 @@ class ProductController extends Controller
             $product->price = $request->price;
             $product->category_id = $request->category_id;
             $product->category_name = $request->category_name;
+            $product->item_position = $request->item_position;
             $product->save();
 
             // dd($product->id);
@@ -186,6 +186,17 @@ class ProductController extends Controller
             return response()->json([
                 'Delete Message' => 'Successfully Deleted !',
             ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+    }
+
+    public function getLastPosition()
+    {
+        try {
+            $last_position = Product::max('item_position');
+            return response()->json(['last_position' => $last_position]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
