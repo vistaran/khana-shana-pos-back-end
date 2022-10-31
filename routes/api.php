@@ -147,6 +147,23 @@ Route::group(
     }
 );
 
+// Table management Api
+Route::group(
+    [
+        'middleware' => 'api',
+        'prefix' => 'tables_management',
+    ],
+    function ($router) {
+        Route::get('show', 'TablesManagementController@show');
+        Route::get('show/{id}', 'TablesManagementController@showDetail');
+        Route::post('insert', 'TablesManagementController@insert');
+        Route::put('edit/{id}', 'TablesManagementController@edit');
+        Route::delete('delete/{id}', 'TablesManagementController@delete');
+        Route::get('search', 'TablesManagementController@search');
+    }
+);
+
+
 Route::resource('product', ProductController::class);
 // Route::get('product/last_position', [ProductController::class, 'getLastPosition'])->name('Position');
 Route::resource('customer', CustomerController::class);
