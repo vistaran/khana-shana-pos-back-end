@@ -12,23 +12,59 @@ use Validator;
 class TablesManagementController extends Controller
 {
     // Show all details
-    public function show()
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+  
+     public function index()
     {
         try {
-            $restauranttables = RestaurantTables::orderBy('id', 'desc')
-                ->paginate(10);
-            return response()->json([
-                'Restaurant_Tables' => $restauranttables
-            ]);
+            $query = request('query');
+            $limit = request('limit');
+            $restauranttables = RestaurantTables::select('restaurant_tables.*')
+
+                // default
+                ->when(($query == null), function ($q) {
+                    return $q;
+                })
+
+                // search by item_name
+                ->when(($query !== null), function ($q) use ($query) {
+                    return $q->where('res_table_number', $query)
+                         ->orWhere('res_table_name', 'like', '%' . $query . '%');
+                });
+
+            // default
+            if (($limit == null)) {
+                return $restauranttables->orderBy('id', 'desc')->paginate(10);
+            }
+
+            // for dynamic pagination
+            if (($limit !== null && $limit <= 500)) {
+                return $restauranttables->orderBy('id', 'desc')->paginate($limit);
+            }
+
+            if (($limit !== null && $limit > 500)) {
+                return $restauranttables->orderBy('id', 'desc')->paginate(500);
+            };
+            return response()->json(['Restaurant_Tables' => $restauranttables]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
 
-    public function showDetail($id)
+     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
-        try {
+         try {
             $restauranttables = RestaurantTables::where('id', $id)->first();
 
             return response()->json(['Restaurant_Table_Details' => $restauranttables]);
@@ -37,11 +73,16 @@ class TablesManagementController extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
- 
-    
-    public function insert(Request $request)
+
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
     {
-        try {
+       try {
             $validator = Validator::make($request->all(), [
             'table_number' => 'required',
             'table_name' => 'required',
@@ -62,7 +103,15 @@ class TablesManagementController extends Controller
         }
     }
 
-    public function edit($id, Request $request)
+
+ /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update($id, Request $request)
     {
 
         try {
@@ -87,7 +136,13 @@ class TablesManagementController extends Controller
         }
     }
 
-    public function delete($id)
+     /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
     {
         try {
             RestaurantTables::find($id)
@@ -99,19 +154,5 @@ class TablesManagementController extends Controller
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
-    }
-
-    //Search
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
-        $data = RestaurantTables::where('id', $query)
-            ->orWhere('res_table_name', 'like', '%' . $query . '%')
-            ->orWhere('res_table_number', $query)
-            ->paginate(10);
-
-        return response()->json([
-            'Restaurant_Tables' => $data,
-        ]);
     }
 }
