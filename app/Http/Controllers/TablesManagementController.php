@@ -93,6 +93,8 @@ class TablesManagementController extends Controller
             $table = new RestaurantTables();
             $table->res_table_number = $request->table_number;
             $table->res_table_name =  $request->table_name;
+            $table->is_table_active = $request->table_active;
+            $table->is_table_occupied =  $request->table_occupied;
             $table->save();
             return response()->json([
                 'Message' => 'Successfully Inserted !',
@@ -125,7 +127,9 @@ class TablesManagementController extends Controller
             $table = RestaurantTables::where('id', $id)
                 ->update([
                     'res_table_number' => $request->table_number,
-                    'res_table_name' =>$request->table_name
+                    'res_table_name' =>$request->table_name,
+                    'is_table_active' => $request->table_active,
+                    'is_table_occupied' =>  $request->table_occupied
                 ]);
             return response()->json([
                 'Message' => 'Successfully Updated !',
