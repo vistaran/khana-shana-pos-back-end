@@ -146,7 +146,6 @@ Route::group(
         Route::get('last_position', 'ProductController@getLastPosition');
     }
 );
-
 Route::resource('product', ProductController::class);
 // Route::get('product/last_position', [ProductController::class, 'getLastPosition'])->name('Position');
 Route::resource('customer', CustomerController::class);
@@ -157,3 +156,5 @@ Route::resource('purchase_items', PurchaseItemsController::class);
 Route::resource('item_groups', ItemGroup::class);
 Route::resource('purchase_order', PurchaseOrder::class);
 Route::resource('orders', Orders::class);
+
+Route::resource('tables_management', TablesManagementController::class);
