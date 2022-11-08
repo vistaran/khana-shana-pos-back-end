@@ -30,9 +30,9 @@ class Orders extends Controller
                         ->orWhere('customers.first_name', 'like', '%' . $query . '%')
                         ->orWhere('customers.last_name', 'like', '%' . $query . '%')
                         ->orWhere('orders.payment_mode', 'like', '%' . $query . '%')
-                         ->orWhere(function ($q) use ($query) {
-                        $q->whereDate('orders.order_date', $query);
-                    });
+                        ->orWhere(function ($q) use ($query) {
+                            $q->whereDate('orders.order_date', $query);
+                        });
                 })
                 ->select('customers.first_name', 'customers.last_name', 'customers.phone_number', 'orders.*')
                 ->orderBy('id', 'desc')->paginate(10);
@@ -74,6 +74,7 @@ class Orders extends Controller
                 $order->shipping_charge =  $request->shipping_charge;
                 $order->total_amount =  $request->total_amount;
                 $order->order_date =  $request->order_date;
+                $order->table_number = $request->table_number;
                 $order->save();
 
                 // create items entry
@@ -157,7 +158,8 @@ class Orders extends Controller
                 "notes" =>  $request->notes,
                 "shipping_charge" =>  $request->shipping_charge,
                 "total_amount" =>  $request->total_amount,
-                "order_date" => $request->order_date
+                "order_date" => $request->order_date,
+                "table_number" => $request->table_number
             ]);
 
             foreach ($request->products as $item) {
