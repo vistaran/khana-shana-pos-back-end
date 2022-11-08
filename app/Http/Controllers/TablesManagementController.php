@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\RestaurantTables;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,8 +18,8 @@ class TablesManagementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-  
-     public function index()
+
+    public function index()
     {
         try {
             $query = request('query');
@@ -33,7 +34,7 @@ class TablesManagementController extends Controller
                 // search by item_name
                 ->when(($query !== null), function ($q) use ($query) {
                     return $q->where('res_table_number', $query)
-                         ->orWhere('res_table_name', 'like', '%' . $query . '%');
+                        ->orWhere('res_table_name', 'like', '%' . $query . '%');
                 });
 
             // default
@@ -56,7 +57,7 @@ class TablesManagementController extends Controller
         }
     }
 
-     /**
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -64,7 +65,7 @@ class TablesManagementController extends Controller
      */
     public function show($id)
     {
-         try {
+        try {
             $restauranttables = RestaurantTables::where('id', $id)->first();
 
             return response()->json(['Restaurant_Table_Details' => $restauranttables]);
@@ -74,7 +75,7 @@ class TablesManagementController extends Controller
         }
     }
 
-     /**
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -82,10 +83,10 @@ class TablesManagementController extends Controller
      */
     public function store(Request $request)
     {
-       try {
+        try {
             $validator = Validator::make($request->all(), [
-            'table_number' => 'required',
-            'table_name' => 'required',
+                'table_number' => 'required',
+                'table_name' => 'required',
             ]);
             if ($validator->fails()) {
                 return response()->json($validator->errors());
@@ -106,7 +107,7 @@ class TablesManagementController extends Controller
     }
 
 
- /**
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -118,8 +119,8 @@ class TablesManagementController extends Controller
 
         try {
             $validator = Validator::make($request->all(), [
-            'table_number' => 'required',
-            'table_name' => 'required',
+                'table_number' => 'required',
+                'table_name' => 'required',
             ]);
             if ($validator->fails()) {
                 return response()->json($validator->errors());
@@ -127,7 +128,7 @@ class TablesManagementController extends Controller
             $table = RestaurantTables::where('id', $id)
                 ->update([
                     'res_table_number' => $request->table_number,
-                    'res_table_name' =>$request->table_name,
+                    'res_table_name' => $request->table_name,
                     'is_table_active' => $request->table_active,
                     'is_table_occupied' =>  $request->table_occupied
                 ]);
@@ -140,7 +141,31 @@ class TablesManagementController extends Controller
         }
     }
 
-     /**
+    public function markAsUnoccupied($id, Request $request)
+    {
+        try {
+            // $validator = Validator::make($request->all(), [
+            //     'table_number' => 'required',
+            //     'table_name' => 'required',
+            // ]);
+            // if ($validator->fails()) {
+            //     return response()->json($validator->errors());
+            // }
+            $table = RestaurantTables::where('res_table_number', $id)
+                ->update([
+                    'res_table_name' => $request->table_name,
+                    'is_table_occupied' =>  $request->table_occupied
+                ]);
+            return response()->json([
+                'Message' => 'Successfully Updated !',
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
