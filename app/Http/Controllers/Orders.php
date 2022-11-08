@@ -101,6 +101,7 @@ class Orders extends Controller
         }
     }
 
+
     /**
      * Display the specified resource.
      *
@@ -188,6 +189,22 @@ class Orders extends Controller
             return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
         }
     }
+
+    public function unOccupyTable(Request $request, $id)
+    {
+        try {
+            $updateorder = AppOrders::where('id', $id)->update(["table_number" => $request->table_number]);
+
+            // dd($updateorder);
+
+            $order = AppOrders::where('id', $id)->first();
+            return response()->json($order);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.
