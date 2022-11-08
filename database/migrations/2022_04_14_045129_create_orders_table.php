@@ -17,7 +17,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->string('payment_mode');
-            $table->string('customer_id');
+            $table->string('customer_id')->nullable();
             $table->string('notes');
             $table->float('shipping_charge', 6, 2, true);
             $table->float('total_amount', 10, 2, true);
