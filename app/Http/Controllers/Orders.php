@@ -190,20 +190,20 @@ class Orders extends Controller
         }
     }
 
-    public function unOccupyTable(Request $request, $id)
-    {
-        try {
-            $updateorder = AppOrders::where('id', $id)->update(["table_number" => $request->table_number]);
+    // public function unOccupyTable(Request $request, $id)
+    // {
+    //     try {
+    //         $updateorder = AppOrders::where('id', $id)->update(["table_number" => $request->table_number]);
 
-            // dd($updateorder);
+    //         // dd($updateorder);
 
-            $order = AppOrders::where('id', $id)->first();
-            return response()->json($order);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
+    //         $order = AppOrders::where('id', $id)->first();
+    //         return response()->json($order);
+    //     } catch (\Exception $e) {
+    //         Log::error($e->getMessage());
+    //         return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
 
     /**
