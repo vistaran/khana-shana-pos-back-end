@@ -20,6 +20,8 @@ class CreateOrdersTable extends Migration
             $table->string('customer_id')->nullable();
             $table->string('notes');
             $table->float('shipping_charge', 6, 2, true);
+            $table->string('discount_type')->nullable();
+            $table->float('discount_amount', 6, 2, true)->nullable();
             $table->float('total_amount', 10, 2, true);
             $table->dateTime('order_date')->nullable();
             $table->integer('table_number')->default(0);
