@@ -159,3 +159,4 @@ Route::resource('orders', Orders::class);
 
 Route::resource('tables_management', TablesManagementController::class);
 Route::put('unoccupy_table/{id}', 'TablesManagementController@markAsUnoccupied');
+Route::put('unoccupy_table_from_sales/{id}', 'Orders@unOccupyTableFromSales');

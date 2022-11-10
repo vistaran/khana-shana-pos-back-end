@@ -72,6 +72,8 @@ class Orders extends Controller
                 $order->payment_mode =  $request->payment_mode;
                 $order->customer_id =  $request->customer_id;
                 $order->shipping_charge =  $request->shipping_charge;
+                $order->discount_type =  $request->discount_type;
+                $order->discount_amount =  $request->discount_amount;
                 $order->total_amount =  $request->total_amount;
                 $order->order_date =  $request->order_date;
                 $order->table_number = $request->table_number;
@@ -158,6 +160,8 @@ class Orders extends Controller
                 "customer_id" =>  $request->customer_id,
                 "notes" =>  $request->notes,
                 "shipping_charge" =>  $request->shipping_charge,
+                "discount_type" =>  $request->discount_type,
+                "discount_amount" =>  $request->discount_amount,
                 "total_amount" =>  $request->total_amount,
                 "order_date" => $request->order_date,
                 "table_number" => $request->table_number
@@ -190,20 +194,20 @@ class Orders extends Controller
         }
     }
 
-    // public function unOccupyTable(Request $request, $id)
-    // {
-    //     try {
-    //         $updateorder = AppOrders::where('id', $id)->update(["table_number" => $request->table_number]);
+    public function unOccupyTableFromSales(Request $request, $id)
+    {
+        try {
+            $updateorder = AppOrders::where('id', $id)->update(["table_number" => $request->table_number]);
 
-    //         // dd($updateorder);
+            // dd($updateorder);
 
-    //         $order = AppOrders::where('id', $id)->first();
-    //         return response()->json($order);
-    //     } catch (\Exception $e) {
-    //         Log::error($e->getMessage());
-    //         return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()], Response::HTTP_INTERNAL_SERVER_ERROR);
-    //     }
-    // }
+            $order = AppOrders::where('id', $id)->first();
+            return response()->json($order);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
     /**
