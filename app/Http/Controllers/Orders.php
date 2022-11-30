@@ -184,6 +184,15 @@ class Orders extends Controller
                         ->where('product_id', $item['product_id'])
                         ->delete();
                 }
+                if ($item['flag'] == 'edit') {
+                    // dd($item['id']);
+                    OrdersItems::where('id', $item['id'])
+                        ->update([
+                            "quantity" => $item['quantity'],
+                            "price" => $item['price'],
+                            "subtotal" => $item['subtotal']
+                        ]);
+                }
             }
 
             $order = AppOrders::where('id', $id)->first();
