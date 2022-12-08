@@ -72,6 +72,7 @@ Route::group(
         Route::get('delete/{id}', 'CategoryController@delete');
         Route::post('insert', 'CategoryController@add');
         Route::get('search', 'CategoryController@search');
+        Route::get('qrcode', 'CategoryController@qrcode_data');
     }
 );
 

@@ -18,7 +18,7 @@ class CategoryController extends Controller
             $category = Category::select('category.*', DB::raw('COUNT(category_product.category_id) as number_of_products'))
                 ->join('category_product', 'category_product.category_id', '=', 'category.id')
                 ->groupBy('category.id')
-                ->orderBy('id','desc')
+                ->orderBy('id', 'desc')
                 ->paginate(10);
             return response()->json([
                 'category' => $category,
@@ -154,5 +154,23 @@ class CategoryController extends Controller
         return response()->json([
             'show_data' => $category,
         ]);
+    }
+    //Show QR code data
+    public function qrcode_data()
+    {
+        try {
+            $all_product_data = Category::with('products')->get();
+            $category_with_product = [];
+            foreach ($all_product_data as $item) {
+                $category_with_product[] = $item->toArray();
+            }
+
+            return response()->json([
+                'qrcode_data' => $category_with_product
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage() . ' ' . $e->getLine()]);
+        }
     }
 }
