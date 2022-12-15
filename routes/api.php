@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +72,7 @@ Route::group(
         Route::get('delete/{id}', 'CategoryController@delete');
         Route::post('insert', 'CategoryController@add');
         Route::get('search', 'CategoryController@search');
+        Route::get('qrcode', 'CategoryController@qrcode_data');
     }
 );
 
@@ -160,3 +162,8 @@ Route::resource('orders', Orders::class);
 Route::resource('tables_management', TablesManagementController::class);
 Route::put('unoccupy_table/{id}', 'TablesManagementController@markAsUnoccupied');
 Route::put('unoccupy_table_from_sales/{id}', 'Orders@unOccupyTableFromSales');
+
+Route::get('qrcode', function () {
+    // $qrcode = ;
+    return QrCode::generate('https://posdemo.vistaran.com/menu');
+});
