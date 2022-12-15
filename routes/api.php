@@ -164,6 +164,6 @@ Route::put('unoccupy_table/{id}', 'TablesManagementController@markAsUnoccupied')
 Route::put('unoccupy_table_from_sales/{id}', 'Orders@unOccupyTableFromSales');
 
 Route::get('qrcode', function () {
-    // return QrCode::size(300)->format('png')->generate('http:://localhost:4200/sales/add_sale');
-    return QrCode::generate('http://www.simplesoftware.io');
+    // $qrcode = ;
+    return QrCode::generate('https://posdemo.vistaran.com/menu');
 });
