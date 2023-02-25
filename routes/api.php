@@ -158,3 +158,6 @@ Route::resource('purchase_order', PurchaseOrder::class);
 Route::resource('orders', Orders::class);
 
 Route::resource('tables_management', TablesManagementController::class);
+Route::resource('branch_management', BranchManagementController::class);
+Route::resource('roles', RolesPermissionController::class);
+Route::resource('app_modules', ModulePermissionController::class);
