@@ -15,7 +15,7 @@ class CategoryController extends Controller
     public function show()
     {
         try {
-            $category = Category::select('category.*', DB::raw('COUNT(category_product.category_id) as number_of_products'))
+            $category = Category::select(DB::raw('COUNT(category_product.category_id) as number_of_products'))
                 ->join('category_product', 'category_product.category_id', '=', 'category.id')
                 ->groupBy('category.id')
                 ->orderBy('id', 'desc')
